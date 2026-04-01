@@ -95,7 +95,7 @@ prisma/
 ## Community
 
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
-- [Contribution Guide](./contribution.md)
+- [Contribution Guide](./CONTRIBUTING.md)
 
 ## License
 
