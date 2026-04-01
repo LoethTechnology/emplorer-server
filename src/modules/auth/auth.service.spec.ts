@@ -15,9 +15,8 @@ const mockPrismaService = {
     create: jest.fn(),
   },
   user: {
-    findUnique: jest.fn(),
+    upsert: jest.fn(),
     create: jest.fn(),
-    update: jest.fn(),
   },
 };
 
@@ -113,16 +112,19 @@ describe('AuthService', () => {
       };
       const updatedUser = { ...existingUser, first_name: 'John' };
       mockPrismaService.oauth_account.findUnique.mockResolvedValue(null);
-      mockPrismaService.user.findUnique.mockResolvedValue(existingUser);
-      mockPrismaService.user.update.mockResolvedValue(updatedUser);
+      mockPrismaService.user.upsert.mockResolvedValue(updatedUser);
       mockPrismaService.oauth_account.create.mockResolvedValue({});
 
       const result = await service.findOrCreateUserFromLinkedin(mockOAuthUser);
 
-      expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
+      expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
         where: { email: 'john@example.com' },
+        update: expect.objectContaining({ first_name: 'John' }),
+        create: expect.objectContaining({
+          email: 'john@example.com',
+          display_name: 'John Doe',
+        }),
       });
-      expect(mockPrismaService.user.update).toHaveBeenCalled();
       expect(mockPrismaService.oauth_account.create).toHaveBeenCalled();
       const oauthCalls = (
         mockPrismaService.oauth_account.create as jest.Mock<unknown>
@@ -135,26 +137,26 @@ describe('AuthService', () => {
       expect(result.user).toEqual(updatedUser);
     });
 
-    it('should create a new user when no existing account or email match', async () => {
+    it('should create a new user when no existing oauth account or email match', async () => {
       const newUser = {
         id: 'user-3',
         email: 'john@example.com',
         display_name: 'John Doe',
       };
       mockPrismaService.oauth_account.findUnique.mockResolvedValue(null);
-      mockPrismaService.user.findUnique.mockResolvedValue(null);
-      mockPrismaService.user.create.mockResolvedValue(newUser);
+      mockPrismaService.user.upsert.mockResolvedValue(newUser);
       mockPrismaService.oauth_account.create.mockResolvedValue({});
 
       const result = await service.findOrCreateUserFromLinkedin(mockOAuthUser);
 
-      expect(mockPrismaService.user.create).toHaveBeenCalled();
-      const userCalls = (mockPrismaService.user.create as jest.Mock<unknown>)
-        .mock.calls as unknown as Array<
-        [{ data: { email: string; display_name: string } }]
-      >;
-      expect(userCalls[0][0].data.email).toBe('john@example.com');
-      expect(userCalls[0][0].data.display_name).toBe('John Doe');
+      expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
+        where: { email: 'john@example.com' },
+        update: expect.any(Object),
+        create: expect.objectContaining({
+          email: 'john@example.com',
+          display_name: 'John Doe',
+        }),
+      });
       expect(result.accessToken).toBe('test-jwt-token');
       expect(result.user).toEqual(newUser);
     });
