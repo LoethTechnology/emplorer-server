@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { PrismaModule } from './shared/modules/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
         },
       ],
     }),
+    PrismaModule,
     AuthModule,
     ReviewsModule,
   ],
