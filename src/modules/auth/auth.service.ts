@@ -1,20 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Profile } from 'passport-linkedin-oauth2';
 import { OAuthProvider } from 'prisma/generated/prisma/enums';
 import type { user } from 'prisma/generated/prisma/client';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
-
-export interface LinkedInOAuthUser {
-  profile: Profile;
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface AuthTokenResponse {
-  accessToken: string;
-  user: user;
-}
+import type { AuthTokenResponse, LinkedInOAuthUser } from './auth.types';
 
 @Injectable()
 export class AuthService {

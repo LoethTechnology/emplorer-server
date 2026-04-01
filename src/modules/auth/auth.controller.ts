@@ -1,6 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { AuthService, LinkedInOAuthUser } from './auth.service';
+import { AuthService } from './auth.service';
+import type { LinkedInOAuthUser } from './auth.types';
 import { LinkedInAuthGuard } from './guards/linkedin-auth.guard';
 
 @Controller('auth')
