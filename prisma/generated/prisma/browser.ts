@@ -17,4 +17,38 @@ import * as Prisma from './internal/prismaNamespaceBrowser.js'
 export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
-
+/**
+ * Model user
+ * 
+ */
+export type user = Prisma.userModel
+/**
+ * Model oauth_account
+ * 
+ */
+export type oauth_account = Prisma.oauth_accountModel
+/**
+ * Model company
+ * 
+ */
+export type company = Prisma.companyModel
+/**
+ * Model company_review
+ * 
+ */
+export type company_review = Prisma.company_reviewModel
+/**
+ * Model review_critique
+ * 
+ */
+export type review_critique = Prisma.review_critiqueModel
+/**
+ * Model review_comment
+ * 
+ */
+export type review_comment = Prisma.review_commentModel
+/**
+ * Model comment_vote
+ * 
+ */
+export type comment_vote = Prisma.comment_voteModel

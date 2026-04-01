@@ -9,7 +9,45 @@
 * 🟢 You can import this file directly.
 */
 
+export const OAuthProvider = {
+  LINKEDIN: 'LINKEDIN'
+} as const
+
+export type OAuthProvider = (typeof OAuthProvider)[keyof typeof OAuthProvider]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const CompanyStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type CompanyStatus = (typeof CompanyStatus)[keyof typeof CompanyStatus]
+
+
+export const ReviewStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  HIDDEN: 'HIDDEN',
+  REMOVED: 'REMOVED'
+} as const
+
+export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
+
+
+export const CommentStatus = {
+  PUBLISHED: 'PUBLISHED',
+  HIDDEN: 'HIDDEN',
+  REMOVED: 'REMOVED'
+} as const
+
+export type CommentStatus = (typeof CommentStatus)[keyof typeof CommentStatus]
+
+
+export const CommentVoteValue = {
+  HELPFUL: 'HELPFUL',
+  NOT_HELPFUL: 'NOT_HELPFUL'
+} as const
+
+export type CommentVoteValue = (typeof CommentVoteValue)[keyof typeof CommentVoteValue]

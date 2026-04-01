@@ -51,7 +51,13 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-
+  user: 'user',
+  oauth_account: 'oauth_account',
+  company: 'company',
+  company_review: 'company_review',
+  review_critique: 'review_critique',
+  review_comment: 'review_comment',
+  comment_vote: 'comment_vote'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -68,4 +74,142 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  email_verified_at: 'email_verified_at',
+  display_name: 'display_name',
+  first_name: 'first_name',
+  last_name: 'last_name',
+  headline: 'headline',
+  avatar_url: 'avatar_url',
+  linkedin_profile_url: 'linkedin_profile_url',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const Oauth_accountScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  provider: 'provider',
+  provider_account_id: 'provider_account_id',
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  token_type: 'token_type',
+  scope: 'scope',
+  expires_at: 'expires_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Oauth_accountScalarFieldEnum = (typeof Oauth_accountScalarFieldEnum)[keyof typeof Oauth_accountScalarFieldEnum]
+
+
+export const CompanyScalarFieldEnum = {
+  id: 'id',
+  creator_id: 'creator_id',
+  name: 'name',
+  description: 'description',
+  website_url: 'website_url',
+  domain: 'domain',
+  linkedin_url: 'linkedin_url',
+  logo_url: 'logo_url',
+  headquarters: 'headquarters',
+  industry: 'industry',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+export const Company_reviewScalarFieldEnum = {
+  id: 'id',
+  company_id: 'company_id',
+  author_id: 'author_id',
+  body: 'body',
+  overall_rating: 'overall_rating',
+  employment_context: 'employment_context',
+  would_recommend: 'would_recommend',
+  status: 'status',
+  published_at: 'published_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Company_reviewScalarFieldEnum = (typeof Company_reviewScalarFieldEnum)[keyof typeof Company_reviewScalarFieldEnum]
+
+
+export const Review_critiqueScalarFieldEnum = {
+  id: 'id',
+  review_id: 'review_id',
+  author_id: 'author_id',
+  title: 'title',
+  body: 'body',
+  rating: 'rating',
+  status: 'status',
+  published_at: 'published_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Review_critiqueScalarFieldEnum = (typeof Review_critiqueScalarFieldEnum)[keyof typeof Review_critiqueScalarFieldEnum]
+
+
+export const Review_commentScalarFieldEnum = {
+  id: 'id',
+  review_id: 'review_id',
+  author_id: 'author_id',
+  parent_comment_id: 'parent_comment_id',
+  body: 'body',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+} as const
+
+export type Review_commentScalarFieldEnum = (typeof Review_commentScalarFieldEnum)[keyof typeof Review_commentScalarFieldEnum]
+
+
+export const Comment_voteScalarFieldEnum = {
+  id: 'id',
+  comment_id: 'comment_id',
+  user_id: 'user_id',
+  value: 'value',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Comment_voteScalarFieldEnum = (typeof Comment_voteScalarFieldEnum)[keyof typeof Comment_voteScalarFieldEnum]
+
+
+export const SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+} as const
+
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
