@@ -8,4 +8,11 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/user.js'
+export type * from './models/oauth_account.js'
+export type * from './models/company.js'
+export type * from './models/company_review.js'
+export type * from './models/review_critique.js'
+export type * from './models/review_comment.js'
+export type * from './models/comment_vote.js'
 export type * from './commonInputTypes.js'

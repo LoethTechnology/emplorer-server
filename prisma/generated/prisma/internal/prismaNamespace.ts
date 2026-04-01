@@ -384,7 +384,13 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-
+  user: 'user',
+  oauth_account: 'oauth_account',
+  company: 'company',
+  company_review: 'company_review',
+  review_critique: 'review_critique',
+  review_comment: 'review_comment',
+  comment_vote: 'comment_vote'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -400,10 +406,529 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: never
+    modelProps: "user" | "oauth_account" | "company" | "company_review" | "review_critique" | "review_comment" | "comment_vote"
     txIsolationLevel: TransactionIsolationLevel
   }
-  model: {}
+  model: {
+    user: {
+      payload: Prisma.$userPayload<ExtArgs>
+      fields: Prisma.userFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.userFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.userFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>
+        }
+        findFirst: {
+          args: Prisma.userFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.userFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>
+        }
+        findMany: {
+          args: Prisma.userFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>[]
+        }
+        create: {
+          args: Prisma.userCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>
+        }
+        createMany: {
+          args: Prisma.userCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.userCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>[]
+        }
+        delete: {
+          args: Prisma.userDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>
+        }
+        update: {
+          args: Prisma.userUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>
+        }
+        deleteMany: {
+          args: Prisma.userDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.userUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.userUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>[]
+        }
+        upsert: {
+          args: Prisma.userUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$userPayload>
+        }
+        aggregate: {
+          args: Prisma.UserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUser>
+        }
+        groupBy: {
+          args: Prisma.userGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.userCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    oauth_account: {
+      payload: Prisma.$oauth_accountPayload<ExtArgs>
+      fields: Prisma.oauth_accountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.oauth_accountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.oauth_accountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>
+        }
+        findFirst: {
+          args: Prisma.oauth_accountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.oauth_accountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>
+        }
+        findMany: {
+          args: Prisma.oauth_accountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>[]
+        }
+        create: {
+          args: Prisma.oauth_accountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>
+        }
+        createMany: {
+          args: Prisma.oauth_accountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.oauth_accountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>[]
+        }
+        delete: {
+          args: Prisma.oauth_accountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>
+        }
+        update: {
+          args: Prisma.oauth_accountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>
+        }
+        deleteMany: {
+          args: Prisma.oauth_accountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.oauth_accountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.oauth_accountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>[]
+        }
+        upsert: {
+          args: Prisma.oauth_accountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$oauth_accountPayload>
+        }
+        aggregate: {
+          args: Prisma.Oauth_accountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOauth_account>
+        }
+        groupBy: {
+          args: Prisma.oauth_accountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Oauth_accountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.oauth_accountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Oauth_accountCountAggregateOutputType> | number
+        }
+      }
+    }
+    company: {
+      payload: Prisma.$companyPayload<ExtArgs>
+      fields: Prisma.companyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.companyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.companyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>
+        }
+        findFirst: {
+          args: Prisma.companyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.companyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>
+        }
+        findMany: {
+          args: Prisma.companyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>[]
+        }
+        create: {
+          args: Prisma.companyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>
+        }
+        createMany: {
+          args: Prisma.companyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.companyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>[]
+        }
+        delete: {
+          args: Prisma.companyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>
+        }
+        update: {
+          args: Prisma.companyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>
+        }
+        deleteMany: {
+          args: Prisma.companyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.companyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.companyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>[]
+        }
+        upsert: {
+          args: Prisma.companyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companyPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompany>
+        }
+        groupBy: {
+          args: Prisma.companyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.companyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyCountAggregateOutputType> | number
+        }
+      }
+    }
+    company_review: {
+      payload: Prisma.$company_reviewPayload<ExtArgs>
+      fields: Prisma.company_reviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.company_reviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.company_reviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>
+        }
+        findFirst: {
+          args: Prisma.company_reviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.company_reviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>
+        }
+        findMany: {
+          args: Prisma.company_reviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>[]
+        }
+        create: {
+          args: Prisma.company_reviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>
+        }
+        createMany: {
+          args: Prisma.company_reviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.company_reviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>[]
+        }
+        delete: {
+          args: Prisma.company_reviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>
+        }
+        update: {
+          args: Prisma.company_reviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.company_reviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.company_reviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.company_reviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.company_reviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_reviewPayload>
+        }
+        aggregate: {
+          args: Prisma.Company_reviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompany_review>
+        }
+        groupBy: {
+          args: Prisma.company_reviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Company_reviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.company_reviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Company_reviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    review_critique: {
+      payload: Prisma.$review_critiquePayload<ExtArgs>
+      fields: Prisma.review_critiqueFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.review_critiqueFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.review_critiqueFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>
+        }
+        findFirst: {
+          args: Prisma.review_critiqueFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.review_critiqueFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>
+        }
+        findMany: {
+          args: Prisma.review_critiqueFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>[]
+        }
+        create: {
+          args: Prisma.review_critiqueCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>
+        }
+        createMany: {
+          args: Prisma.review_critiqueCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.review_critiqueCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>[]
+        }
+        delete: {
+          args: Prisma.review_critiqueDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>
+        }
+        update: {
+          args: Prisma.review_critiqueUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>
+        }
+        deleteMany: {
+          args: Prisma.review_critiqueDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.review_critiqueUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.review_critiqueUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>[]
+        }
+        upsert: {
+          args: Prisma.review_critiqueUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_critiquePayload>
+        }
+        aggregate: {
+          args: Prisma.Review_critiqueAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReview_critique>
+        }
+        groupBy: {
+          args: Prisma.review_critiqueGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Review_critiqueGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.review_critiqueCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Review_critiqueCountAggregateOutputType> | number
+        }
+      }
+    }
+    review_comment: {
+      payload: Prisma.$review_commentPayload<ExtArgs>
+      fields: Prisma.review_commentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.review_commentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.review_commentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>
+        }
+        findFirst: {
+          args: Prisma.review_commentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.review_commentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>
+        }
+        findMany: {
+          args: Prisma.review_commentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>[]
+        }
+        create: {
+          args: Prisma.review_commentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>
+        }
+        createMany: {
+          args: Prisma.review_commentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.review_commentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>[]
+        }
+        delete: {
+          args: Prisma.review_commentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>
+        }
+        update: {
+          args: Prisma.review_commentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>
+        }
+        deleteMany: {
+          args: Prisma.review_commentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.review_commentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.review_commentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>[]
+        }
+        upsert: {
+          args: Prisma.review_commentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$review_commentPayload>
+        }
+        aggregate: {
+          args: Prisma.Review_commentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReview_comment>
+        }
+        groupBy: {
+          args: Prisma.review_commentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Review_commentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.review_commentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Review_commentCountAggregateOutputType> | number
+        }
+      }
+    }
+    comment_vote: {
+      payload: Prisma.$comment_votePayload<ExtArgs>
+      fields: Prisma.comment_voteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.comment_voteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.comment_voteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>
+        }
+        findFirst: {
+          args: Prisma.comment_voteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.comment_voteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>
+        }
+        findMany: {
+          args: Prisma.comment_voteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>[]
+        }
+        create: {
+          args: Prisma.comment_voteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>
+        }
+        createMany: {
+          args: Prisma.comment_voteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.comment_voteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>[]
+        }
+        delete: {
+          args: Prisma.comment_voteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>
+        }
+        update: {
+          args: Prisma.comment_voteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>
+        }
+        deleteMany: {
+          args: Prisma.comment_voteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.comment_voteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.comment_voteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>[]
+        }
+        upsert: {
+          args: Prisma.comment_voteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$comment_votePayload>
+        }
+        aggregate: {
+          args: Prisma.Comment_voteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateComment_vote>
+        }
+        groupBy: {
+          args: Prisma.comment_voteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Comment_voteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.comment_voteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Comment_voteCountAggregateOutputType> | number
+        }
+      }
+    }
+  }
 } & {
   other: {
     payload: any
@@ -442,7 +967,281 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  email_verified_at: 'email_verified_at',
+  display_name: 'display_name',
+  first_name: 'first_name',
+  last_name: 'last_name',
+  headline: 'headline',
+  avatar_url: 'avatar_url',
+  linkedin_profile_url: 'linkedin_profile_url',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+} as const
 
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const Oauth_accountScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  provider: 'provider',
+  provider_account_id: 'provider_account_id',
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  token_type: 'token_type',
+  scope: 'scope',
+  expires_at: 'expires_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Oauth_accountScalarFieldEnum = (typeof Oauth_accountScalarFieldEnum)[keyof typeof Oauth_accountScalarFieldEnum]
+
+
+export const CompanyScalarFieldEnum = {
+  id: 'id',
+  creator_id: 'creator_id',
+  name: 'name',
+  description: 'description',
+  website_url: 'website_url',
+  domain: 'domain',
+  linkedin_url: 'linkedin_url',
+  logo_url: 'logo_url',
+  headquarters: 'headquarters',
+  industry: 'industry',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+export const Company_reviewScalarFieldEnum = {
+  id: 'id',
+  company_id: 'company_id',
+  author_id: 'author_id',
+  body: 'body',
+  overall_rating: 'overall_rating',
+  employment_context: 'employment_context',
+  would_recommend: 'would_recommend',
+  status: 'status',
+  published_at: 'published_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Company_reviewScalarFieldEnum = (typeof Company_reviewScalarFieldEnum)[keyof typeof Company_reviewScalarFieldEnum]
+
+
+export const Review_critiqueScalarFieldEnum = {
+  id: 'id',
+  review_id: 'review_id',
+  author_id: 'author_id',
+  title: 'title',
+  body: 'body',
+  rating: 'rating',
+  status: 'status',
+  published_at: 'published_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Review_critiqueScalarFieldEnum = (typeof Review_critiqueScalarFieldEnum)[keyof typeof Review_critiqueScalarFieldEnum]
+
+
+export const Review_commentScalarFieldEnum = {
+  id: 'id',
+  review_id: 'review_id',
+  author_id: 'author_id',
+  parent_comment_id: 'parent_comment_id',
+  body: 'body',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+} as const
+
+export type Review_commentScalarFieldEnum = (typeof Review_commentScalarFieldEnum)[keyof typeof Review_commentScalarFieldEnum]
+
+
+export const Comment_voteScalarFieldEnum = {
+  id: 'id',
+  comment_id: 'comment_id',
+  user_id: 'user_id',
+  value: 'value',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Comment_voteScalarFieldEnum = (typeof Comment_voteScalarFieldEnum)[keyof typeof Comment_voteScalarFieldEnum]
+
+
+export const SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+} as const
+
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+
+/**
+ * Field references
+ */
+
+
+/**
+ * Reference to a field of type 'String'
+ */
+export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+/**
+ * Reference to a field of type 'String[]'
+ */
+export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OAuthProvider'
+ */
+export type EnumOAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'OAuthProvider[]'
+ */
+export type ListEnumOAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthProvider[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CompanyStatus'
+ */
+export type EnumCompanyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompanyStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CompanyStatus[]'
+ */
+export type ListEnumCompanyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompanyStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'ReviewStatus'
+ */
+export type EnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReviewStatus[]'
+ */
+export type ListEnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CommentStatus'
+ */
+export type EnumCommentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CommentStatus[]'
+ */
+export type ListEnumCommentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CommentVoteValue'
+ */
+export type EnumCommentVoteValueFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentVoteValue'>
+    
+
+
+/**
+ * Reference to a field of type 'CommentVoteValue[]'
+ */
+export type ListEnumCommentVoteValueFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentVoteValue[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
 
 /**
  * Batch Payload for updateMany & deleteMany & createMany
@@ -538,7 +1337,15 @@ export type PrismaClientOptions = ({
    */
   comments?: runtime.SqlCommenterPlugin[]
 }
-export type GlobalOmitConfig = {}
+export type GlobalOmitConfig = {
+  user?: Prisma.userOmit
+  oauth_account?: Prisma.oauth_accountOmit
+  company?: Prisma.companyOmit
+  company_review?: Prisma.company_reviewOmit
+  review_critique?: Prisma.review_critiqueOmit
+  review_comment?: Prisma.review_commentOmit
+  comment_vote?: Prisma.comment_voteOmit
+}
 
 /* Types for Logging */
 export type LogLevel = 'info' | 'query' | 'warn' | 'error'

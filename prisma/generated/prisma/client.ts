@@ -39,4 +39,38 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
-
+/**
+ * Model user
+ * 
+ */
+export type user = Prisma.userModel
+/**
+ * Model oauth_account
+ * 
+ */
+export type oauth_account = Prisma.oauth_accountModel
+/**
+ * Model company
+ * 
+ */
+export type company = Prisma.companyModel
+/**
+ * Model company_review
+ * 
+ */
+export type company_review = Prisma.company_reviewModel
+/**
+ * Model review_critique
+ * 
+ */
+export type review_critique = Prisma.review_critiqueModel
+/**
+ * Model review_comment
+ * 
+ */
+export type review_comment = Prisma.review_commentModel
+/**
+ * Model comment_vote
+ * 
+ */
+export type comment_vote = Prisma.comment_voteModel
