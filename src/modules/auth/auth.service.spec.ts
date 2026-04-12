@@ -119,20 +119,18 @@ describe('AuthService', () => {
 
       expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
         where: { email: 'john@example.com' },
-        update: expect.objectContaining({ first_name: 'John' }),
+        update: expect.objectContaining({ first_name: 'John' }) as unknown,
         create: expect.objectContaining({
           email: 'john@example.com',
           display_name: 'John Doe',
-        }),
+        }) as unknown,
       });
-      expect(mockPrismaService.oauth_account.create).toHaveBeenCalled();
-      const oauthCalls = (
-        mockPrismaService.oauth_account.create as jest.Mock<unknown>
-      ).mock.calls as unknown as Array<
-        [{ data: { provider: string; provider_account_id: string } }]
-      >;
-      expect(oauthCalls[0][0].data.provider).toBe(OAuthProvider.LINKEDIN);
-      expect(oauthCalls[0][0].data.provider_account_id).toBe('linkedin-123');
+      expect(mockPrismaService.oauth_account.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          provider: OAuthProvider.LINKEDIN,
+          provider_account_id: 'linkedin-123',
+        }) as unknown,
+      });
       expect(result.accessToken).toBe('test-jwt-token');
       expect(result.user).toEqual(updatedUser);
     });
@@ -151,11 +149,11 @@ describe('AuthService', () => {
 
       expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
         where: { email: 'john@example.com' },
-        update: expect.any(Object),
+        update: expect.any(Object) as unknown,
         create: expect.objectContaining({
           email: 'john@example.com',
           display_name: 'John Doe',
-        }),
+        }) as unknown,
       });
       expect(result.accessToken).toBe('test-jwt-token');
       expect(result.user).toEqual(newUser);
