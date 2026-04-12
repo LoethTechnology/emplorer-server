@@ -5,6 +5,7 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 @Injectable()
 export class ReviewsService {
   create(createReviewDto: CreateReviewDto) {
+    void createReviewDto;
     return 'This action adds a new review';
   }
 
@@ -17,6 +18,7 @@ export class ReviewsService {
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {
+    void updateReviewDto;
     return `This action updates a #${id} review`;
   }
 
