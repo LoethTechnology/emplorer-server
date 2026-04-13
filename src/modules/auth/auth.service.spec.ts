@@ -72,7 +72,10 @@ describe('AuthService', () => {
       const existingUser = {
         id: 'user-1',
         email: 'john@example.com',
-        display_name: 'John Doe',
+        first_name: 'John',
+        last_name: 'Doe',
+        avatar_url: 'https://example.com/photo.jpg',
+        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
       };
       const existingOAuthAccount = { id: 'oauth-1', user: existingUser };
       mockPrismaService.oauth_account.findUnique.mockResolvedValue(
@@ -108,9 +111,12 @@ describe('AuthService', () => {
       const existingUser = {
         id: 'user-2',
         email: 'john@example.com',
-        display_name: 'John Doe',
+        first_name: 'John',
+        last_name: 'Doe',
+        avatar_url: 'https://example.com/photo.jpg',
+        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
       };
-      const updatedUser = { ...existingUser, first_name: 'John' };
+      const updatedUser = { ...existingUser };
       mockPrismaService.oauth_account.findUnique.mockResolvedValue(null);
       mockPrismaService.user.upsert.mockResolvedValue(updatedUser);
       mockPrismaService.oauth_account.create.mockResolvedValue({});
@@ -119,10 +125,18 @@ describe('AuthService', () => {
 
       expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
         where: { email: 'john@example.com' },
-        update: expect.objectContaining({ first_name: 'John' }) as unknown,
+        update: {
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+        },
         create: expect.objectContaining({
           email: 'john@example.com',
-          display_name: 'John Doe',
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         }) as unknown,
       });
       expect(mockPrismaService.oauth_account.create).toHaveBeenCalledWith({
@@ -139,7 +153,10 @@ describe('AuthService', () => {
       const newUser = {
         id: 'user-3',
         email: 'john@example.com',
-        display_name: 'John Doe',
+        first_name: 'John',
+        last_name: 'Doe',
+        avatar_url: 'https://example.com/photo.jpg',
+        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
       };
       mockPrismaService.oauth_account.findUnique.mockResolvedValue(null);
       mockPrismaService.user.upsert.mockResolvedValue(newUser);
@@ -149,10 +166,18 @@ describe('AuthService', () => {
 
       expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
         where: { email: 'john@example.com' },
-        update: expect.any(Object) as unknown,
+        update: {
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+        },
         create: expect.objectContaining({
           email: 'john@example.com',
-          display_name: 'John Doe',
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         }) as unknown,
       });
       expect(result.accessToken).toBe('test-jwt-token');
