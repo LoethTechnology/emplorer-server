@@ -42,18 +42,25 @@ enum CommentVoteValue {
   NOT_HELPFUL
 }
 
+enum AuthOtpPurpose {
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+  LOGIN_CHALLENGE
+  CHANGE_EMAIL_CONFIRMATION
+}
+
 model user {
-  id                   String           @id @default(cuid())
-  email                String?          @unique
+  id                   String            @id @default(cuid())
+  email                String?           @unique
   email_verified_at    DateTime?
-  display_name         String
-  first_name           String?
-  last_name            String?
-  headline             String?
+  first_name           String
+  last_name            String
+  password             String?
   avatar_url           String?
   linkedin_profile_url String?
-  created_at           DateTime         @default(now())
-  updated_at           DateTime         @updatedAt
+  tokens               tokens?
+  created_at           DateTime          @default(now())
+  updated_at           DateTime          @updatedAt
   deleted_at           DateTime?
   oauth_accounts       oauth_account[]
   companies_created    company[]
@@ -61,6 +68,7 @@ model user {
   review_critiques     review_critique[]
   review_comments      review_comment[]
   comment_votes        comment_vote[]
+  auth_otps            auth_otp[]
 
   @@index([created_at])
 }
@@ -82,6 +90,32 @@ model oauth_account {
   @@unique([provider, provider_account_id])
   @@unique([user_id, provider])
   @@index([user_id])
+}
+
+model tokens {
+  id            String @id @default(cuid())
+  user_id       String @unique
+  refresh_token String @unique
+  user          user   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model auth_otp {
+  id           String         @id @default(cuid())
+  user_id      String
+  purpose      AuthOtpPurpose @default(PASSWORD_RESET)
+  code_hash    String
+  expires_at   DateTime
+  consumed_at  DateTime?
+  attempts     Int            @default(0)
+  max_attempts Int            @default(5)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  user         user           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, purpose])
+  @@index([expires_at])
 }
 
 model company {
@@ -129,18 +163,18 @@ model company_review {
 }
 
 model review_critique {
-  id            String         @id @default(cuid())
-  review_id     String
-  author_id     String
-  title         String
-  body          String
-  rating        Int
-  status        ReviewStatus   @default(DRAFT)
-  published_at  DateTime?
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-  review        company_review @relation(fields: [review_id], references: [id], onDelete: Cascade)
-  author        user           @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  id           String         @id @default(cuid())
+  review_id    String
+  author_id    String
+  title        String
+  body         String
+  rating       Int
+  status       ReviewStatus   @default(DRAFT)
+  published_at DateTime?
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  review       company_review @relation(fields: [review_id], references: [id], onDelete: Cascade)
+  author       user           @relation(fields: [author_id], references: [id], onDelete: Cascade)
 
   @@index([review_id, status])
   @@index([author_id])
@@ -148,20 +182,20 @@ model review_critique {
 }
 
 model review_comment {
-  id                 String           @id @default(cuid())
-  review_id          String
-  author_id          String
-  parent_comment_id  String?
-  body               String
-  status             CommentStatus    @default(PUBLISHED)
-  created_at         DateTime         @default(now())
-  updated_at         DateTime         @updatedAt
-  deleted_at         DateTime?
-  review             company_review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
-  author             user             @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  parent_comment     review_comment?  @relation("ReviewCommentReplies", fields: [parent_comment_id], references: [id], onDelete: Cascade)
-  replies            review_comment[] @relation("ReviewCommentReplies")
-  votes              comment_vote[]
+  id                String           @id @default(cuid())
+  review_id         String
+  author_id         String
+  parent_comment_id String?
+  body              String
+  status            CommentStatus    @default(PUBLISHED)
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  deleted_at        DateTime?
+  review            company_review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
+  author            user             @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  parent_comment    review_comment?  @relation("ReviewCommentReplies", fields: [parent_comment_id], references: [id], onDelete: Cascade)
+  replies           review_comment[] @relation("ReviewCommentReplies")
+  votes             comment_vote[]
 
   @@index([review_id, status])
   @@index([author_id])
@@ -169,14 +203,14 @@ model review_comment {
 }
 
 model comment_vote {
-  id          String           @id @default(cuid())
-  comment_id  String
-  user_id     String
-  value       CommentVoteValue
-  created_at  DateTime         @default(now())
-  updated_at  DateTime         @updatedAt
-  comment     review_comment   @relation(fields: [comment_id], references: [id], onDelete: Cascade)
-  user        user             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id         String           @id @default(cuid())
+  comment_id String
+  user_id    String
+  value      CommentVoteValue
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+  comment    review_comment   @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+  user       user             @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([comment_id, user_id])
   @@index([user_id])

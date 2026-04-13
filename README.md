@@ -50,7 +50,13 @@ Create a `.env` file and set your database connection string:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+JWT_SECRET="replace-with-a-long-random-secret"
+USER_DATA_ENCRYPTION_KEY="replace-with-a-separate-long-random-secret"
+PASSWORD_RESET_OTP_TTL_MINUTES="10"
+PASSWORD_RESET_OTP_MAX_ATTEMPTS="5"
 ```
+
+`USER_DATA_ENCRYPTION_KEY` is used to encrypt `first_name` and `last_name` before they are stored.
 
 ## Compile and run the project
 

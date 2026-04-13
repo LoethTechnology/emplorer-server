@@ -12,6 +12,10 @@ jest.mock('@nestjs/jwt', () => ({
 }));
 
 const mockAuthService = {
+  register: jest.fn(),
+  login: jest.fn(),
+  forgotPassword: jest.fn(),
+  resetPassword: jest.fn(),
   findOrCreateUserFromLinkedin: jest.fn(),
   generateAccessToken: jest.fn(),
 };
@@ -36,6 +40,72 @@ describe('AuthController', () => {
   describe('linkedInLogin', () => {
     it('should have linkedInLogin method', () => {
       expect(typeof controller.linkedInLogin).toBe('function');
+    });
+  });
+
+  describe('register', () => {
+    it('should delegate registration to AuthService', async () => {
+      mockAuthService.register.mockResolvedValue({ accessToken: 'jwt-token' });
+
+      await controller.register({
+        email: 'test@example.com',
+        password: 'password123',
+        first_name: 'Test',
+        last_name: 'User',
+      });
+
+      expect(mockAuthService.register).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'password123',
+        first_name: 'Test',
+        last_name: 'User',
+      });
+    });
+  });
+
+  describe('login', () => {
+    it('should delegate login to AuthService', async () => {
+      mockAuthService.login.mockResolvedValue({ accessToken: 'jwt-token' });
+
+      await controller.login({
+        email: 'test@example.com',
+        password: 'password123',
+      });
+
+      expect(mockAuthService.login).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'password123',
+      });
+    });
+  });
+
+  describe('forgotPassword', () => {
+    it('should delegate forgotPassword to AuthService', async () => {
+      mockAuthService.forgotPassword.mockResolvedValue({ message: 'ok' });
+
+      await controller.forgotPassword({ email: 'test@example.com' });
+
+      expect(mockAuthService.forgotPassword).toHaveBeenCalledWith({
+        email: 'test@example.com',
+      });
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('should delegate resetPassword to AuthService', async () => {
+      mockAuthService.resetPassword.mockResolvedValue({ message: 'ok' });
+
+      await controller.resetPassword({
+        email: 'test@example.com',
+        otp: '123456',
+        newPassword: 'newPassword123',
+      });
+
+      expect(mockAuthService.resetPassword).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        otp: '123456',
+        newPassword: 'newPassword123',
+      });
     });
   });
 

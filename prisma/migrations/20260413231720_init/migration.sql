@@ -13,15 +13,17 @@ CREATE TYPE "CommentStatus" AS ENUM ('PUBLISHED', 'HIDDEN', 'REMOVED');
 -- CreateEnum
 CREATE TYPE "CommentVoteValue" AS ENUM ('HELPFUL', 'NOT_HELPFUL');
 
+-- CreateEnum
+CREATE TYPE "AuthOtpPurpose" AS ENUM ('PASSWORD_RESET', 'EMAIL_VERIFICATION', 'LOGIN_CHALLENGE', 'CHANGE_EMAIL_CONFIRMATION');
+
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "email" TEXT,
     "email_verified_at" TIMESTAMP(3),
-    "display_name" TEXT NOT NULL,
-    "first_name" TEXT,
-    "last_name" TEXT,
-    "headline" TEXT,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "password" TEXT,
     "avatar_url" TEXT,
     "linkedin_profile_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,6 +48,31 @@ CREATE TABLE "oauth_account" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "oauth_account_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tokens" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "refresh_token" TEXT NOT NULL,
+
+    CONSTRAINT "tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "auth_otp" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "purpose" "AuthOtpPurpose" NOT NULL DEFAULT 'PASSWORD_RESET',
+    "code_hash" TEXT NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "consumed_at" TIMESTAMP(3),
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "max_attempts" INTEGER NOT NULL DEFAULT 5,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "auth_otp_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -143,6 +170,21 @@ CREATE UNIQUE INDEX "oauth_account_provider_provider_account_id_key" ON "oauth_a
 CREATE UNIQUE INDEX "oauth_account_user_id_provider_key" ON "oauth_account"("user_id", "provider");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "tokens_user_id_key" ON "tokens"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tokens_refresh_token_key" ON "tokens"("refresh_token");
+
+-- CreateIndex
+CREATE INDEX "tokens_user_id_idx" ON "tokens"("user_id");
+
+-- CreateIndex
+CREATE INDEX "auth_otp_user_id_purpose_idx" ON "auth_otp"("user_id", "purpose");
+
+-- CreateIndex
+CREATE INDEX "auth_otp_expires_at_idx" ON "auth_otp"("expires_at");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "company_domain_key" ON "company"("domain");
 
 -- CreateIndex
@@ -189,6 +231,12 @@ CREATE UNIQUE INDEX "comment_vote_comment_id_user_id_key" ON "comment_vote"("com
 
 -- AddForeignKey
 ALTER TABLE "oauth_account" ADD CONSTRAINT "oauth_account_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tokens" ADD CONSTRAINT "tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "auth_otp" ADD CONSTRAINT "auth_otp_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "company" ADD CONSTRAINT "company_creator_id_fkey" FOREIGN KEY ("creator_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
