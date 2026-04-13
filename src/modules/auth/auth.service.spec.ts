@@ -181,50 +181,28 @@ describe('AuthService', () => {
       mockPrismaService.oauth_account.create.mockResolvedValue({});
 
       const result = await service.findOrCreateUserFromLinkedin(mockOAuthUser);
-      const upsertArgs = getFirstCallArg(
-        mockPrismaService.user.upsert as FirstCallArg<{
-          where: { email: string };
-          update: {
-            first_name: string;
-            last_name: string;
-            avatar_url: string;
-            linkedin_profile_url: string;
-          };
-          create: {
-            email: string;
-            first_name: string;
-            last_name: string;
-            avatar_url: string;
-            linkedin_profile_url: string;
-          };
-        }>,
-      );
-      const oauthCreateArgs = getFirstCallArg(
-        mockPrismaService.oauth_account.create as FirstCallArg<{
-          data: {
-            provider: OAuthProvider;
-            provider_account_id: string;
-          };
-        }>,
-      );
 
-      expect(upsertArgs.where).toEqual({ email: 'john@example.com' });
-      expect(upsertArgs.update).toEqual({
-        first_name: 'John',
-        last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
-        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+      expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
+        where: { email: 'john@example.com' },
+        update: {
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+        },
+        create: {
+          email: 'john@example.com',
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+        },
       });
-      expect(upsertArgs.create).toMatchObject({
-        email: 'john@example.com',
-        first_name: 'John',
-        last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
-        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
-      });
-      expect(oauthCreateArgs.data).toMatchObject({
-        provider: OAuthProvider.LINKEDIN,
-        provider_account_id: 'linkedin-123',
+      expect(mockPrismaService.oauth_account.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          provider: OAuthProvider.LINKEDIN,
+          provider_account_id: 'linkedin-123',
+        }) as unknown,
       });
       expect(result.accessToken).toBe('test-jwt-token');
       expect(result.user).toEqual(updatedUser);
@@ -244,38 +222,22 @@ describe('AuthService', () => {
       mockPrismaService.oauth_account.create.mockResolvedValue({});
 
       const result = await service.findOrCreateUserFromLinkedin(mockOAuthUser);
-      const upsertArgs = getFirstCallArg(
-        mockPrismaService.user.upsert as FirstCallArg<{
-          where: { email: string };
-          update: {
-            first_name: string;
-            last_name: string;
-            avatar_url: string;
-            linkedin_profile_url: string;
-          };
-          create: {
-            email: string;
-            first_name: string;
-            last_name: string;
-            avatar_url: string;
-            linkedin_profile_url: string;
-          };
-        }>,
-      );
 
-      expect(upsertArgs.where).toEqual({ email: 'john@example.com' });
-      expect(upsertArgs.update).toEqual({
-        first_name: 'John',
-        last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
-        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
-      });
-      expect(upsertArgs.create).toMatchObject({
-        email: 'john@example.com',
-        first_name: 'John',
-        last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
-        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+      expect(mockPrismaService.user.upsert).toHaveBeenCalledWith({
+        where: { email: 'john@example.com' },
+        update: {
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+        },
+        create: {
+          email: 'john@example.com',
+          first_name: 'John',
+          last_name: 'Doe',
+          avatar_url: 'https://example.com/photo.jpg',
+          linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+        },
       });
       expect(result.accessToken).toBe('test-jwt-token');
       expect(result.user).toEqual(newUser);
