@@ -17,14 +17,10 @@ export class AuthService {
     const { profile, accessToken, refreshToken } = oauthUser;
     const providerAccountId = profile.id;
     const email = profile.emails?.[0]?.value ?? null;
-    const firstName = profile.name?.givenName ?? null;
-    const lastName = profile.name?.familyName ?? null;
-    const displayName =
-      profile.displayName ||
-      `${firstName ?? ''} ${lastName ?? ''}`.trim() ||
-      providerAccountId;
-    const avatarUrl = profile.photos?.[0]?.value ?? null;
-    const linkedinProfileUrl =
+    const first_name = profile.name?.givenName ?? null;
+    const last_name = profile.name?.familyName ?? null;
+    const avatar_url = profile.photos?.[0]?.value ?? null;
+    const linkedin_profile_url =
       (profile._json as Record<string, string> | undefined)?.publicProfileUrl ??
       null;
 
@@ -52,20 +48,20 @@ export class AuthService {
     }
 
     const userProfileData = {
-      first_name: firstName,
-      last_name: lastName,
-      avatar_url: avatarUrl,
-      linkedin_profile_url: linkedinProfileUrl,
+      first_name,
+      last_name,
+      avatar_url,
+      linkedin_profile_url,
     };
 
     const dbUser = email
       ? await this.prismaService.user.upsert({
           where: { email },
           update: userProfileData,
-          create: { email, display_name: displayName, ...userProfileData },
+          create: { email, ...userProfileData },
         })
       : await this.prismaService.user.create({
-          data: { email, display_name: displayName, ...userProfileData },
+          data: { email, ...userProfileData },
         });
 
     await this.prismaService.oauth_account.create({
