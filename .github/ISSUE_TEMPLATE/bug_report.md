@@ -23,17 +23,3 @@ Explain what happened instead.
 1. 
 2. 
 3. 
-
-## Environment
-
-- Node.js version:
-- Database setup:
-- Branch or commit:
-
-## Relevant output
-
-Add logs, stack traces, screenshots, or request and response details if they help explain the issue.
-
-## Additional context
-
-Include anything else that would help reproduce or diagnose the problem.
