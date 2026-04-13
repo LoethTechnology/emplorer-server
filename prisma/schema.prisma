@@ -42,6 +42,13 @@ enum CommentVoteValue {
   NOT_HELPFUL
 }
 
+enum AuthOtpPurpose {
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+  LOGIN_CHALLENGE
+  CHANGE_EMAIL_CONFIRMATION
+}
+
 model user {
   id                   String            @id @default(cuid())
   email                String?           @unique
@@ -61,6 +68,7 @@ model user {
   review_critiques     review_critique[]
   review_comments      review_comment[]
   comment_votes        comment_vote[]
+  auth_otps            auth_otp[]
 
   @@index([created_at])
 }
@@ -91,6 +99,23 @@ model tokens {
   user          user   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+model auth_otp {
+  id           String         @id @default(cuid())
+  user_id      String
+  purpose      AuthOtpPurpose @default(PASSWORD_RESET)
+  code_hash    String
+  expires_at   DateTime
+  consumed_at  DateTime?
+  attempts     Int            @default(0)
+  max_attempts Int            @default(5)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  user         user           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, purpose])
+  @@index([expires_at])
 }
 
 model company {

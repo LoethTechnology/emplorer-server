@@ -57,6 +57,7 @@ export const ModelName = {
   user: 'user',
   oauth_account: 'oauth_account',
   tokens: 'tokens',
+  auth_otp: 'auth_otp',
   company: 'company',
   company_review: 'company_review',
   review_critique: 'review_critique',
@@ -122,6 +123,22 @@ export const TokensScalarFieldEnum = {
 
 export type TokensScalarFieldEnum =
   (typeof TokensScalarFieldEnum)[keyof typeof TokensScalarFieldEnum];
+
+export const Auth_otpScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  purpose: 'purpose',
+  code_hash: 'code_hash',
+  expires_at: 'expires_at',
+  consumed_at: 'consumed_at',
+  attempts: 'attempts',
+  max_attempts: 'max_attempts',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+} as const;
+
+export type Auth_otpScalarFieldEnum =
+  (typeof Auth_otpScalarFieldEnum)[keyof typeof Auth_otpScalarFieldEnum];
 
 export const CompanyScalarFieldEnum = {
   id: 'id',

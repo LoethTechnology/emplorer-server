@@ -60,6 +60,11 @@ export type oauth_account = Prisma.oauth_accountModel;
  */
 export type tokens = Prisma.tokensModel;
 /**
+ * Model auth_otp
+ *
+ */
+export type auth_otp = Prisma.auth_otpModel;
+/**
  * Model company
  *
  */

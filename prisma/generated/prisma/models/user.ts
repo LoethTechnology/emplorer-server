@@ -248,6 +248,7 @@ export type userWhereInput = {
   review_critiques?: Prisma.Review_critiqueListRelationFilter;
   review_comments?: Prisma.Review_commentListRelationFilter;
   comment_votes?: Prisma.Comment_voteListRelationFilter;
+  auth_otps?: Prisma.Auth_otpListRelationFilter;
 };
 
 export type userOrderByWithRelationInput = {
@@ -269,6 +270,7 @@ export type userOrderByWithRelationInput = {
   review_critiques?: Prisma.review_critiqueOrderByRelationAggregateInput;
   review_comments?: Prisma.review_commentOrderByRelationAggregateInput;
   comment_votes?: Prisma.comment_voteOrderByRelationAggregateInput;
+  auth_otps?: Prisma.auth_otpOrderByRelationAggregateInput;
 };
 
 export type userWhereUniqueInput = Prisma.AtLeast<
@@ -301,6 +303,7 @@ export type userWhereUniqueInput = Prisma.AtLeast<
     review_critiques?: Prisma.Review_critiqueListRelationFilter;
     review_comments?: Prisma.Review_commentListRelationFilter;
     comment_votes?: Prisma.Comment_voteListRelationFilter;
+    auth_otps?: Prisma.Auth_otpListRelationFilter;
   },
   'id' | 'email'
 >;
@@ -376,6 +379,7 @@ export type userCreateInput = {
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateInput = {
@@ -397,6 +401,7 @@ export type userUncheckedCreateInput = {
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userUpdateInput = {
@@ -429,6 +434,7 @@ export type userUpdateInput = {
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateInput = {
@@ -461,6 +467,7 @@ export type userUncheckedUpdateInput = {
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateManyInput = {
@@ -642,6 +649,32 @@ export type userUpdateOneRequiredWithoutTokensNestedInput = {
   >;
 };
 
+export type userCreateNestedOneWithoutAuth_otpsInput = {
+  create?: Prisma.XOR<
+    Prisma.userCreateWithoutAuth_otpsInput,
+    Prisma.userUncheckedCreateWithoutAuth_otpsInput
+  >;
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutAuth_otpsInput;
+  connect?: Prisma.userWhereUniqueInput;
+};
+
+export type userUpdateOneRequiredWithoutAuth_otpsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.userCreateWithoutAuth_otpsInput,
+    Prisma.userUncheckedCreateWithoutAuth_otpsInput
+  >;
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutAuth_otpsInput;
+  upsert?: Prisma.userUpsertWithoutAuth_otpsInput;
+  connect?: Prisma.userWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.userUpdateToOneWithWhereWithoutAuth_otpsInput,
+      Prisma.userUpdateWithoutAuth_otpsInput
+    >,
+    Prisma.userUncheckedUpdateWithoutAuth_otpsInput
+  >;
+};
+
 export type userCreateNestedOneWithoutCompanies_createdInput = {
   create?: Prisma.XOR<
     Prisma.userCreateWithoutCompanies_createdInput,
@@ -790,6 +823,7 @@ export type userCreateWithoutOauth_accountsInput = {
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutOauth_accountsInput = {
@@ -810,6 +844,7 @@ export type userUncheckedCreateWithoutOauth_accountsInput = {
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutOauth_accountsInput = {
@@ -869,6 +904,7 @@ export type userUpdateWithoutOauth_accountsInput = {
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutOauth_accountsInput = {
@@ -900,6 +936,7 @@ export type userUncheckedUpdateWithoutOauth_accountsInput = {
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateWithoutTokensInput = {
@@ -920,6 +957,7 @@ export type userCreateWithoutTokensInput = {
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutTokensInput = {
@@ -940,6 +978,7 @@ export type userUncheckedCreateWithoutTokensInput = {
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutTokensInput = {
@@ -999,6 +1038,7 @@ export type userUpdateWithoutTokensInput = {
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutTokensInput = {
@@ -1030,6 +1070,141 @@ export type userUncheckedUpdateWithoutTokensInput = {
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type userCreateWithoutAuth_otpsInput = {
+  id?: string;
+  email?: string | null;
+  email_verified_at?: Date | string | null;
+  first_name: string;
+  last_name: string;
+  password?: string | null;
+  avatar_url?: string | null;
+  linkedin_profile_url?: string | null;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+  deleted_at?: Date | string | null;
+  tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
+  oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
+  companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
+  company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
+  review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
+  review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
+  comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+};
+
+export type userUncheckedCreateWithoutAuth_otpsInput = {
+  id?: string;
+  email?: string | null;
+  email_verified_at?: Date | string | null;
+  first_name: string;
+  last_name: string;
+  password?: string | null;
+  avatar_url?: string | null;
+  linkedin_profile_url?: string | null;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+  deleted_at?: Date | string | null;
+  tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
+  oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
+  companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
+  company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
+  review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
+  review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
+  comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type userCreateOrConnectWithoutAuth_otpsInput = {
+  where: Prisma.userWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.userCreateWithoutAuth_otpsInput,
+    Prisma.userUncheckedCreateWithoutAuth_otpsInput
+  >;
+};
+
+export type userUpsertWithoutAuth_otpsInput = {
+  update: Prisma.XOR<
+    Prisma.userUpdateWithoutAuth_otpsInput,
+    Prisma.userUncheckedUpdateWithoutAuth_otpsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.userCreateWithoutAuth_otpsInput,
+    Prisma.userUncheckedCreateWithoutAuth_otpsInput
+  >;
+  where?: Prisma.userWhereInput;
+};
+
+export type userUpdateToOneWithWhereWithoutAuth_otpsInput = {
+  where?: Prisma.userWhereInput;
+  data: Prisma.XOR<
+    Prisma.userUpdateWithoutAuth_otpsInput,
+    Prisma.userUncheckedUpdateWithoutAuth_otpsInput
+  >;
+};
+
+export type userUpdateWithoutAuth_otpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  email_verified_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string;
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string;
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  linkedin_profile_url?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deleted_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
+  oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
+  companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
+  company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
+  review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
+  review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
+  comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+};
+
+export type userUncheckedUpdateWithoutAuth_otpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  email_verified_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string;
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string;
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  linkedin_profile_url?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deleted_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
+  oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
+  companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
+  company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
+  review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
+  review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
+  comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateWithoutCompanies_createdInput = {
@@ -1050,6 +1225,7 @@ export type userCreateWithoutCompanies_createdInput = {
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutCompanies_createdInput = {
@@ -1070,6 +1246,7 @@ export type userUncheckedCreateWithoutCompanies_createdInput = {
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutCompanies_createdInput = {
@@ -1129,6 +1306,7 @@ export type userUpdateWithoutCompanies_createdInput = {
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutCompanies_createdInput = {
@@ -1160,6 +1338,7 @@ export type userUncheckedUpdateWithoutCompanies_createdInput = {
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateWithoutCompany_reviewsInput = {
@@ -1180,6 +1359,7 @@ export type userCreateWithoutCompany_reviewsInput = {
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutCompany_reviewsInput = {
@@ -1200,6 +1380,7 @@ export type userUncheckedCreateWithoutCompany_reviewsInput = {
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutCompany_reviewsInput = {
@@ -1259,6 +1440,7 @@ export type userUpdateWithoutCompany_reviewsInput = {
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutCompany_reviewsInput = {
@@ -1290,6 +1472,7 @@ export type userUncheckedUpdateWithoutCompany_reviewsInput = {
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateWithoutReview_critiquesInput = {
@@ -1310,6 +1493,7 @@ export type userCreateWithoutReview_critiquesInput = {
   company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutReview_critiquesInput = {
@@ -1330,6 +1514,7 @@ export type userUncheckedCreateWithoutReview_critiquesInput = {
   company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutReview_critiquesInput = {
@@ -1389,6 +1574,7 @@ export type userUpdateWithoutReview_critiquesInput = {
   company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutReview_critiquesInput = {
@@ -1420,6 +1606,7 @@ export type userUncheckedUpdateWithoutReview_critiquesInput = {
   company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateWithoutReview_commentsInput = {
@@ -1440,6 +1627,7 @@ export type userCreateWithoutReview_commentsInput = {
   company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutReview_commentsInput = {
@@ -1460,6 +1648,7 @@ export type userUncheckedCreateWithoutReview_commentsInput = {
   company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   comment_votes?: Prisma.comment_voteUncheckedCreateNestedManyWithoutUserInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutReview_commentsInput = {
@@ -1519,6 +1708,7 @@ export type userUpdateWithoutReview_commentsInput = {
   company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutReview_commentsInput = {
@@ -1550,6 +1740,7 @@ export type userUncheckedUpdateWithoutReview_commentsInput = {
   company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   comment_votes?: Prisma.comment_voteUncheckedUpdateManyWithoutUserNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type userCreateWithoutComment_votesInput = {
@@ -1570,6 +1761,7 @@ export type userCreateWithoutComment_votesInput = {
   company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
   review_critiques?: Prisma.review_critiqueCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentCreateNestedManyWithoutAuthorInput;
+  auth_otps?: Prisma.auth_otpCreateNestedManyWithoutUserInput;
 };
 
 export type userUncheckedCreateWithoutComment_votesInput = {
@@ -1590,6 +1782,7 @@ export type userUncheckedCreateWithoutComment_votesInput = {
   company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
   review_critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutAuthorInput;
   review_comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutAuthorInput;
+  auth_otps?: Prisma.auth_otpUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type userCreateOrConnectWithoutComment_votesInput = {
@@ -1649,6 +1842,7 @@ export type userUpdateWithoutComment_votesInput = {
   company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
   review_critiques?: Prisma.review_critiqueUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUpdateManyWithoutAuthorNestedInput;
+  auth_otps?: Prisma.auth_otpUpdateManyWithoutUserNestedInput;
 };
 
 export type userUncheckedUpdateWithoutComment_votesInput = {
@@ -1680,6 +1874,7 @@ export type userUncheckedUpdateWithoutComment_votesInput = {
   company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
   review_critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutAuthorNestedInput;
   review_comments?: Prisma.review_commentUncheckedUpdateManyWithoutAuthorNestedInput;
+  auth_otps?: Prisma.auth_otpUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -1693,6 +1888,7 @@ export type UserCountOutputType = {
   review_critiques: number;
   review_comments: number;
   comment_votes: number;
+  auth_otps: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -1705,6 +1901,7 @@ export type UserCountOutputTypeSelect<
   review_critiques?: boolean | UserCountOutputTypeCountReview_critiquesArgs;
   review_comments?: boolean | UserCountOutputTypeCountReview_commentsArgs;
   comment_votes?: boolean | UserCountOutputTypeCountComment_votesArgs;
+  auth_otps?: boolean | UserCountOutputTypeCountAuth_otpsArgs;
 };
 
 /**
@@ -1780,6 +1977,16 @@ export type UserCountOutputTypeCountComment_votesArgs<
   where?: Prisma.comment_voteWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuth_otpsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.auth_otpWhereInput;
+};
+
 export type userSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -1803,6 +2010,7 @@ export type userSelect<
     review_critiques?: boolean | Prisma.user$review_critiquesArgs<ExtArgs>;
     review_comments?: boolean | Prisma.user$review_commentsArgs<ExtArgs>;
     comment_votes?: boolean | Prisma.user$comment_votesArgs<ExtArgs>;
+    auth_otps?: boolean | Prisma.user$auth_otpsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['user']
@@ -1890,6 +2098,7 @@ export type userInclude<
   review_critiques?: boolean | Prisma.user$review_critiquesArgs<ExtArgs>;
   review_comments?: boolean | Prisma.user$review_commentsArgs<ExtArgs>;
   comment_votes?: boolean | Prisma.user$comment_votesArgs<ExtArgs>;
+  auth_otps?: boolean | Prisma.user$auth_otpsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type userIncludeCreateManyAndReturn<
@@ -1914,6 +2123,7 @@ export type $userPayload<
     review_critiques: Prisma.$review_critiquePayload<ExtArgs>[];
     review_comments: Prisma.$review_commentPayload<ExtArgs>[];
     comment_votes: Prisma.$comment_votePayload<ExtArgs>[];
+    auth_otps: Prisma.$auth_otpPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -2551,6 +2761,17 @@ export interface Prisma__userClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$comment_votePayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  auth_otps<T extends Prisma.user$auth_otpsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.user$auth_otpsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$auth_otpPayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -3259,6 +3480,35 @@ export type user$comment_votesArgs<
   distinct?:
     | Prisma.Comment_voteScalarFieldEnum
     | Prisma.Comment_voteScalarFieldEnum[];
+};
+
+/**
+ * user.auth_otps
+ */
+export type user$auth_otpsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the auth_otp
+   */
+  select?: Prisma.auth_otpSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the auth_otp
+   */
+  omit?: Prisma.auth_otpOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.auth_otpInclude<ExtArgs> | null;
+  where?: Prisma.auth_otpWhereInput;
+  orderBy?:
+    | Prisma.auth_otpOrderByWithRelationInput
+    | Prisma.auth_otpOrderByWithRelationInput[];
+  cursor?: Prisma.auth_otpWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.Auth_otpScalarFieldEnum | Prisma.Auth_otpScalarFieldEnum[];
 };
 
 /**

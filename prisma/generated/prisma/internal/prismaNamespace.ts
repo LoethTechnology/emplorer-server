@@ -415,6 +415,7 @@ export const ModelName = {
   user: 'user',
   oauth_account: 'oauth_account',
   tokens: 'tokens',
+  auth_otp: 'auth_otp',
   company: 'company',
   company_review: 'company_review',
   review_critique: 'review_critique',
@@ -445,6 +446,7 @@ export type TypeMap<
       | 'user'
       | 'oauth_account'
       | 'tokens'
+      | 'auth_otp'
       | 'company'
       | 'company_review'
       | 'review_critique'
@@ -677,6 +679,82 @@ export type TypeMap<
           args: Prisma.tokensCountArgs<ExtArgs>;
           result:
             | runtime.Types.Utils.Optional<Prisma.TokensCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    auth_otp: {
+      payload: Prisma.$auth_otpPayload<ExtArgs>;
+      fields: Prisma.auth_otpFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.auth_otpFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.auth_otpFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>;
+        };
+        findFirst: {
+          args: Prisma.auth_otpFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.auth_otpFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>;
+        };
+        findMany: {
+          args: Prisma.auth_otpFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>[];
+        };
+        create: {
+          args: Prisma.auth_otpCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>;
+        };
+        createMany: {
+          args: Prisma.auth_otpCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.auth_otpCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>[];
+        };
+        delete: {
+          args: Prisma.auth_otpDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>;
+        };
+        update: {
+          args: Prisma.auth_otpUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>;
+        };
+        deleteMany: {
+          args: Prisma.auth_otpDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.auth_otpUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.auth_otpUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>[];
+        };
+        upsert: {
+          args: Prisma.auth_otpUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$auth_otpPayload>;
+        };
+        aggregate: {
+          args: Prisma.Auth_otpAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuth_otp>;
+        };
+        groupBy: {
+          args: Prisma.auth_otpGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.Auth_otpGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.auth_otpCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.Auth_otpCountAggregateOutputType>
             | number;
         };
       };
@@ -1143,6 +1221,22 @@ export const TokensScalarFieldEnum = {
 export type TokensScalarFieldEnum =
   (typeof TokensScalarFieldEnum)[keyof typeof TokensScalarFieldEnum];
 
+export const Auth_otpScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  purpose: 'purpose',
+  code_hash: 'code_hash',
+  expires_at: 'expires_at',
+  consumed_at: 'consumed_at',
+  attempts: 'attempts',
+  max_attempts: 'max_attempts',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+} as const;
+
+export type Auth_otpScalarFieldEnum =
+  (typeof Auth_otpScalarFieldEnum)[keyof typeof Auth_otpScalarFieldEnum];
+
 export const CompanyScalarFieldEnum = {
   id: 'id',
   creator_id: 'creator_id',
@@ -1294,18 +1388,18 @@ export type ListEnumOAuthProviderFieldRefInput<$PrismaModel> =
   FieldRefInputType<$PrismaModel, 'OAuthProvider[]'>;
 
 /**
- * Reference to a field of type 'CompanyStatus'
+ * Reference to a field of type 'AuthOtpPurpose'
  */
-export type EnumCompanyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+export type EnumAuthOtpPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
-  'CompanyStatus'
+  'AuthOtpPurpose'
 >;
 
 /**
- * Reference to a field of type 'CompanyStatus[]'
+ * Reference to a field of type 'AuthOtpPurpose[]'
  */
-export type ListEnumCompanyStatusFieldRefInput<$PrismaModel> =
-  FieldRefInputType<$PrismaModel, 'CompanyStatus[]'>;
+export type ListEnumAuthOtpPurposeFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, 'AuthOtpPurpose[]'>;
 
 /**
  * Reference to a field of type 'Int'
@@ -1322,6 +1416,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
   'Int[]'
 >;
+
+/**
+ * Reference to a field of type 'CompanyStatus'
+ */
+export type EnumCompanyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'CompanyStatus'
+>;
+
+/**
+ * Reference to a field of type 'CompanyStatus[]'
+ */
+export type ListEnumCompanyStatusFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, 'CompanyStatus[]'>;
 
 /**
  * Reference to a field of type 'Boolean'
@@ -1497,6 +1605,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.userOmit;
   oauth_account?: Prisma.oauth_accountOmit;
   tokens?: Prisma.tokensOmit;
+  auth_otp?: Prisma.auth_otpOmit;
   company?: Prisma.companyOmit;
   company_review?: Prisma.company_reviewOmit;
   review_critique?: Prisma.review_critiqueOmit;
