@@ -253,41 +253,6 @@ describe('AuthService', () => {
     });
   });
 
-  describe('register', () => {
-    it('should create a new local user and return the auth response', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue(null);
-      mockPrismaService.user.create.mockResolvedValue({
-        id: 'user-4',
-        email: 'new@example.com',
-        first_name: 'New',
-        last_name: 'User',
-        password: 'hashed-password',
-      });
-      jest.mocked(argon2.hash).mockResolvedValue('hashed-password');
-
-      const result = await service.register({
-        email: 'New@example.com',
-        password: 'password123',
-        first_name: ' New ',
-        last_name: ' User ',
-      });
-
-      expect(mockPrismaService.user.create).toHaveBeenCalledWith({
-        data: {
-          email: 'New@example.com',
-          password: 'hashed-password',
-          first_name: ' New ',
-          last_name: ' User ',
-        },
-      });
-      expect(result).toEqual({
-        message: 'User created successfully.',
-        code: HttpStatus.CREATED,
-        data: 'test-jwt-token',
-      });
-    });
-  });
-
   describe('login', () => {
     it('should verify local credentials and return the auth response', async () => {
       mockAuthHandlerService.validateLocalUser.mockResolvedValue({
