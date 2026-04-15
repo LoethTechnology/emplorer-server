@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -15,8 +16,12 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return the wrapped hello response', () => {
+      expect(appController.getHello()).toEqual({
+        message: 'Application fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'Hello World!',
+      });
     });
   });
 });

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthService } from './auth.service';
 import { AuthHandlerService } from './handlers/auth.handler.service';
@@ -161,7 +162,11 @@ describe('AuthService', () => {
           refresh_token: 'linkedin-refresh-token',
         },
       });
-      expect(result.accessToken).toBe('test-jwt-token');
+      expect(result).toEqual({
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'test-jwt-token',
+      });
     });
 
     it('should link oauth account to existing user found by email', async () => {
@@ -202,7 +207,11 @@ describe('AuthService', () => {
           provider_account_id: 'linkedin-123',
         }) as unknown,
       });
-      expect(result.accessToken).toBe('test-jwt-token');
+      expect(result).toEqual({
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'test-jwt-token',
+      });
     });
 
     it('should create a new user when no existing oauth account or email match', async () => {
@@ -236,7 +245,11 @@ describe('AuthService', () => {
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         },
       });
-      expect(result.accessToken).toBe('test-jwt-token');
+      expect(result).toEqual({
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'test-jwt-token',
+      });
     });
   });
 
@@ -268,7 +281,9 @@ describe('AuthService', () => {
         },
       });
       expect(result).toEqual({
-        accessToken: 'test-jwt-token',
+        message: 'User created successfully.',
+        code: HttpStatus.CREATED,
+        data: 'test-jwt-token',
       });
     });
   });
@@ -294,7 +309,9 @@ describe('AuthService', () => {
         'password123',
       );
       expect(result).toEqual({
-        accessToken: 'test-jwt-token',
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'test-jwt-token',
       });
     });
   });
@@ -348,8 +365,13 @@ describe('AuthService', () => {
         max_attempts: 5,
       });
       expect(otpCreateArgs.data.expires_at).toBeInstanceOf(Date);
-      expect(result.message).toContain('password reset OTP');
-      expect(result.otp).toMatch(/^\d{6}$/);
+      expect(result).toEqual({
+        message: 'Auth OTP created successfully.',
+        code: HttpStatus.CREATED,
+        data: {
+          otp: '123456',
+        },
+      });
     });
   });
 
@@ -394,7 +416,11 @@ describe('AuthService', () => {
       });
       expect(consumedOtpArgs.where).toEqual({ id: 'otp-1' });
       expect(consumedOtpArgs.data.consumed_at).toBeInstanceOf(Date);
-      expect(result).toEqual({ message: 'Password reset successful.' });
+      expect(result).toEqual({
+        message: 'User updated successfully.',
+        code: HttpStatus.OK,
+        data: 'Password reset successful.',
+      });
     });
   });
 });

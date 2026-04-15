@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -79,7 +80,14 @@ describe('UsersService', () => {
           linkedin_profile_url: null,
         },
       });
-      expect(result.id).toBe('user-1');
+      expect(result).toEqual({
+        message: 'User created successfully.',
+        code: HttpStatus.CREATED,
+        data: expect.objectContaining({
+          id: 'user-1',
+          email: 'test@example.com',
+        }),
+      });
     });
 
     it('should complete an existing oauth-only user account', async () => {
@@ -160,7 +168,14 @@ describe('UsersService', () => {
 
       const result = await service.findMe('user-4');
 
-      expect(result.id).toBe('user-4');
+      expect(result).toEqual({
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: expect.objectContaining({
+          id: 'user-4',
+          email: 'user@example.com',
+        }),
+      });
     });
 
     it('should throw when the active user account is missing', async () => {
@@ -211,7 +226,14 @@ describe('UsersService', () => {
           first_name: 'Updated',
         },
       });
-      expect(result.email).toBe('next@example.com');
+      expect(result).toEqual({
+        message: 'User updated successfully.',
+        code: HttpStatus.OK,
+        data: expect.objectContaining({
+          id: 'user-5',
+          email: 'next@example.com',
+        }),
+      });
     });
 
     it('should reject an email already used by another user', async () => {
@@ -270,7 +292,11 @@ describe('UsersService', () => {
         where: { id: 'user-8' },
         data: { password: 'next-hash' },
       });
-      expect(result).toEqual({ message: 'Password updated successfully.' });
+      expect(result).toEqual({
+        message: 'User updated successfully.',
+        code: HttpStatus.OK,
+        data: 'Password updated successfully.',
+      });
     });
 
     it('should reject accounts without a local password', async () => {
@@ -327,7 +353,11 @@ describe('UsersService', () => {
       expect(mockPrismaService.user.delete).toHaveBeenCalledWith({
         where: { id: 'user-11' },
       });
-      expect(result).toEqual({ message: 'Account deleted successfully.' });
+      expect(result).toEqual({
+        message: 'User deleted successfully.',
+        code: HttpStatus.OK,
+        data: 'Account deleted successfully.',
+      });
     });
 
     it('should translate foreign key delete failures into a conflict', async () => {

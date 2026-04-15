@@ -21,7 +21,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import type {
   AuthenticatedRequest,
-  PublicUser,
+  UserResponse,
   UsersMessageResponse,
 } from './users.types';
 
@@ -38,7 +38,7 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 409, description: 'User account already exists' })
-  create(@Body() createUserDto: CreateUserDto): Promise<PublicUser> {
+  create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
     return this.usersService.create(createUserDto);
   }
 
@@ -49,7 +49,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Return the current user account' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
-  findMe(@Req() req: AuthenticatedRequest): Promise<PublicUser> {
+  findMe(@Req() req: AuthenticatedRequest): Promise<UserResponse> {
     return this.usersService.findMe(req.user.sub);
   }
 
@@ -67,7 +67,7 @@ export class UsersController {
   updateMe(
     @Req() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<PublicUser> {
+  ): Promise<UserResponse> {
     return this.usersService.updateMe(req.user.sub, updateUserDto);
   }
 

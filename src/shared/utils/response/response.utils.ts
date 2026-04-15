@@ -1,43 +1,67 @@
-import { CrudEnums, DbModels } from '@shared/types/model.types';
-import { HttpStatus } from 'node_modules/@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { CrudEnums, DbModels } from '../../types/model.types';
 
-const EntityDeleted = (entityName: string, data?: any) => ({
-  message: `${entityName} deleted sucessfully.`,
+export interface ApiSuccessResponse<T = unknown> {
+  message: string;
+  code: HttpStatus;
+  data: T;
+}
+
+const entityDeleted = <T>(
+  entityName: string,
+  data: T,
+): ApiSuccessResponse<T> => ({
+  message: `${entityName} deleted successfully.`,
   code: HttpStatus.OK,
   data,
 });
 
-const FetchedSuccessFully = (entityName: string, data?: any) => ({
-  message: `${entityName} fetched sucessfully.`,
+const fetchedSuccessfully = <T>(
+  entityName: string,
+  data: T,
+): ApiSuccessResponse<T> => ({
+  message: `${entityName} fetched successfully.`,
   code: HttpStatus.OK,
   data,
 });
 
-const CreatedSuccessfully = (entityName: string, data?: any) => ({
-  message: `${entityName} created sucessfully.`,
+const createdSuccessfully = <T>(
+  entityName: string,
+  data: T,
+): ApiSuccessResponse<T> => ({
+  message: `${entityName} created successfully.`,
   code: HttpStatus.CREATED,
   data,
 });
 
-const UpdatedSuccessfully = (entityName: string, data?: any) => ({
-  message: `${entityName} updated sucessfully.`,
+const updatedSuccessfully = <T>(
+  entityName: string,
+  data: T,
+): ApiSuccessResponse<T> => ({
+  message: `${entityName} updated successfully.`,
   code: HttpStatus.OK,
   data,
 });
 
-export const CrudResponse = (
+export const CrudResponse = <T>(
   modelName: DbModels,
   crud: CrudEnums,
-  data?: any,
-) => {
+  data: T,
+): ApiSuccessResponse<T> => {
   switch (crud) {
     case CrudEnums.CREATE:
-      return CreatedSuccessfully(modelName, data);
+      return createdSuccessfully(modelName, data);
     case CrudEnums.READ:
-      return FetchedSuccessFully(modelName, data);
+      return fetchedSuccessfully(modelName, data);
     case CrudEnums.UPDATE:
-      return UpdatedSuccessfully(modelName, data);
+      return updatedSuccessfully(modelName, data);
     case CrudEnums.DELETE:
-      return EntityDeleted(modelName, data);
+      return entityDeleted(modelName, data);
+    default: {
+      const exhaustiveCheck: never = crud;
+
+      void exhaustiveCheck;
+      throw new Error('Unsupported CRUD action.');
+    }
   }
 };

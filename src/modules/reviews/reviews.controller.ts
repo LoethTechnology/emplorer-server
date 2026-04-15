@@ -8,6 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
+import type { ApiSuccessResponse } from '../../shared/utils/response/response.utils';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -21,14 +22,16 @@ export class ReviewsController {
   @ApiOperation({ summary: 'Create a new review' })
   @ApiResponse({ status: 201, description: 'Review created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  create(@Body() createReviewDto: CreateReviewDto) {
+  create(
+    @Body() createReviewDto: CreateReviewDto,
+  ): ApiSuccessResponse<CreateReviewDto> {
     return this.reviewsService.create(createReviewDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all reviews' })
   @ApiResponse({ status: 200, description: 'Return all reviews' })
-  findAll() {
+  findAll(): ApiSuccessResponse<string[]> {
     return this.reviewsService.findAll();
   }
 
@@ -36,7 +39,7 @@ export class ReviewsController {
   @ApiOperation({ summary: 'Get a review by ID' })
   @ApiResponse({ status: 200, description: 'Return a single review' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): ApiSuccessResponse<string> {
     return this.reviewsService.findOne(+id);
   }
 
@@ -44,7 +47,10 @@ export class ReviewsController {
   @ApiOperation({ summary: 'Update a review' })
   @ApiResponse({ status: 200, description: 'Review updated successfully' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateReviewDto: UpdateReviewDto,
+  ): ApiSuccessResponse<{ id: number; review: UpdateReviewDto }> {
     return this.reviewsService.update(+id, updateReviewDto);
   }
 
@@ -52,7 +58,7 @@ export class ReviewsController {
   @ApiOperation({ summary: 'Delete a review' })
   @ApiResponse({ status: 200, description: 'Review deleted successfully' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): ApiSuccessResponse<string> {
     return this.reviewsService.remove(+id);
   }
 }

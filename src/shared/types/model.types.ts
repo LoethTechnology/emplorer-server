@@ -6,6 +6,7 @@ export enum CrudEnums {
 }
 
 export enum DbModels {
+  APPLICATION = 'Application',
   USER = 'User',
   OAUTH_ACCOUNT = 'OAuth Account',
   TOKENS = 'Token',

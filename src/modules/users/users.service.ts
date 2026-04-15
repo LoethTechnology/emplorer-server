@@ -6,11 +6,14 @@ import {
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
+import { CrudEnums, DbModels } from '../../shared/types/model.types';
+import { CrudResponse } from '../../shared/utils/response/response.utils';
 import type { CreateUserDto } from './dto/create-user.dto';
 import type { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
 import type {
   PublicUser,
+  UserResponse,
   UserWithPassword,
   UsersMessageResponse,
 } from './users.types';
@@ -23,7 +26,7 @@ import {
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<PublicUser> {
+  async create(createUserDto: CreateUserDto): Promise<UserResponse> {
     const existingUser = await this.findUserWithPasswordByEmail(
       createUserDto.email,
     );
@@ -45,25 +48,31 @@ export class UsersService {
     }
 
     if (existingUser) {
-      return this.prismaService.user.update({
+      const updatedUser = await this.prismaService.user.update({
         where: { id: existingUser.id },
         data: userData,
       });
+
+      return CrudResponse(DbModels.USER, CrudEnums.CREATE, updatedUser);
     }
 
-    return this.prismaService.user.create({
+    const createdUser = await this.prismaService.user.create({
       data: userData,
     });
+
+    return CrudResponse(DbModels.USER, CrudEnums.CREATE, createdUser);
   }
 
-  async findMe(userId: string): Promise<PublicUser> {
-    return this.findActiveUserById(userId);
+  async findMe(userId: string): Promise<UserResponse> {
+    const dbUser = await this.findActiveUserById(userId);
+
+    return CrudResponse(DbModels.USER, CrudEnums.READ, dbUser);
   }
 
   async updateMe(
     userId: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<PublicUser> {
+  ): Promise<UserResponse> {
     await this.findActiveUserById(userId);
     const data = { ...updateUserDto };
 
@@ -77,10 +86,12 @@ export class UsersService {
       }
     }
 
-    return this.prismaService.user.update({
+    const updatedUser = await this.prismaService.user.update({
       where: { id: userId },
       data,
     });
+
+    return CrudResponse(DbModels.USER, CrudEnums.UPDATE, updatedUser);
   }
 
   async updatePassword(
@@ -117,7 +128,11 @@ export class UsersService {
       data: { password: nextPasswordHash },
     });
 
-    return { message: USERS_RESPONSE_MESSAGES.passwordUpdated };
+    return CrudResponse(
+      DbModels.USER,
+      CrudEnums.UPDATE,
+      USERS_RESPONSE_MESSAGES.passwordUpdated,
+    );
   }
 
   async removeMe(userId: string): Promise<UsersMessageResponse> {
@@ -137,7 +152,11 @@ export class UsersService {
       throw error;
     }
 
-    return { message: USERS_RESPONSE_MESSAGES.accountDeleted };
+    return CrudResponse(
+      DbModels.USER,
+      CrudEnums.DELETE,
+      USERS_RESPONSE_MESSAGES.accountDeleted,
+    );
   }
 
   private async findActiveUserById(userId: string): Promise<PublicUser> {

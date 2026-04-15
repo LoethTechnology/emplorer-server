@@ -6,6 +6,8 @@ import {
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
+import { CrudEnums, DbModels } from '../../shared/types/model.types';
+import { CrudResponse } from '../../shared/utils/response/response.utils';
 import type {
   AuthTokenResponse,
   ForgotPasswordResponse,
@@ -17,11 +19,7 @@ import type { LoginAuthDto } from './dto/login-auth.dto';
 import type { RegisterAuthDto } from './dto/register-auth.dto';
 import type { ResetPasswordDto } from './dto/reset-password.dto';
 import { AuthHandlerService } from './handlers/auth.handler.service';
-
-const PASSWORD_RESET_REQUEST_MESSAGE =
-  'If the account exists, a password reset OTP has been generated.';
-const PASSWORD_RESET_SUCCESS_MESSAGE = 'Password reset successful.';
-const INVALID_RESET_OTP_MESSAGE = 'Invalid or expired OTP.';
+import { AUTH_RESPONSE_MESSAGES } from './utils/auth.utils';
 
 @Injectable()
 export class AuthService {
@@ -65,9 +63,8 @@ export class AuthService {
       const token = this.authHandlerService.generateAccessToken(
         existingOAuthAccount.user.id,
       );
-      return {
-        accessToken: token,
-      };
+
+      return CrudResponse(DbModels.USER, CrudEnums.READ, token);
     }
 
     const userProfileData = {
@@ -100,7 +97,8 @@ export class AuthService {
     });
 
     const token = this.authHandlerService.generateAccessToken(dbUser.id);
-    return { accessToken: token };
+
+    return CrudResponse(DbModels.USER, CrudEnums.READ, token);
   }
 
   async register(registerAuthDto: RegisterAuthDto): Promise<AuthTokenResponse> {
@@ -138,9 +136,11 @@ export class AuthService {
           },
         });
 
-    return {
-      accessToken: this.authHandlerService.generateAccessToken(dbUser.id),
-    };
+    return CrudResponse(
+      DbModels.USER,
+      CrudEnums.CREATE,
+      this.authHandlerService.generateAccessToken(dbUser.id),
+    );
   }
 
   async login(loginAuthDto: LoginAuthDto): Promise<AuthTokenResponse> {
@@ -149,9 +149,11 @@ export class AuthService {
       loginAuthDto.password,
     );
 
-    return {
-      accessToken: this.authHandlerService.generateAccessToken(dbUser.id),
-    };
+    return CrudResponse(
+      DbModels.USER,
+      CrudEnums.READ,
+      this.authHandlerService.generateAccessToken(dbUser.id),
+    );
   }
 
   async forgotPassword(
@@ -163,7 +165,7 @@ export class AuthService {
     });
 
     if (!dbUser || dbUser.deleted_at) {
-      return { message: PASSWORD_RESET_REQUEST_MESSAGE };
+      return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, null);
     }
 
     const otp = this.authHandlerService.generateOtp();
@@ -195,13 +197,10 @@ export class AuthService {
     });
 
     if (this.authHandlerService.shouldExposeOtp()) {
-      return {
-        message: PASSWORD_RESET_REQUEST_MESSAGE,
-        otp,
-      };
+      return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, { otp });
     }
 
-    return { message: PASSWORD_RESET_REQUEST_MESSAGE };
+    return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, null);
   }
 
   async resetPassword(
@@ -213,7 +212,7 @@ export class AuthService {
     });
 
     if (!dbUser || dbUser.deleted_at) {
-      throw new BadRequestException(INVALID_RESET_OTP_MESSAGE);
+      throw new BadRequestException(AUTH_RESPONSE_MESSAGES.invalidResetOtp);
     }
 
     const otpRecord = await this.prismaService.auth_otp.findFirst({
@@ -226,7 +225,7 @@ export class AuthService {
     });
 
     if (!otpRecord) {
-      throw new BadRequestException(INVALID_RESET_OTP_MESSAGE);
+      throw new BadRequestException(AUTH_RESPONSE_MESSAGES.invalidResetOtp);
     }
 
     await this.authHandlerService.ensureOtpCanBeUsed(otpRecord);
@@ -238,7 +237,7 @@ export class AuthService {
 
     if (!otpMatches) {
       await this.authHandlerService.recordFailedOtpAttempt(otpRecord);
-      throw new BadRequestException(INVALID_RESET_OTP_MESSAGE);
+      throw new BadRequestException(AUTH_RESPONSE_MESSAGES.invalidResetOtp);
     }
 
     const passwordHash = await argon2.hash(resetPasswordDto.newPassword);
@@ -255,6 +254,10 @@ export class AuthService {
       });
     });
 
-    return { message: PASSWORD_RESET_SUCCESS_MESSAGE };
+    return CrudResponse(
+      DbModels.USER,
+      CrudEnums.UPDATE,
+      AUTH_RESPONSE_MESSAGES.passwordReset,
+    );
   }
 }
