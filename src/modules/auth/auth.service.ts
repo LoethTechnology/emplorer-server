@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
@@ -16,7 +12,6 @@ import type {
 } from './auth.types';
 import type { ForgotPasswordDto } from './dto/forgot-password.dto';
 import type { LoginAuthDto } from './dto/login-auth.dto';
-import type { RegisterAuthDto } from './dto/register-auth.dto';
 import type { ResetPasswordDto } from './dto/reset-password.dto';
 import { AuthHandlerService } from './handlers/auth.handler.service';
 import { AUTH_RESPONSE_MESSAGES } from './utils/auth.utils';
@@ -99,48 +94,6 @@ export class AuthService {
     const token = this.authHandlerService.generateAccessToken(dbUser.id);
 
     return CrudResponse(DbModels.USER, CrudEnums.READ, token);
-  }
-
-  async register(registerAuthDto: RegisterAuthDto): Promise<AuthTokenResponse> {
-    const email = registerAuthDto.email;
-    const passwordHash = await argon2.hash(registerAuthDto.password);
-    const first_name = registerAuthDto.first_name;
-    const last_name = registerAuthDto.last_name;
-
-    const existingUser = await this.prismaService.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser?.password) {
-      throw new ConflictException(
-        'A local account already exists for this email.',
-      );
-    }
-
-    const dbUser = existingUser
-      ? await this.prismaService.user.update({
-          where: { id: existingUser.id },
-          data: {
-            email,
-            first_name,
-            last_name,
-            password: passwordHash,
-          },
-        })
-      : await this.prismaService.user.create({
-          data: {
-            email,
-            first_name,
-            last_name,
-            password: passwordHash,
-          },
-        });
-
-    return CrudResponse(
-      DbModels.USER,
-      CrudEnums.CREATE,
-      this.authHandlerService.generateAccessToken(dbUser.id),
-    );
   }
 
   async login(loginAuthDto: LoginAuthDto): Promise<AuthTokenResponse> {
