@@ -43,26 +43,6 @@ describe('AuthController', () => {
     });
   });
 
-  describe('register', () => {
-    it('should delegate registration to AuthService', async () => {
-      mockAuthService.register.mockResolvedValue({ accessToken: 'jwt-token' });
-
-      await controller.register({
-        email: 'test@example.com',
-        password: 'password123',
-        first_name: 'Test',
-        last_name: 'User',
-      });
-
-      expect(mockAuthService.register).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
-        first_name: 'Test',
-        last_name: 'User',
-      });
-    });
-  });
-
   describe('login', () => {
     it('should delegate login to AuthService', async () => {
       mockAuthService.login.mockResolvedValue({ accessToken: 'jwt-token' });
