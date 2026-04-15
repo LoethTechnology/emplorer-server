@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthHandlerService } from './handlers/auth.handler.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LinkedInStrategy } from './strategies/linkedin.strategy';
 
@@ -26,7 +27,7 @@ import { LinkedInStrategy } from './strategies/linkedin.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LinkedInStrategy, JwtStrategy],
+  providers: [AuthService, AuthHandlerService, LinkedInStrategy, JwtStrategy],
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

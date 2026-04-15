@@ -17,7 +17,6 @@ const mockAuthService = {
   forgotPassword: jest.fn(),
   resetPassword: jest.fn(),
   findOrCreateUserFromLinkedin: jest.fn(),
-  generateAccessToken: jest.fn(),
 };
 
 describe('AuthController', () => {
@@ -111,10 +110,8 @@ describe('AuthController', () => {
 
   describe('linkedInCallback', () => {
     it('should call findOrCreateUserFromLinkedin and return json response', async () => {
-      const mockUser = { id: 'user-1', email: 'test@example.com' };
       mockAuthService.findOrCreateUserFromLinkedin.mockResolvedValue({
         accessToken: 'jwt-token',
-        user: mockUser,
       });
 
       const mockProfile = { id: 'linkedin-123', displayName: 'Test User' };
@@ -136,7 +133,6 @@ describe('AuthController', () => {
       );
       expect(mockJson).toHaveBeenCalledWith({
         accessToken: 'jwt-token',
-        user: mockUser,
       });
     });
   });

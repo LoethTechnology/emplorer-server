@@ -1,15 +1,10 @@
-import { randomInt } from 'node:crypto';
 import {
   BadRequestException,
   ConflictException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
-import type { auth_otp, user } from 'prisma/generated/prisma/client';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
 import type {
   AuthTokenResponse,
@@ -21,19 +16,18 @@ import type { ForgotPasswordDto } from './dto/forgot-password.dto';
 import type { LoginAuthDto } from './dto/login-auth.dto';
 import type { RegisterAuthDto } from './dto/register-auth.dto';
 import type { ResetPasswordDto } from './dto/reset-password.dto';
+import { AuthHandlerService } from './handlers/auth.handler.service';
 
 const PASSWORD_RESET_REQUEST_MESSAGE =
   'If the account exists, a password reset OTP has been generated.';
 const PASSWORD_RESET_SUCCESS_MESSAGE = 'Password reset successful.';
-const INVALID_CREDENTIALS_MESSAGE = 'Invalid email or password.';
 const INVALID_RESET_OTP_MESSAGE = 'Invalid or expired OTP.';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly authHandlerService: AuthHandlerService,
   ) {}
 
   async findOrCreateUserFromLinkedin(
@@ -42,8 +36,8 @@ export class AuthService {
     const { profile, accessToken, refreshToken } = oauthUser;
     const providerAccountId = profile.id;
     const email = profile.emails?.[0]?.value ?? null;
-    const first_name = this.getLinkedInFirstName(profile);
-    const last_name = this.getLinkedInLastName(profile);
+    const first_name = this.authHandlerService.getLinkedInFirstName(profile);
+    const last_name = this.authHandlerService.getLinkedInLastName(profile);
     const avatar_url = profile.photos?.[0]?.value ?? null;
     const linkedin_profile_url =
       (profile._json as Record<string, string> | undefined)?.publicProfileUrl ??
@@ -68,10 +62,11 @@ export class AuthService {
           refresh_token: refreshToken ?? null,
         },
       });
-      const token = this.generateAccessToken(existingOAuthAccount.user.id);
+      const token = this.authHandlerService.generateAccessToken(
+        existingOAuthAccount.user.id,
+      );
       return {
         accessToken: token,
-        user: existingOAuthAccount.user,
       };
     }
 
@@ -104,8 +99,8 @@ export class AuthService {
       },
     });
 
-    const token = this.generateAccessToken(dbUser.id);
-    return { accessToken: token, user: dbUser };
+    const token = this.authHandlerService.generateAccessToken(dbUser.id);
+    return { accessToken: token };
   }
 
   async register(registerAuthDto: RegisterAuthDto): Promise<AuthTokenResponse> {
@@ -144,20 +139,18 @@ export class AuthService {
         });
 
     return {
-      accessToken: this.generateAccessToken(dbUser.id),
-      user: dbUser,
+      accessToken: this.authHandlerService.generateAccessToken(dbUser.id),
     };
   }
 
   async login(loginAuthDto: LoginAuthDto): Promise<AuthTokenResponse> {
-    const dbUser = await this.validateLocalUser(
+    const dbUser = await this.authHandlerService.validateLocalUser(
       loginAuthDto.email,
       loginAuthDto.password,
     );
 
     return {
-      accessToken: this.generateAccessToken(dbUser.id),
-      user: dbUser,
+      accessToken: this.authHandlerService.generateAccessToken(dbUser.id),
     };
   }
 
@@ -173,10 +166,10 @@ export class AuthService {
       return { message: PASSWORD_RESET_REQUEST_MESSAGE };
     }
 
-    const otp = this.generateOtp();
+    const otp = this.authHandlerService.generateOtp();
     const codeHash = await argon2.hash(otp);
     const expiresAt = new Date(
-      Date.now() + this.getOtpTtlMinutes() * 60 * 1000,
+      Date.now() + this.authHandlerService.getOtpTtlMinutes() * 60 * 1000,
     );
 
     await this.prismaService.$transaction(async (transaction) => {
@@ -196,12 +189,12 @@ export class AuthService {
           user_id: dbUser.id,
           code_hash: codeHash,
           expires_at: expiresAt,
-          max_attempts: this.getOtpMaxAttempts(),
+          max_attempts: this.authHandlerService.getOtpMaxAttempts(),
         },
       });
     });
 
-    if (this.shouldExposeOtp()) {
+    if (this.authHandlerService.shouldExposeOtp()) {
       return {
         message: PASSWORD_RESET_REQUEST_MESSAGE,
         otp,
@@ -236,7 +229,7 @@ export class AuthService {
       throw new BadRequestException(INVALID_RESET_OTP_MESSAGE);
     }
 
-    await this.ensureOtpCanBeUsed(otpRecord);
+    await this.authHandlerService.ensureOtpCanBeUsed(otpRecord);
 
     const otpMatches = await argon2.verify(
       otpRecord.code_hash,
@@ -244,7 +237,7 @@ export class AuthService {
     );
 
     if (!otpMatches) {
-      await this.recordFailedOtpAttempt(otpRecord);
+      await this.authHandlerService.recordFailedOtpAttempt(otpRecord);
       throw new BadRequestException(INVALID_RESET_OTP_MESSAGE);
     }
 
@@ -263,94 +256,5 @@ export class AuthService {
     });
 
     return { message: PASSWORD_RESET_SUCCESS_MESSAGE };
-  }
-
-  async validateLocalUser(email: string, password: string): Promise<user> {
-    const dbUser = await this.prismaService.user.findUnique({
-      where: { email },
-    });
-
-    if (!dbUser || !dbUser.password || dbUser.deleted_at) {
-      throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
-    }
-
-    const passwordMatches = await argon2.verify(dbUser.password, password);
-
-    if (!passwordMatches) {
-      throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
-    }
-
-    return dbUser;
-  }
-
-  generateAccessToken(userId: string): string {
-    return this.jwtService.sign({ sub: userId });
-  }
-
-  private getLinkedInFirstName(profile: LinkedInOAuthUser['profile']): string {
-    return (
-      profile.name?.givenName ??
-      profile.displayName?.split(' ').find(Boolean) ??
-      'LinkedIn'
-    );
-  }
-
-  private getLinkedInLastName(profile: LinkedInOAuthUser['profile']): string {
-    return (
-      profile.name?.familyName ??
-      profile.displayName?.split(' ').slice(1).join(' ').trim() ??
-      'User'
-    );
-  }
-
-  private generateOtp(): string {
-    return randomInt(0, 1_000_000).toString().padStart(6, '0');
-  }
-
-  private getOtpTtlMinutes(): number {
-    return Number(
-      this.configService.get<string>('PASSWORD_RESET_OTP_TTL_MINUTES', '10'),
-    );
-  }
-
-  private getOtpMaxAttempts(): number {
-    return Number(
-      this.configService.get<string>('PASSWORD_RESET_OTP_MAX_ATTEMPTS', '5'),
-    );
-  }
-
-  private shouldExposeOtp(): boolean {
-    return this.configService.get<string>('NODE_ENV') !== 'production';
-  }
-
-  private async ensureOtpCanBeUsed(otpRecord: auth_otp): Promise<void> {
-    const exhausted = otpRecord.attempts >= otpRecord.max_attempts;
-    const expired = otpRecord.expires_at.getTime() <= Date.now();
-
-    if (!exhausted && !expired) {
-      return;
-    }
-
-    await this.prismaService.auth_otp.update({
-      where: { id: otpRecord.id },
-      data: { consumed_at: otpRecord.consumed_at ?? new Date() },
-    });
-
-    throw new BadRequestException(INVALID_RESET_OTP_MESSAGE);
-  }
-
-  private async recordFailedOtpAttempt(otpRecord: auth_otp): Promise<void> {
-    const nextAttemptCount = otpRecord.attempts + 1;
-
-    await this.prismaService.auth_otp.update({
-      where: { id: otpRecord.id },
-      data: {
-        attempts: {
-          increment: 1,
-        },
-        consumed_at:
-          nextAttemptCount >= otpRecord.max_attempts ? new Date() : undefined,
-      },
-    });
   }
 }

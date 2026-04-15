@@ -11,7 +11,6 @@ export interface LinkedInOAuthUser {
 
 export interface AuthTokenResponse {
   accessToken: string;
-  user: PublicUser;
 }
 
 export interface JwtPayload {

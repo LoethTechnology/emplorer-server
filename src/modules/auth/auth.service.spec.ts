@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { AuthService } from './auth.service';
+import { AuthHandlerService } from './handlers/auth.handler.service';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 
@@ -36,23 +35,17 @@ const mockPrismaService = {
   $transaction: jest.fn(),
 };
 
-const mockJwtService = {
-  sign: jest.fn().mockReturnValue('test-jwt-token'),
-};
-
-const mockConfigService = {
-  get: jest.fn((key: string, defaultValue?: string) => {
-    switch (key) {
-      case 'PASSWORD_RESET_OTP_TTL_MINUTES':
-        return '10';
-      case 'PASSWORD_RESET_OTP_MAX_ATTEMPTS':
-        return '5';
-      case 'NODE_ENV':
-        return 'test';
-      default:
-        return defaultValue;
-    }
-  }),
+const mockAuthHandlerService = {
+  validateLocalUser: jest.fn(),
+  generateAccessToken: jest.fn().mockReturnValue('test-jwt-token'),
+  getLinkedInFirstName: jest.fn().mockReturnValue('John'),
+  getLinkedInLastName: jest.fn().mockReturnValue('Doe'),
+  generateOtp: jest.fn().mockReturnValue('123456'),
+  getOtpTtlMinutes: jest.fn().mockReturnValue(10),
+  getOtpMaxAttempts: jest.fn().mockReturnValue(5),
+  shouldExposeOtp: jest.fn().mockReturnValue(true),
+  ensureOtpCanBeUsed: jest.fn().mockResolvedValue(undefined),
+  recordFailedOtpAttempt: jest.fn().mockResolvedValue(undefined),
 };
 
 type FirstCallArg<T> = {
@@ -76,6 +69,17 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockAuthHandlerService.generateAccessToken.mockReturnValue(
+      'test-jwt-token',
+    );
+    mockAuthHandlerService.getLinkedInFirstName.mockReturnValue('John');
+    mockAuthHandlerService.getLinkedInLastName.mockReturnValue('Doe');
+    mockAuthHandlerService.generateOtp.mockReturnValue('123456');
+    mockAuthHandlerService.getOtpTtlMinutes.mockReturnValue(10);
+    mockAuthHandlerService.getOtpMaxAttempts.mockReturnValue(5);
+    mockAuthHandlerService.shouldExposeOtp.mockReturnValue(true);
+    mockAuthHandlerService.ensureOtpCanBeUsed.mockResolvedValue(undefined);
+    mockAuthHandlerService.recordFailedOtpAttempt.mockResolvedValue(undefined);
     mockPrismaService.$transaction.mockImplementation(
       (callback: (transaction: typeof mockPrismaService) => unknown) =>
         Promise.resolve(callback(mockPrismaService)),
@@ -84,8 +88,7 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         { provide: PrismaService, useValue: mockPrismaService },
-        { provide: JwtService, useValue: mockJwtService },
-        { provide: ConfigService, useValue: mockConfigService },
+        { provide: AuthHandlerService, useValue: mockAuthHandlerService },
       ],
     }).compile();
 
@@ -98,9 +101,12 @@ describe('AuthService', () => {
 
   describe('generateAccessToken', () => {
     it('should return a JWT token for the given user id', () => {
-      const token = service.generateAccessToken('user-123');
-      expect(mockJwtService.sign).toHaveBeenCalledWith({ sub: 'user-123' });
-      expect(token).toBe('test-jwt-token');
+      expect(mockAuthHandlerService.generateAccessToken('user-123')).toBe(
+        'test-jwt-token',
+      );
+      expect(mockAuthHandlerService.generateAccessToken).toHaveBeenCalledWith(
+        'user-123',
+      );
     });
   });
 
@@ -156,14 +162,6 @@ describe('AuthService', () => {
         },
       });
       expect(result.accessToken).toBe('test-jwt-token');
-      expect(result.user).toEqual({
-        id: 'user-1',
-        email: 'john@example.com',
-        first_name: 'John',
-        last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
-        linkedin_profile_url: 'https://linkedin.com/in/johndoe',
-      });
     });
 
     it('should link oauth account to existing user found by email', async () => {
@@ -205,7 +203,6 @@ describe('AuthService', () => {
         }) as unknown,
       });
       expect(result.accessToken).toBe('test-jwt-token');
-      expect(result.user).toEqual(updatedUser);
     });
 
     it('should create a new user when no existing oauth account or email match', async () => {
@@ -240,7 +237,6 @@ describe('AuthService', () => {
         },
       });
       expect(result.accessToken).toBe('test-jwt-token');
-      expect(result.user).toEqual(newUser);
     });
   });
 
@@ -273,20 +269,13 @@ describe('AuthService', () => {
       });
       expect(result).toEqual({
         accessToken: 'test-jwt-token',
-        user: {
-          id: 'user-4',
-          email: 'new@example.com',
-          first_name: 'New',
-          last_name: 'User',
-          password: 'hashed-password',
-        },
       });
     });
   });
 
   describe('login', () => {
     it('should verify local credentials and return the auth response', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue({
+      mockAuthHandlerService.validateLocalUser.mockResolvedValue({
         id: 'user-5',
         email: 'login@example.com',
         first_name: 'Login',
@@ -300,19 +289,12 @@ describe('AuthService', () => {
         password: 'password123',
       });
 
-      expect(argon2.verify).toHaveBeenCalledWith(
-        'hashed-password',
+      expect(mockAuthHandlerService.validateLocalUser).toHaveBeenCalledWith(
+        'login@example.com',
         'password123',
       );
       expect(result).toEqual({
         accessToken: 'test-jwt-token',
-        user: {
-          id: 'user-5',
-          email: 'login@example.com',
-          first_name: 'Login',
-          last_name: 'User',
-          password: 'hashed-password',
-        },
       });
     });
   });

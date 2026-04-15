@@ -80,8 +80,8 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<void> {
     const oauthUser = req.user as LinkedInOAuthUser;
-    const { accessToken, user } =
+    const { accessToken } =
       await this.authService.findOrCreateUserFromLinkedin(oauthUser);
-    res.json({ accessToken, user });
+    res.json({ accessToken });
   }
 }
