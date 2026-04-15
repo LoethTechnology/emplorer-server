@@ -4,7 +4,7 @@ import {
   encryptUserArgs,
 } from './prisma.utils';
 
-jest.mock('../../utils/user-name-encryption', () => ({
+jest.mock('../../utils/user-name-encryption/user-name-encryption', () => ({
   encryptUserName: jest.fn((value: string | null | undefined) =>
     value == null ? value : `enc:${value}`,
   ),
