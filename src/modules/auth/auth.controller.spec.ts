@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -17,7 +18,6 @@ const mockAuthService = {
   forgotPassword: jest.fn(),
   resetPassword: jest.fn(),
   findOrCreateUserFromLinkedin: jest.fn(),
-  generateAccessToken: jest.fn(),
 };
 
 describe('AuthController', () => {
@@ -110,11 +110,11 @@ describe('AuthController', () => {
   });
 
   describe('linkedInCallback', () => {
-    it('should call findOrCreateUserFromLinkedin and return json response', async () => {
-      const mockUser = { id: 'user-1', email: 'test@example.com' };
+    it('should call findOrCreateUserFromLinkedin and return the wrapped response', async () => {
       mockAuthService.findOrCreateUserFromLinkedin.mockResolvedValue({
-        accessToken: 'jwt-token',
-        user: mockUser,
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'jwt-token',
       });
 
       const mockProfile = { id: 'linkedin-123', displayName: 'Test User' };
@@ -126,17 +126,16 @@ describe('AuthController', () => {
       const mockReq = { user: mockOAuthUser } as Partial<
         import('express').Request
       >;
-      const mockJson = jest.fn();
-      const mockRes = { json: mockJson } as Partial<import('express').Response>;
 
-      await controller.linkedInCallback(mockReq, mockRes);
+      const result = await controller.linkedInCallback(mockReq as never);
 
       expect(mockAuthService.findOrCreateUserFromLinkedin).toHaveBeenCalledWith(
         mockOAuthUser,
       );
-      expect(mockJson).toHaveBeenCalledWith({
-        accessToken: 'jwt-token',
-        user: mockUser,
+      expect(result).toEqual({
+        message: 'User fetched successfully.',
+        code: HttpStatus.OK,
+        data: 'jwt-token',
       });
     });
   });

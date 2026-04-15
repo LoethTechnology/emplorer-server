@@ -1,7 +1,7 @@
 import {
   decryptUserName,
   encryptUserName,
-} from '../../utils/user-name-encryption';
+} from '../../utils/user-name-encryption/user-name-encryption';
 
 type MutableRecord = Record<string, unknown>;
 

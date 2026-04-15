@@ -1,28 +1,53 @@
 import { Injectable } from '@nestjs/common';
+import { CrudEnums, DbModels } from '../../shared/types/model.types';
+import type { ApiSuccessResponse } from '../../shared/utils/response/response.utils';
+import { CrudResponse } from '../../shared/utils/response/response.utils';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Injectable()
 export class ReviewsService {
-  create(createReviewDto: CreateReviewDto) {
+  create(
+    createReviewDto: CreateReviewDto,
+  ): ApiSuccessResponse<CreateReviewDto> {
     void createReviewDto;
-    return 'This action adds a new review';
+
+    return CrudResponse(
+      DbModels.COMPANY_REVIEW,
+      CrudEnums.CREATE,
+      createReviewDto,
+    );
   }
 
-  findAll() {
-    return `This action returns all reviews`;
+  findAll(): ApiSuccessResponse<string[]> {
+    return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.READ, []);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  findOne(id: number): ApiSuccessResponse<string> {
+    return CrudResponse(
+      DbModels.COMPANY_REVIEW,
+      CrudEnums.READ,
+      `This action returns a #${id} review`,
+    );
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
+  update(
+    id: number,
+    updateReviewDto: UpdateReviewDto,
+  ): ApiSuccessResponse<{ id: number; review: UpdateReviewDto }> {
     void updateReviewDto;
-    return `This action updates a #${id} review`;
+
+    return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.UPDATE, {
+      id,
+      review: updateReviewDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  remove(id: number): ApiSuccessResponse<string> {
+    return CrudResponse(
+      DbModels.COMPANY_REVIEW,
+      CrudEnums.DELETE,
+      `This action removes a #${id} review`,
+    );
   }
 }

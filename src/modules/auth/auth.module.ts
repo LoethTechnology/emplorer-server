@@ -5,6 +5,8 @@ import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthHandlerService } from './handlers/auth.handler.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LinkedInStrategy } from './strategies/linkedin.strategy';
 
@@ -19,14 +21,20 @@ import { LinkedInStrategy } from './strategies/linkedin.strategy';
         signOptions: {
           expiresIn: configService.get<string>(
             'JWT_EXPIRES_IN',
-            '7d',
+            '1d',
           ) as StringValue,
         },
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LinkedInStrategy, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  providers: [
+    AuthService,
+    AuthHandlerService,
+    JwtAuthGuard,
+    LinkedInStrategy,
+    JwtStrategy,
+  ],
+  exports: [AuthService, AuthHandlerService, JwtAuthGuard, JwtModule],
 })
 export class AuthModule {}

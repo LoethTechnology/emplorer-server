@@ -1,13 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import type { Request, Response } from 'express';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import type { Request } from 'express';
 import { AuthService } from './auth.service';
 import type {
   AuthTokenResponse,
@@ -75,13 +67,9 @@ export class AuthController {
   @Get('linkedin/callback')
   @ApiOperation({ summary: 'LinkedIn OAuth callback' })
   @UseGuards(LinkedInAuthGuard)
-  async linkedInCallback(
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<void> {
+  async linkedInCallback(@Req() req: Request): Promise<AuthTokenResponse> {
     const oauthUser = req.user as LinkedInOAuthUser;
-    const { accessToken, user } =
-      await this.authService.findOrCreateUserFromLinkedin(oauthUser);
-    res.json({ accessToken, user });
+
+    return this.authService.findOrCreateUserFromLinkedin(oauthUser);
   }
 }
