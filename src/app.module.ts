@@ -5,9 +5,9 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
-import { UsersModule } from './modules/users/users.module';
+import { UserModule } from './modules/user/user.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { PrismaModule } from './shared/modules/prisma/prisma.module';
+import { PrismaModule } from './shared/modules/prisma';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { PrismaModule } from './shared/modules/prisma/prisma.module';
     }),
     PrismaModule,
     AuthModule,
-    UsersModule,
+    UserModule,
     ReviewsModule,
   ],
   controllers: [AppController],

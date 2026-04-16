@@ -1,10 +1,10 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { AuthHandlerService } from './auth.handler.service';
-import { PrismaService } from '../../../shared/modules/prisma/prisma.service';
+import { PrismaService } from '../../../shared/modules/prisma';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-jest.mock('../../../shared/modules/prisma/prisma.service', () => ({
+jest.mock('../../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
 

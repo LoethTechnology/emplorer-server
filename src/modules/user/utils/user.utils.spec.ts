@@ -3,20 +3,23 @@ import {
   normalizeEmailValue,
   normalizeOptionalUrl,
   trimStringValue,
-  USERS_RESPONSE_MESSAGES,
-} from './users.utils';
+  USER_RESPONSE_MESSAGES,
+} from './user.utils';
 
-describe('users.utils', () => {
-  describe('USERS_RESPONSE_MESSAGES', () => {
+describe('user.utils', () => {
+  describe('USER_RESPONSE_MESSAGES', () => {
     it('exposes the expected response message strings', () => {
-      expect(USERS_RESPONSE_MESSAGES).toEqual({
+      expect(USER_RESPONSE_MESSAGES).toEqual({
         localAccountExists: 'A local account already exists for this email.',
         emailAlreadyInUse: 'A user already exists for this email.',
         userNotFound: 'User account not found.',
+        companyNotFound: 'Company not found.',
+        reviewNotFound: 'Review not found.',
         invalidPassword: 'Current password is incorrect.',
         localPasswordRequired: 'A local password is not set for this account.',
         passwordUpdated: 'Password updated successfully.',
         accountDeleted: 'Account deleted successfully.',
+        reviewDeleted: 'Review deleted successfully.',
         accountDeleteBlocked:
           'User account cannot be deleted while related records still exist.',
       });

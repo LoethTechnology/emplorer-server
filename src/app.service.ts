@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CrudEnums, DbModels } from './shared/types/model.types';
-import {
-  type ApiSuccessResponse,
-  CrudResponse,
-} from './shared/utils/response/response.utils';
+import { CrudEnums, DbModels } from './shared/types';
+import { type ApiSuccessResponse, CrudResponse } from './shared/utils/response';
 
 @Injectable()
 export class AppService {

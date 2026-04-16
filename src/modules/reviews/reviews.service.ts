@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CrudEnums, DbModels } from '../../shared/types/model.types';
-import type { ApiSuccessResponse } from '../../shared/utils/response/response.utils';
-import { CrudResponse } from '../../shared/utils/response/response.utils';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { CrudEnums, DbModels } from '../../shared/types';
+import type { ApiSuccessResponse } from '../../shared/utils/response';
+import { CrudResponse } from '../../shared/utils/response';
+import { CreateReviewDto, UpdateReviewDto } from './dto';
 
 @Injectable()
 export class ReviewsService {

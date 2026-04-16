@@ -1,6 +1,6 @@
 import type { Profile } from 'passport-linkedin-oauth2';
 import type { user } from 'prisma/generated/prisma/client';
-import type { ApiSuccessResponse } from '../../shared/utils/response/response.utils';
+import type { ApiSuccessResponse } from '../../shared/utils/response';
 
 export type PublicUser = Omit<user, 'password'>;
 

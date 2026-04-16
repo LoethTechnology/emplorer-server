@@ -1,18 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
-import { PrismaService } from '../../shared/modules/prisma/prisma.service';
-import { CrudEnums, DbModels } from '../../shared/types/model.types';
-import { CrudResponse } from '../../shared/utils/response/response.utils';
+import { PrismaService } from '../../shared/modules/prisma';
+import { CrudEnums, DbModels } from '../../shared/types';
+import { CrudResponse } from '../../shared/utils/response';
 import type {
   AuthTokenResponse,
   ForgotPasswordResponse,
   LinkedInOAuthUser,
   MessageResponse,
 } from './auth.types';
-import type { ForgotPasswordDto } from './dto/forgot-password.dto';
-import type { LoginAuthDto } from './dto/login-auth.dto';
-import type { ResetPasswordDto } from './dto/reset-password.dto';
+import type { ForgotPasswordDto, LoginAuthDto, ResetPasswordDto } from './dto';
 import { AuthHandlerService } from './handlers/auth.handler.service';
 import { AUTH_RESPONSE_MESSAGES } from './utils/auth.utils';
 

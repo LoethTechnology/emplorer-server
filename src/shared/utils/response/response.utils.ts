@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { CrudEnums, DbModels } from '../../types/model.types';
+import { CrudEnums, DbModels } from '../../types';
 
 export interface ApiSuccessResponse<T = unknown> {
   message: string;

@@ -8,9 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
-import type { ApiSuccessResponse } from '../../shared/utils/response/response.utils';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import type { ApiSuccessResponse } from '../../shared/utils/response';
+import { CreateReviewDto, UpdateReviewDto } from './dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('reviews')
