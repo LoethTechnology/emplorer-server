@@ -7,7 +7,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
-import { PrismaService } from '../../shared/modules/prisma/prisma.service';
+import { PrismaService } from '../../shared/modules/prisma';
 import { UserService } from './user.service';
 
 jest.mock('argon2', () => ({
@@ -15,7 +15,7 @@ jest.mock('argon2', () => ({
   verify: jest.fn(),
 }));
 
-jest.mock('../../shared/modules/prisma/prisma.service', () => ({
+jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
 

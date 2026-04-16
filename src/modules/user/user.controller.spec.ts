@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
-jest.mock('../../shared/modules/prisma/prisma.service', () => ({
+jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
 

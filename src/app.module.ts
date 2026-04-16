@@ -7,7 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { UserModule } from './modules/user/user.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { PrismaModule } from './shared/modules/prisma/prisma.module';
+import { PrismaModule } from './shared/modules/prisma';
 
 @Module({
   imports: [

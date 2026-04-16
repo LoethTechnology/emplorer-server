@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
-import { PrismaService } from '../../shared/modules/prisma/prisma.service';
-import { CrudEnums, DbModels } from '../../shared/types/model.types';
-import { CrudResponse } from '../../shared/utils/response/response.utils';
+import { PrismaService } from '../../shared/modules/prisma';
+import { CrudEnums, DbModels } from '../../shared/types';
+import { CrudResponse } from '../../shared/utils/response';
 import type {
   AuthTokenResponse,
   ForgotPasswordResponse,

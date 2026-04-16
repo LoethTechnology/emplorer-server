@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthService } from './auth.service';
 import { AuthHandlerService } from './handlers/auth.handler.service';
-import { PrismaService } from '../../shared/modules/prisma/prisma.service';
+import { PrismaService } from '../../shared/modules/prisma';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 
 jest.mock('argon2', () => ({
@@ -11,7 +11,7 @@ jest.mock('argon2', () => ({
   verify: jest.fn(),
 }));
 
-jest.mock('../../shared/modules/prisma/prisma.service', () => ({
+jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
 

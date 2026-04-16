@@ -1,4 +1,4 @@
-import { PaginationResponseInterface } from '@shared/types/shared.types';
+import { PaginationResponseInterface } from '@shared/types';
 
 export const PaginateRes = (
   data: any[],

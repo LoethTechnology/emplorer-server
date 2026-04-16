@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import type { auth_otp, user } from 'prisma/generated/prisma/client';
 import type { LinkedInOAuthUser } from '../auth.types';
-import { PrismaService } from '../../../shared/modules/prisma/prisma.service';
+import { PrismaService } from '../../../shared/modules/prisma';
 
 const INVALID_CREDENTIALS_MESSAGE = 'Invalid email or password.';
 const INVALID_RESET_OTP_MESSAGE = 'Invalid or expired OTP.';
