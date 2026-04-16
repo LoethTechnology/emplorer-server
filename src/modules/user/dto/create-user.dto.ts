@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsEmail,
@@ -11,37 +11,42 @@ import {
   normalizeEmailValue,
   normalizeOptionalUrl,
   trimStringValue,
-} from '../utils/users.utils';
+} from '../utils/user.utils';
 
-export class UpdateUserDto {
-  @ApiPropertyOptional({
+export class CreateUserDto {
+  @ApiProperty({
     example: 'test@test.com',
     description: 'The email of the user',
   })
-  @IsOptional()
   @IsEmail()
   @Transform(({ value }) => normalizeEmailValue(value))
-  email?: string;
+  email!: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    example: 'password123',
+    description: 'The password of the user',
+  })
+  @IsString()
+  @MinLength(8)
+  password!: string;
+
+  @ApiProperty({
     example: 'John',
     description: 'The first name of the user',
   })
-  @IsOptional()
   @IsString()
   @MinLength(1)
   @Transform(({ value }) => trimStringValue(value))
-  first_name?: string;
+  first_name!: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     example: 'Doe',
     description: 'The last name of the user',
   })
-  @IsOptional()
   @IsString()
   @MinLength(1)
   @Transform(({ value }) => trimStringValue(value))
-  last_name?: string;
+  last_name!: string;
 
   @ApiPropertyOptional({
     example: 'https://example.com/avatar.jpg',

@@ -16,4 +16,4 @@ export interface UserWithPassword {
 
 export type UserResponse = ApiSuccessResponse<PublicUser>;
 
-export type UsersMessageResponse = ApiSuccessResponse<string>;
+export type UserMessageResponse = ApiSuccessResponse<string>;

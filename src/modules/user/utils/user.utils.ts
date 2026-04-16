@@ -1,4 +1,4 @@
-export const USERS_RESPONSE_MESSAGES = {
+export const USER_RESPONSE_MESSAGES = {
   localAccountExists: 'A local account already exists for this email.',
   emailAlreadyInUse: 'A user already exists for this email.',
   userNotFound: 'User account not found.',

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 jest.mock('../../shared/modules/prisma/prisma.service', () => ({
   PrismaService: jest.fn(),
 }));
 
-const mockUsersService = {
+const mockUserService = {
   create: jest.fn(),
   findMe: jest.fn(),
   updateMe: jest.fn(),
@@ -14,24 +14,24 @@ const mockUsersService = {
   removeMe: jest.fn(),
 };
 
-describe('UsersController', () => {
-  let controller: UsersController;
+describe('UserController', () => {
+  let controller: UserController;
 
   beforeEach(async () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
-      providers: [{ provide: UsersService, useValue: mockUsersService }],
+      controllers: [UserController],
+      providers: [{ provide: UserService, useValue: mockUserService }],
     }).compile();
 
-    controller = module.get<UsersController>(UsersController);
+    controller = module.get<UserController>(UserController);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should delegate create to UsersService', async () => {
+  it('should delegate create to UserService', async () => {
     const createUserDto = {
       email: 'test@example.com',
       password: 'password123',
@@ -41,30 +41,30 @@ describe('UsersController', () => {
 
     await controller.create(createUserDto);
 
-    expect(mockUsersService.create).toHaveBeenCalledWith(createUserDto);
+    expect(mockUserService.create).toHaveBeenCalledWith(createUserDto);
   });
 
-  it('should delegate findMe to UsersService with the authenticated user id', async () => {
+  it('should delegate findMe to UserService with the authenticated user id', async () => {
     const req = { user: { sub: 'user-1' } } as never;
 
     await controller.findMe(req);
 
-    expect(mockUsersService.findMe).toHaveBeenCalledWith('user-1');
+    expect(mockUserService.findMe).toHaveBeenCalledWith('user-1');
   });
 
-  it('should delegate updateMe to UsersService with the authenticated user id', async () => {
+  it('should delegate updateMe to UserService with the authenticated user id', async () => {
     const req = { user: { sub: 'user-2' } } as never;
     const updateUserDto = { first_name: 'Updated' };
 
     await controller.updateMe(req, updateUserDto);
 
-    expect(mockUsersService.updateMe).toHaveBeenCalledWith(
+    expect(mockUserService.updateMe).toHaveBeenCalledWith(
       'user-2',
       updateUserDto,
     );
   });
 
-  it('should delegate updatePassword to UsersService with the authenticated user id', async () => {
+  it('should delegate updatePassword to UserService with the authenticated user id', async () => {
     const req = { user: { sub: 'user-3' } } as never;
     const updatePasswordDto = {
       oldPassword: 'oldPassword123',
@@ -73,17 +73,17 @@ describe('UsersController', () => {
 
     await controller.updatePassword(req, updatePasswordDto);
 
-    expect(mockUsersService.updatePassword).toHaveBeenCalledWith(
+    expect(mockUserService.updatePassword).toHaveBeenCalledWith(
       'user-3',
       updatePasswordDto,
     );
   });
 
-  it('should delegate removeMe to UsersService with the authenticated user id', async () => {
+  it('should delegate removeMe to UserService with the authenticated user id', async () => {
     const req = { user: { sub: 'user-4' } } as never;
 
     await controller.removeMe(req);
 
-    expect(mockUsersService.removeMe).toHaveBeenCalledWith('user-4');
+    expect(mockUserService.removeMe).toHaveBeenCalledWith('user-4');
   });
 });

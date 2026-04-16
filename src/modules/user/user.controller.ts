@@ -18,17 +18,17 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import type {
   AuthenticatedRequest,
+  UserMessageResponse,
   UserResponse,
-  UsersMessageResponse,
-} from './users.types';
+} from './user.types';
 
-@ApiTags('users')
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@ApiTags('user')
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new user account' })
@@ -39,7 +39,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 409, description: 'User account already exists' })
   create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
-    return this.usersService.create(createUserDto);
+    return this.userService.create(createUserDto);
   }
 
   @Get('me')
@@ -50,7 +50,7 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
   findMe(@Req() req: AuthenticatedRequest): Promise<UserResponse> {
-    return this.usersService.findMe(req.user.sub);
+    return this.userService.findMe(req.user.sub);
   }
 
   @Patch('me')
@@ -68,7 +68,7 @@ export class UsersController {
     @Req() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponse> {
-    return this.usersService.updateMe(req.user.sub, updateUserDto);
+    return this.userService.updateMe(req.user.sub, updateUserDto);
   }
 
   @Patch('password')
@@ -82,11 +82,8 @@ export class UsersController {
   updatePassword(
     @Req() req: AuthenticatedRequest,
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
-  ): Promise<UsersMessageResponse> {
-    return this.usersService.updatePassword(
-      req.user.sub,
-      updateUserPasswordDto,
-    );
+  ): Promise<UserMessageResponse> {
+    return this.userService.updatePassword(req.user.sub, updateUserPasswordDto);
   }
 
   @Delete('me')
@@ -100,7 +97,7 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
   @ApiResponse({ status: 409, description: 'User account deletion is blocked' })
-  removeMe(@Req() req: AuthenticatedRequest): Promise<UsersMessageResponse> {
-    return this.usersService.removeMe(req.user.sub);
+  removeMe(@Req() req: AuthenticatedRequest): Promise<UserMessageResponse> {
+    return this.userService.removeMe(req.user.sub);
   }
 }

@@ -13,17 +13,17 @@ import type { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
 import type {
   PublicUser,
+  UserMessageResponse,
   UserResponse,
   UserWithPassword,
-  UsersMessageResponse,
-} from './users.types';
+} from './user.types';
 import {
   isForeignKeyConstraintError,
-  USERS_RESPONSE_MESSAGES,
-} from './utils/users.utils';
+  USER_RESPONSE_MESSAGES,
+} from './utils/user.utils';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
@@ -40,11 +40,11 @@ export class UsersService {
     };
 
     if (existingUser?.deleted_at) {
-      throw new ConflictException(USERS_RESPONSE_MESSAGES.emailAlreadyInUse);
+      throw new ConflictException(USER_RESPONSE_MESSAGES.emailAlreadyInUse);
     }
 
     if (existingUser?.password) {
-      throw new ConflictException(USERS_RESPONSE_MESSAGES.localAccountExists);
+      throw new ConflictException(USER_RESPONSE_MESSAGES.localAccountExists);
     }
 
     if (existingUser) {
@@ -82,7 +82,7 @@ export class UsersService {
       });
 
       if (existingUser && existingUser.id !== userId) {
-        throw new ConflictException(USERS_RESPONSE_MESSAGES.emailAlreadyInUse);
+        throw new ConflictException(USER_RESPONSE_MESSAGES.emailAlreadyInUse);
       }
     }
 
@@ -97,16 +97,16 @@ export class UsersService {
   async updatePassword(
     userId: string,
     updateUserPasswordDto: UpdateUserPasswordDto,
-  ): Promise<UsersMessageResponse> {
+  ): Promise<UserMessageResponse> {
     const dbUser = await this.findUserWithPasswordById(userId);
 
     if (dbUser.deleted_at) {
-      throw new NotFoundException(USERS_RESPONSE_MESSAGES.userNotFound);
+      throw new NotFoundException(USER_RESPONSE_MESSAGES.userNotFound);
     }
 
     if (!dbUser.email || !dbUser.password) {
       throw new BadRequestException(
-        USERS_RESPONSE_MESSAGES.localPasswordRequired,
+        USER_RESPONSE_MESSAGES.localPasswordRequired,
       );
     }
 
@@ -116,7 +116,7 @@ export class UsersService {
     );
 
     if (!currentPasswordMatches) {
-      throw new BadRequestException(USERS_RESPONSE_MESSAGES.invalidPassword);
+      throw new BadRequestException(USER_RESPONSE_MESSAGES.invalidPassword);
     }
 
     const nextPasswordHash = await argon2.hash(
@@ -131,11 +131,11 @@ export class UsersService {
     return CrudResponse(
       DbModels.USER,
       CrudEnums.UPDATE,
-      USERS_RESPONSE_MESSAGES.passwordUpdated,
+      USER_RESPONSE_MESSAGES.passwordUpdated,
     );
   }
 
-  async removeMe(userId: string): Promise<UsersMessageResponse> {
+  async removeMe(userId: string): Promise<UserMessageResponse> {
     await this.findActiveUserById(userId);
 
     try {
@@ -145,7 +145,7 @@ export class UsersService {
     } catch (error) {
       if (isForeignKeyConstraintError(error)) {
         throw new ConflictException(
-          USERS_RESPONSE_MESSAGES.accountDeleteBlocked,
+          USER_RESPONSE_MESSAGES.accountDeleteBlocked,
         );
       }
 
@@ -155,7 +155,7 @@ export class UsersService {
     return CrudResponse(
       DbModels.USER,
       CrudEnums.DELETE,
-      USERS_RESPONSE_MESSAGES.accountDeleted,
+      USER_RESPONSE_MESSAGES.accountDeleted,
     );
   }
 
@@ -165,7 +165,7 @@ export class UsersService {
     });
 
     if (!dbUser || dbUser.deleted_at) {
-      throw new NotFoundException(USERS_RESPONSE_MESSAGES.userNotFound);
+      throw new NotFoundException(USER_RESPONSE_MESSAGES.userNotFound);
     }
 
     return dbUser;
@@ -185,7 +185,7 @@ export class UsersService {
     })) as UserWithPassword | null;
 
     if (!dbUser) {
-      throw new NotFoundException(USERS_RESPONSE_MESSAGES.userNotFound);
+      throw new NotFoundException(USER_RESPONSE_MESSAGES.userNotFound);
     }
 
     return dbUser;

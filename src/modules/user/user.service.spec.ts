@@ -7,7 +7,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import * as argon2 from 'argon2';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
 jest.mock('argon2', () => ({
   hash: jest.fn(),
@@ -27,20 +27,20 @@ const mockPrismaService = {
   },
 };
 
-describe('UsersService', () => {
-  let service: UsersService;
+describe('UserService', () => {
+  let service: UserService;
 
   beforeEach(async () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
+        UserService,
         { provide: PrismaService, useValue: mockPrismaService },
       ],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
