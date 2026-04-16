@@ -13,22 +13,22 @@ export class BaseQueryDto {
   @Transform(({ value }) => parseInt(value))
   @IsPositive()
   @Min(1)
-  page?: number;
+  page?: number | undefined;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
   @IsPositive()
   @Min(1)
-  limit?: number;
+  limit?: number | undefined;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Length(0, 255)
-  search?: string;
+  search?: string | undefined;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(SortEnum)
-  sort?: SortEnum;
+  sort?: SortEnum | undefined;
 }
