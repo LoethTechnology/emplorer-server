@@ -10,25 +10,25 @@ export enum SortEnum {
 export class BaseQueryDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
+  @Transform((tn) => parseInt(tn.value as string))
   @IsPositive()
   @Min(1)
-  page?: number | undefined;
+  page?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
+  @Transform((tn) => parseInt(tn.value as string))
   @IsPositive()
   @Min(1)
-  limit?: number | undefined;
+  limit?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Length(0, 255)
-  search?: string | undefined;
+  search?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(SortEnum)
-  sort?: SortEnum | undefined;
+  sort?: SortEnum;
 }
