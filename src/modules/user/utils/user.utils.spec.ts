@@ -13,10 +13,13 @@ describe('user.utils', () => {
         localAccountExists: 'A local account already exists for this email.',
         emailAlreadyInUse: 'A user already exists for this email.',
         userNotFound: 'User account not found.',
+        companyNotFound: 'Company not found.',
+        reviewNotFound: 'Review not found.',
         invalidPassword: 'Current password is incorrect.',
         localPasswordRequired: 'A local password is not set for this account.',
         passwordUpdated: 'Password updated successfully.',
         accountDeleted: 'Account deleted successfully.',
+        reviewDeleted: 'Review deleted successfully.',
         accountDeleteBlocked:
           'User account cannot be deleted while related records still exist.',
       });

@@ -11,6 +11,11 @@ const mockUserService = {
   findMe: jest.fn(),
   updateMe: jest.fn(),
   updatePassword: jest.fn(),
+  createMyReview: jest.fn(),
+  findMyReviews: jest.fn(),
+  findMyReview: jest.fn(),
+  updateMyReview: jest.fn(),
+  removeMyReview: jest.fn(),
   removeMe: jest.fn(),
 };
 
@@ -79,11 +84,74 @@ describe('UserController', () => {
     );
   });
 
-  it('should delegate removeMe to UserService with the authenticated user id', async () => {
+  it('should delegate createMyReview to UserService with the authenticated user id', async () => {
     const req = { user: { sub: 'user-4' } } as never;
+    const createReviewDto = {
+      company_id: 'company-1',
+      body: 'A strong team with clear expectations.',
+      overall_rating: 5,
+      status: 'DRAFT',
+    };
+
+    await controller.createMyReview(req, createReviewDto);
+
+    expect(mockUserService.createMyReview).toHaveBeenCalledWith(
+      'user-4',
+      createReviewDto,
+    );
+  });
+
+  it('should delegate findMyReviews to UserService with the authenticated user id', async () => {
+    const req = { user: { sub: 'user-5' } } as never;
+
+    await controller.findMyReviews(req);
+
+    expect(mockUserService.findMyReviews).toHaveBeenCalledWith('user-5');
+  });
+
+  it('should delegate findMyReview to UserService with the authenticated user id and review id', async () => {
+    const req = { user: { sub: 'user-6' } } as never;
+
+    await controller.findMyReview(req, 'review-1');
+
+    expect(mockUserService.findMyReview).toHaveBeenCalledWith(
+      'user-6',
+      'review-1',
+    );
+  });
+
+  it('should delegate updateMyReview to UserService with the authenticated user id and review id', async () => {
+    const req = { user: { sub: 'user-7' } } as never;
+    const updateReviewDto = {
+      body: 'Updated review body',
+      status: 'PUBLISHED',
+    };
+
+    await controller.updateMyReview(req, 'review-2', updateReviewDto);
+
+    expect(mockUserService.updateMyReview).toHaveBeenCalledWith(
+      'user-7',
+      'review-2',
+      updateReviewDto,
+    );
+  });
+
+  it('should delegate removeMyReview to UserService with the authenticated user id and review id', async () => {
+    const req = { user: { sub: 'user-8' } } as never;
+
+    await controller.removeMyReview(req, 'review-3');
+
+    expect(mockUserService.removeMyReview).toHaveBeenCalledWith(
+      'user-8',
+      'review-3',
+    );
+  });
+
+  it('should delegate removeMe to UserService with the authenticated user id', async () => {
+    const req = { user: { sub: 'user-9' } } as never;
 
     await controller.removeMe(req);
 
-    expect(mockUserService.removeMe).toHaveBeenCalledWith('user-4');
+    expect(mockUserService.removeMe).toHaveBeenCalledWith('user-9');
   });
 });

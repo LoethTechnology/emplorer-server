@@ -5,15 +5,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
+import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
 import { CrudEnums, DbModels } from '../../shared/types/model.types';
 import { CrudResponse } from '../../shared/utils/response/response.utils';
 import type { CreateUserDto } from './dto/create-user.dto';
+import type { CreateUserReviewDto } from './dto/create-user-review.dto';
 import type { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
+import type { UpdateUserReviewDto } from './dto/update-user-review.dto';
 import type {
   PublicUser,
   UserMessageResponse,
+  UserReview,
+  UserReviewResponse,
+  UserReviewsResponse,
   UserResponse,
   UserWithPassword,
 } from './user.types';
@@ -135,6 +141,104 @@ export class UserService {
     );
   }
 
+  async createMyReview(
+    userId: string,
+    createUserReviewDto: CreateUserReviewDto,
+  ): Promise<UserReviewResponse> {
+    await this.findActiveUserById(userId);
+    await this.findCompanyOrThrow(createUserReviewDto.company_id);
+
+    const reviewStatus = createUserReviewDto.status ?? ReviewStatus.DRAFT;
+    const createdReview = await this.prismaService.company_review.create({
+      data: {
+        company_id: createUserReviewDto.company_id,
+        author_id: userId,
+        body: createUserReviewDto.body,
+        overall_rating: createUserReviewDto.overall_rating,
+        employment_context: createUserReviewDto.employment_context ?? null,
+        would_recommend: createUserReviewDto.would_recommend ?? null,
+        status: reviewStatus,
+        published_at:
+          reviewStatus === ReviewStatus.PUBLISHED ? new Date() : null,
+      },
+    });
+
+    return CrudResponse(
+      DbModels.COMPANY_REVIEW,
+      CrudEnums.CREATE,
+      createdReview,
+    );
+  }
+
+  async findMyReviews(userId: string): Promise<UserReviewsResponse> {
+    await this.findActiveUserById(userId);
+
+    const reviews = await this.prismaService.company_review.findMany({
+      where: { author_id: userId },
+      orderBy: { created_at: 'desc' },
+    });
+
+    return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.READ, reviews);
+  }
+
+  async findMyReview(
+    userId: string,
+    reviewId: string,
+  ): Promise<UserReviewResponse> {
+    await this.findActiveUserById(userId);
+    const review = await this.findOwnedReviewOrThrow(userId, reviewId);
+
+    return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.READ, review);
+  }
+
+  async updateMyReview(
+    userId: string,
+    reviewId: string,
+    updateUserReviewDto: UpdateUserReviewDto,
+  ): Promise<UserReviewResponse> {
+    await this.findActiveUserById(userId);
+    const existingReview = await this.findOwnedReviewOrThrow(userId, reviewId);
+    const nextStatus = updateUserReviewDto.status ?? existingReview.status;
+
+    const updatedReview = await this.prismaService.company_review.update({
+      where: { id: reviewId },
+      data: {
+        ...updateUserReviewDto,
+        employment_context:
+          updateUserReviewDto.employment_context ??
+          existingReview.employment_context,
+        would_recommend:
+          updateUserReviewDto.would_recommend ?? existingReview.would_recommend,
+        status: nextStatus,
+        published_at: this.resolvePublishedAt(existingReview, nextStatus),
+      },
+    });
+
+    return CrudResponse(
+      DbModels.COMPANY_REVIEW,
+      CrudEnums.UPDATE,
+      updatedReview,
+    );
+  }
+
+  async removeMyReview(
+    userId: string,
+    reviewId: string,
+  ): Promise<UserMessageResponse> {
+    await this.findActiveUserById(userId);
+    await this.findOwnedReviewOrThrow(userId, reviewId);
+
+    await this.prismaService.company_review.delete({
+      where: { id: reviewId },
+    });
+
+    return CrudResponse(
+      DbModels.COMPANY_REVIEW,
+      CrudEnums.DELETE,
+      USER_RESPONSE_MESSAGES.reviewDeleted,
+    );
+  }
+
   async removeMe(userId: string): Promise<UserMessageResponse> {
     await this.findActiveUserById(userId);
 
@@ -171,6 +275,35 @@ export class UserService {
     return dbUser;
   }
 
+  private async findCompanyOrThrow(companyId: string): Promise<void> {
+    const company = await this.prismaService.company.findUnique({
+      where: { id: companyId },
+      select: { id: true },
+    });
+
+    if (!company) {
+      throw new NotFoundException(USER_RESPONSE_MESSAGES.companyNotFound);
+    }
+  }
+
+  private async findOwnedReviewOrThrow(
+    userId: string,
+    reviewId: string,
+  ): Promise<UserReview> {
+    const review = await this.prismaService.company_review.findFirst({
+      where: {
+        id: reviewId,
+        author_id: userId,
+      },
+    });
+
+    if (!review) {
+      throw new NotFoundException(USER_RESPONSE_MESSAGES.reviewNotFound);
+    }
+
+    return review;
+  }
+
   private async findUserWithPasswordById(
     userId: string,
   ): Promise<UserWithPassword> {
@@ -203,5 +336,16 @@ export class UserService {
         deleted_at: true,
       },
     })) as UserWithPassword | null;
+  }
+
+  private resolvePublishedAt(
+    existingReview: UserReview,
+    nextStatus: ReviewStatus,
+  ): Date | null {
+    if (nextStatus !== ReviewStatus.PUBLISHED) {
+      return null;
+    }
+
+    return existingReview.published_at ?? new Date();
   }
 }

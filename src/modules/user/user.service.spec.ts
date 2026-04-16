@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as argon2 from 'argon2';
+import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
 import { UserService } from './user.service';
 
@@ -19,6 +20,16 @@ jest.mock('../../shared/modules/prisma/prisma.service', () => ({
 }));
 
 const mockPrismaService = {
+  company: {
+    findUnique: jest.fn(),
+  },
+  company_review: {
+    create: jest.fn(),
+    findMany: jest.fn(),
+    findFirst: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
   user: {
     findUnique: jest.fn(),
     create: jest.fn(),
@@ -377,6 +388,337 @@ describe('UserService', () => {
       await expect(service.removeMe('user-12')).rejects.toBeInstanceOf(
         ConflictException,
       );
+    });
+  });
+
+  describe('createMyReview', () => {
+    it('should create a draft review for the current user', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-1',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company.findUnique.mockResolvedValue({
+        id: 'company-1',
+      });
+      mockPrismaService.company_review.create.mockResolvedValue({
+        id: 'review-1',
+        company_id: 'company-1',
+        author_id: 'user-review-1',
+        body: 'Helpful details',
+        overall_rating: 4,
+        employment_context: null,
+        would_recommend: true,
+        status: ReviewStatus.DRAFT,
+        published_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+
+      const result = await service.createMyReview('user-review-1', {
+        company_id: 'company-1',
+        body: 'Helpful details',
+        overall_rating: 4,
+        would_recommend: true,
+      });
+
+      expect(mockPrismaService.company_review.create).toHaveBeenCalledWith({
+        data: {
+          company_id: 'company-1',
+          author_id: 'user-review-1',
+          body: 'Helpful details',
+          overall_rating: 4,
+          employment_context: null,
+          would_recommend: true,
+          status: ReviewStatus.DRAFT,
+          published_at: null,
+        },
+      });
+      expect(result).toEqual({
+        message: 'Company Review created successfully.',
+        code: HttpStatus.CREATED,
+        data: expect.objectContaining({
+          id: 'review-1',
+          author_id: 'user-review-1',
+        }),
+      });
+    });
+
+    it('should set published_at when creating a published review', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-2',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company.findUnique.mockResolvedValue({
+        id: 'company-2',
+      });
+      mockPrismaService.company_review.create.mockResolvedValue({
+        id: 'review-2',
+        company_id: 'company-2',
+        author_id: 'user-review-2',
+        body: 'Published review',
+        overall_rating: 5,
+        employment_context: 'Current employee',
+        would_recommend: true,
+        status: ReviewStatus.PUBLISHED,
+        published_at: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+
+      await service.createMyReview('user-review-2', {
+        company_id: 'company-2',
+        body: 'Published review',
+        overall_rating: 5,
+        employment_context: 'Current employee',
+        would_recommend: true,
+        status: ReviewStatus.PUBLISHED,
+      });
+
+      expect(mockPrismaService.company_review.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          status: ReviewStatus.PUBLISHED,
+          published_at: expect.any(Date),
+        }),
+      });
+    });
+
+    it('should throw when the target company does not exist', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-3',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.createMyReview('user-review-3', {
+          company_id: 'missing-company',
+          body: 'Missing company review',
+          overall_rating: 3,
+        }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('findMyReviews', () => {
+    it('should return only the current user reviews', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-4',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company_review.findMany.mockResolvedValue([
+        {
+          id: 'review-3',
+          author_id: 'user-review-4',
+          company_id: 'company-1',
+          body: 'Owned review',
+          overall_rating: 4,
+          employment_context: null,
+          would_recommend: null,
+          status: ReviewStatus.DRAFT,
+          published_at: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      ]);
+
+      const result = await service.findMyReviews('user-review-4');
+
+      expect(mockPrismaService.company_review.findMany).toHaveBeenCalledWith({
+        where: { author_id: 'user-review-4' },
+        orderBy: { created_at: 'desc' },
+      });
+      expect(result).toEqual({
+        message: 'Company Review fetched successfully.',
+        code: HttpStatus.OK,
+        data: expect.arrayContaining([
+          expect.objectContaining({
+            id: 'review-3',
+            author_id: 'user-review-4',
+          }),
+        ]),
+      });
+    });
+  });
+
+  describe('findMyReview', () => {
+    it('should return an owned review', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-5',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company_review.findFirst.mockResolvedValue({
+        id: 'review-4',
+        author_id: 'user-review-5',
+        company_id: 'company-2',
+        body: 'Owned review',
+        overall_rating: 4,
+        employment_context: null,
+        would_recommend: true,
+        status: ReviewStatus.DRAFT,
+        published_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+
+      const result = await service.findMyReview('user-review-5', 'review-4');
+
+      expect(result).toEqual({
+        message: 'Company Review fetched successfully.',
+        code: HttpStatus.OK,
+        data: expect.objectContaining({ id: 'review-4' }),
+      });
+    });
+
+    it('should throw when the review is not owned by the user', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-6',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company_review.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.findMyReview('user-review-6', 'foreign-review'),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('updateMyReview', () => {
+    it('should update an owned review and publish it when requested', async () => {
+      const existingReview = {
+        id: 'review-5',
+        author_id: 'user-review-7',
+        company_id: 'company-3',
+        body: 'Draft review',
+        overall_rating: 3,
+        employment_context: 'Former employee',
+        would_recommend: false,
+        status: ReviewStatus.DRAFT,
+        published_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-7',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company_review.findFirst.mockResolvedValue(
+        existingReview,
+      );
+      mockPrismaService.company_review.update.mockResolvedValue({
+        ...existingReview,
+        body: 'Published review',
+        status: ReviewStatus.PUBLISHED,
+        published_at: new Date(),
+      });
+
+      await service.updateMyReview('user-review-7', 'review-5', {
+        body: 'Published review',
+        status: ReviewStatus.PUBLISHED,
+      });
+
+      expect(mockPrismaService.company_review.update).toHaveBeenCalledWith({
+        where: { id: 'review-5' },
+        data: expect.objectContaining({
+          body: 'Published review',
+          status: ReviewStatus.PUBLISHED,
+          published_at: expect.any(Date),
+          employment_context: 'Former employee',
+          would_recommend: false,
+        }),
+      });
+    });
+  });
+
+  describe('removeMyReview', () => {
+    it('should delete an owned review', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        id: 'user-review-8',
+        email: 'user@example.com',
+        first_name: 'Review',
+        last_name: 'Author',
+        avatar_url: null,
+        linkedin_profile_url: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      });
+      mockPrismaService.company_review.findFirst.mockResolvedValue({
+        id: 'review-6',
+        author_id: 'user-review-8',
+        company_id: 'company-4',
+        body: 'Delete me',
+        overall_rating: 2,
+        employment_context: null,
+        would_recommend: null,
+        status: ReviewStatus.DRAFT,
+        published_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+      mockPrismaService.company_review.delete.mockResolvedValue({
+        id: 'review-6',
+      });
+
+      const result = await service.removeMyReview('user-review-8', 'review-6');
+
+      expect(mockPrismaService.company_review.delete).toHaveBeenCalledWith({
+        where: { id: 'review-6' },
+      });
+      expect(result).toEqual({
+        message: 'Company Review deleted successfully.',
+        code: HttpStatus.OK,
+        data: 'Review deleted successfully.',
+      });
     });
   });
 });
