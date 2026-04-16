@@ -15,6 +15,24 @@ Before opening a pull request:
 - keep changes focused on a single problem where practical
 - make sure your work aligns with the project's scope
 
+## Branch sync to avoid merge conflicts
+
+When your feature branch is behind `main`, GitHub can show conflicts even when changes look very similar. Before opening or updating a PR, sync your branch with the latest `main`:
+
+```bash
+git fetch origin
+git rebase origin/main
+```
+
+If you prefer merge commits:
+
+```bash
+git fetch origin
+git merge origin/main
+```
+
+Then run tests and push the updated branch.
+
 ## Development setup
 
 1. Install dependencies:
