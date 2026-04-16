@@ -10,9 +10,7 @@ import type {
   LinkedInOAuthUser,
   MessageResponse,
 } from './auth.types';
-import type { ForgotPasswordDto } from './dto/forgot-password.dto';
-import type { LoginAuthDto } from './dto/login-auth.dto';
-import type { ResetPasswordDto } from './dto/reset-password.dto';
+import type { ForgotPasswordDto, LoginAuthDto, ResetPasswordDto } from './dto';
 import { AuthHandlerService } from './handlers/auth.handler.service';
 import { AUTH_RESPONSE_MESSAGES } from './utils/auth.utils';
 

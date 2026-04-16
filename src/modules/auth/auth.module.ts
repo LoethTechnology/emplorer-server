@@ -6,9 +6,8 @@ import type { StringValue } from 'ms';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthHandlerService } from './handlers/auth.handler.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { LinkedInStrategy } from './strategies/linkedin.strategy';
+import { JwtAuthGuard } from './guards';
+import { JwtStrategy, LinkedInStrategy } from './strategies';
 
 @Module({
   imports: [

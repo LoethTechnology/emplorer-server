@@ -15,12 +15,14 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-import { CreateUserReviewDto } from './dto/create-user-review.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UpdateUserReviewDto } from './dto/update-user-review.dto';
+import { JwtAuthGuard } from '../auth/guards';
+import {
+  CreateUserDto,
+  CreateUserReviewDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+  UpdateUserReviewDto,
+} from './dto';
 import { UserService } from './user.service';
 import type {
   AuthenticatedRequest,

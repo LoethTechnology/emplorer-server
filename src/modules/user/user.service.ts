@@ -9,11 +9,13 @@ import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma/prisma.service';
 import { CrudEnums, DbModels } from '../../shared/types/model.types';
 import { CrudResponse } from '../../shared/utils/response/response.utils';
-import type { CreateUserDto } from './dto/create-user.dto';
-import type { CreateUserReviewDto } from './dto/create-user-review.dto';
-import type { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-import type { UpdateUserDto } from './dto/update-user.dto';
-import type { UpdateUserReviewDto } from './dto/update-user-review.dto';
+import type {
+  CreateUserDto,
+  CreateUserReviewDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+  UpdateUserReviewDto,
+} from './dto';
 import type {
   PublicUser,
   UserMessageResponse,

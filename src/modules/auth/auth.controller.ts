@@ -7,10 +7,8 @@ import type {
   LinkedInOAuthUser,
   MessageResponse,
 } from './auth.types';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { LoginAuthDto } from './dto/login-auth.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { LinkedInAuthGuard } from './guards/linkedin-auth.guard';
+import { ForgotPasswordDto, LoginAuthDto, ResetPasswordDto } from './dto';
+import { LinkedInAuthGuard } from './guards';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
