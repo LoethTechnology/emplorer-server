@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import type { ApiSuccessResponse } from '../../shared/utils/response';
 import { CreateReviewDto, UpdateReviewDto } from './dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { BaseQueryDto } from '@shared/dtos/base-query.dto';
 
 @ApiTags('reviews')
 @ApiTags('reviews')
@@ -31,8 +33,8 @@ export class ReviewsController {
   @Get()
   @ApiOperation({ summary: 'Get all reviews' })
   @ApiResponse({ status: 200, description: 'Return all reviews' })
-  findAll(): ApiSuccessResponse<string[]> {
-    return this.reviewsService.findAll();
+  findAll(@Query() query: BaseQueryDto): ApiSuccessResponse<string[]> {
+    return this.reviewsService.findAll(query);
   }
 
   @Get(':id')

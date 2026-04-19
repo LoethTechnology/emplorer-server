@@ -9,6 +9,7 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { UserService } from './user.service';
+import type { AuthenticatedRequest } from './user.types';
 
 jest.mock('argon2', () => ({
   hash: jest.fn(),
@@ -24,6 +25,7 @@ const mockPrismaService = {
     findUnique: jest.fn(),
   },
   company_review: {
+    count: jest.fn(),
     create: jest.fn(),
     findMany: jest.fn(),
     findFirst: jest.fn(),
@@ -37,6 +39,10 @@ const mockPrismaService = {
     delete: jest.fn(),
   },
 };
+
+const mockAuthenticatedUser = (sub: string): AuthenticatedRequest['user'] => ({
+  sub,
+});
 
 describe('UserService', () => {
   let service: UserService;
@@ -177,7 +183,7 @@ describe('UserService', () => {
         deleted_at: null,
       });
 
-      const result = await service.findMe('user-4');
+      const result = await service.findMe(mockAuthenticatedUser('user-4'));
 
       expect(result).toEqual({
         message: 'User fetched successfully.',
@@ -192,9 +198,9 @@ describe('UserService', () => {
     it('should throw when the active user account is missing', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.findMe('missing-user')).rejects.toBeInstanceOf(
-        NotFoundException,
-      );
+      await expect(
+        service.findMe(mockAuthenticatedUser('missing-user')),
+      ).rejects.toBeInstanceOf(NotFoundException);
     });
   });
 
@@ -225,7 +231,7 @@ describe('UserService', () => {
         deleted_at: null,
       });
 
-      const result = await service.updateMe('user-5', {
+      const result = await service.updateMe(mockAuthenticatedUser('user-5'), {
         email: 'next@example.com',
         first_name: 'Updated',
       });
@@ -273,7 +279,9 @@ describe('UserService', () => {
         });
 
       await expect(
-        service.updateMe('user-6', { email: 'taken@example.com' }),
+        service.updateMe(mockAuthenticatedUser('user-6'), {
+          email: 'taken@example.com',
+        }),
       ).rejects.toBeInstanceOf(ConflictException);
     });
   });
@@ -290,10 +298,13 @@ describe('UserService', () => {
       jest.mocked(argon2.verify).mockResolvedValue(true);
       jest.mocked(argon2.hash).mockResolvedValue('next-hash');
 
-      const result = await service.updatePassword('user-8', {
-        oldPassword: 'password123',
-        newPassword: 'newPassword123',
-      });
+      const result = await service.updatePassword(
+        mockAuthenticatedUser('user-8'),
+        {
+          oldPassword: 'password123',
+          newPassword: 'newPassword123',
+        },
+      );
 
       expect(argon2.verify).toHaveBeenCalledWith(
         'hashed-password',
@@ -319,7 +330,7 @@ describe('UserService', () => {
       });
 
       await expect(
-        service.updatePassword('user-9', {
+        service.updatePassword(mockAuthenticatedUser('user-9'), {
           oldPassword: 'password123',
           newPassword: 'newPassword123',
         }),
@@ -336,7 +347,7 @@ describe('UserService', () => {
       jest.mocked(argon2.verify).mockResolvedValue(false);
 
       await expect(
-        service.updatePassword('user-10', {
+        service.updatePassword(mockAuthenticatedUser('user-10'), {
           oldPassword: 'wrongPassword123',
           newPassword: 'newPassword123',
         }),
@@ -359,7 +370,7 @@ describe('UserService', () => {
       });
       mockPrismaService.user.delete.mockResolvedValue({ id: 'user-11' });
 
-      const result = await service.removeMe('user-11');
+      const result = await service.removeMe(mockAuthenticatedUser('user-11'));
 
       expect(mockPrismaService.user.delete).toHaveBeenCalledWith({
         where: { id: 'user-11' },
@@ -385,9 +396,9 @@ describe('UserService', () => {
       });
       mockPrismaService.user.delete.mockRejectedValue({ code: 'P2003' });
 
-      await expect(service.removeMe('user-12')).rejects.toBeInstanceOf(
-        ConflictException,
-      );
+      await expect(
+        service.removeMe(mockAuthenticatedUser('user-12')),
+      ).rejects.toBeInstanceOf(ConflictException);
     });
   });
 
@@ -421,12 +432,15 @@ describe('UserService', () => {
         updated_at: new Date(),
       });
 
-      const result = await service.createMyReview('user-review-1', {
-        company_id: 'company-1',
-        body: 'Helpful details',
-        overall_rating: 4,
-        would_recommend: true,
-      });
+      const result = await service.createMyReview(
+        mockAuthenticatedUser('user-review-1'),
+        {
+          company_id: 'company-1',
+          body: 'Helpful details',
+          overall_rating: 4,
+          would_recommend: true,
+        },
+      );
 
       expect(mockPrismaService.company_review.create).toHaveBeenCalledWith({
         data: {
@@ -479,7 +493,7 @@ describe('UserService', () => {
         updated_at: new Date(),
       });
 
-      await service.createMyReview('user-review-2', {
+      await service.createMyReview(mockAuthenticatedUser('user-review-2'), {
         company_id: 'company-2',
         body: 'Published review',
         overall_rating: 5,
@@ -511,7 +525,7 @@ describe('UserService', () => {
       mockPrismaService.company.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.createMyReview('user-review-3', {
+        service.createMyReview(mockAuthenticatedUser('user-review-3'), {
           company_id: 'missing-company',
           body: 'Missing company review',
           overall_rating: 3,
@@ -548,22 +562,34 @@ describe('UserService', () => {
           updated_at: new Date(),
         },
       ]);
+      mockPrismaService.company_review.count.mockResolvedValue(1);
 
-      const result = await service.findMyReviews('user-review-4');
+      const result = await service.findMyReviews(
+        mockAuthenticatedUser('user-review-4'),
+        {},
+      );
 
+      expect(mockPrismaService.company_review.count).toHaveBeenCalledWith({
+        where: { author_id: 'user-review-4' },
+      });
       expect(mockPrismaService.company_review.findMany).toHaveBeenCalledWith({
         where: { author_id: 'user-review-4' },
         orderBy: { created_at: 'desc' },
       });
       expect(result).toEqual({
-        message: 'Company Review fetched successfully.',
-        code: HttpStatus.OK,
+        currentCount: 1,
         data: expect.arrayContaining([
           expect.objectContaining({
             id: 'review-3',
             author_id: 'user-review-4',
           }),
         ]),
+        hasNextPage: false,
+        hasPrevPage: false,
+        limit: 10,
+        page: 1,
+        totalCount: 1,
+        totalPages: 1,
       });
     });
   });
@@ -595,7 +621,10 @@ describe('UserService', () => {
         updated_at: new Date(),
       });
 
-      const result = await service.findMyReview('user-review-5', 'review-4');
+      const result = await service.findMyReview(
+        mockAuthenticatedUser('user-review-5'),
+        'review-4',
+      );
 
       expect(result).toEqual({
         message: 'Company Review fetched successfully.',
@@ -619,7 +648,10 @@ describe('UserService', () => {
       mockPrismaService.company_review.findFirst.mockResolvedValue(null);
 
       await expect(
-        service.findMyReview('user-review-6', 'foreign-review'),
+        service.findMyReview(
+          mockAuthenticatedUser('user-review-6'),
+          'foreign-review',
+        ),
       ).rejects.toBeInstanceOf(NotFoundException);
     });
   });
@@ -661,10 +693,14 @@ describe('UserService', () => {
         published_at: new Date(),
       });
 
-      await service.updateMyReview('user-review-7', 'review-5', {
-        body: 'Published review',
-        status: ReviewStatus.PUBLISHED,
-      });
+      await service.updateMyReview(
+        mockAuthenticatedUser('user-review-7'),
+        'review-5',
+        {
+          body: 'Published review',
+          status: ReviewStatus.PUBLISHED,
+        },
+      );
 
       expect(mockPrismaService.company_review.update).toHaveBeenCalledWith({
         where: { id: 'review-5' },
@@ -709,7 +745,10 @@ describe('UserService', () => {
         id: 'review-6',
       });
 
-      const result = await service.removeMyReview('user-review-8', 'review-6');
+      const result = await service.removeMyReview(
+        mockAuthenticatedUser('user-review-8'),
+        'review-6',
+      );
 
       expect(mockPrismaService.company_review.delete).toHaveBeenCalledWith({
         where: { id: 'review-6' },

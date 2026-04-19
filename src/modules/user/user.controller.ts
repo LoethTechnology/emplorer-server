@@ -6,8 +6,8 @@ import {
   Patch,
   Param,
   Post,
-  Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -28,16 +28,22 @@ import type {
   AuthenticatedRequest,
   UserMessageResponse,
   UserReviewResponse,
-  UserReviewsResponse,
   UserResponse,
+  UserReview,
 } from './user.types';
+import { BaseQueryDto } from '@shared/dtos';
+import { User } from '@modules/auth/decorators/user.decorator';
+import { SkipAuth } from '@modules/auth/decorators/skip-auth.decorator';
+import { PaginationResponseInterface } from '@shared/index';
 
 @ApiTags('user')
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @SkipAuth()
   @ApiOperation({ summary: 'Create a new user account' })
   @ApiResponse({
     status: 201,
@@ -50,18 +56,16 @@ export class UserController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get the current user account' })
   @ApiResponse({ status: 200, description: 'Return the current user account' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
-  findMe(@Req() req: AuthenticatedRequest): Promise<UserResponse> {
-    return this.userService.findMe(req.user.sub);
+  findMe(@User() user: AuthenticatedRequest['user']): Promise<UserResponse> {
+    return this.userService.findMe(user);
   }
 
   @Patch('me')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update the current user account' })
   @ApiResponse({
@@ -72,14 +76,13 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'User account not found' })
   @ApiResponse({ status: 409, description: 'Email already in use' })
   updateMe(
-    @Req() req: AuthenticatedRequest,
+    @User() user: AuthenticatedRequest['user'],
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponse> {
-    return this.userService.updateMe(req.user.sub, updateUserDto);
+    return this.userService.updateMe(user, updateUserDto);
   }
 
   @Patch('password')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update the current user password' })
   @ApiResponse({ status: 200, description: 'Password updated successfully' })
@@ -87,14 +90,13 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
   updatePassword(
-    @Req() req: AuthenticatedRequest,
+    @User() user: AuthenticatedRequest['user'],
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
   ): Promise<UserMessageResponse> {
-    return this.userService.updatePassword(req.user.sub, updateUserPasswordDto);
+    return this.userService.updatePassword(user, updateUserPasswordDto);
   }
 
   @Post('me/reviews')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a review for the current user' })
   @ApiResponse({ status: 201, description: 'Review created successfully' })
@@ -102,41 +104,39 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User or company not found' })
   createMyReview(
-    @Req() req: AuthenticatedRequest,
+    @User() user: AuthenticatedRequest['user'],
     @Body() createUserReviewDto: CreateUserReviewDto,
   ): Promise<UserReviewResponse> {
-    return this.userService.createMyReview(req.user.sub, createUserReviewDto);
+    return this.userService.createMyReview(user, createUserReviewDto);
   }
 
   @Get('me/reviews')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get reviews created by the current user' })
   @ApiResponse({ status: 200, description: 'Return the current user reviews' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
   findMyReviews(
-    @Req() req: AuthenticatedRequest,
-  ): Promise<UserReviewsResponse> {
-    return this.userService.findMyReviews(req.user.sub);
+    @User() user: AuthenticatedRequest['user'],
+    @Query() query: BaseQueryDto,
+  ): Promise<PaginationResponseInterface<UserReview>> {
+    return this.userService.findMyReviews(user, query);
   }
 
   @Get('me/reviews/:reviewId')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get one review created by the current user' })
   @ApiResponse({ status: 200, description: 'Return the requested review' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User or review not found' })
   findMyReview(
-    @Req() req: AuthenticatedRequest,
+    @User() user: AuthenticatedRequest['user'],
     @Param('reviewId') reviewId: string,
   ): Promise<UserReviewResponse> {
-    return this.userService.findMyReview(req.user.sub, reviewId);
+    return this.userService.findMyReview(user, reviewId);
   }
 
   @Patch('me/reviews/:reviewId')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a review created by the current user' })
   @ApiResponse({ status: 200, description: 'Review updated successfully' })
@@ -144,33 +144,27 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User or review not found' })
   updateMyReview(
-    @Req() req: AuthenticatedRequest,
+    @User() user: AuthenticatedRequest['user'],
     @Param('reviewId') reviewId: string,
     @Body() updateUserReviewDto: UpdateUserReviewDto,
   ): Promise<UserReviewResponse> {
-    return this.userService.updateMyReview(
-      req.user.sub,
-      reviewId,
-      updateUserReviewDto,
-    );
+    return this.userService.updateMyReview(user, reviewId, updateUserReviewDto);
   }
 
   @Delete('me/reviews/:reviewId')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a review created by the current user' })
   @ApiResponse({ status: 200, description: 'Review deleted successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User or review not found' })
   removeMyReview(
-    @Req() req: AuthenticatedRequest,
+    @User() user: AuthenticatedRequest['user'],
     @Param('reviewId') reviewId: string,
   ): Promise<UserMessageResponse> {
-    return this.userService.removeMyReview(req.user.sub, reviewId);
+    return this.userService.removeMyReview(user, reviewId);
   }
 
   @Delete('me')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete the current user account' })
   @ApiResponse({
@@ -180,7 +174,9 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User account not found' })
   @ApiResponse({ status: 409, description: 'User account deletion is blocked' })
-  removeMe(@Req() req: AuthenticatedRequest): Promise<UserMessageResponse> {
-    return this.userService.removeMe(req.user.sub);
+  removeMe(
+    @User() user: AuthenticatedRequest['user'],
+  ): Promise<UserMessageResponse> {
+    return this.userService.removeMe(user);
   }
 }
