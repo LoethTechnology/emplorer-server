@@ -1,12 +1,12 @@
 import { PaginationResponseInterface } from '@shared/types';
 
-export const PaginateRes = (
-  data: any[],
+export const PaginateRes = <T>(
+  data: T[],
   totalCount: number,
   currentCount: number,
   currentPage: number,
   limit: number,
-): PaginationResponseInterface => {
+): PaginationResponseInterface<T> => {
   return {
     data,
     totalCount,

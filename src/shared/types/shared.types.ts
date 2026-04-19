@@ -1,5 +1,5 @@
-export interface PaginationResponseInterface {
-  data: any[];
+export interface PaginationResponseInterface<T> {
+  data: T[];
   totalCount: number;
   limit: number;
   currentCount: number;

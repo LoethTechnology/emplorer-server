@@ -7,7 +7,11 @@ import {
 import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
-import { CrudEnums, DbModels } from '../../shared/types';
+import {
+  CrudEnums,
+  DbModels,
+  PaginationResponseInterface,
+} from '../../shared/types';
 import { CrudResponse } from '../../shared/utils/response';
 import type {
   CreateUserDto,
@@ -21,14 +25,16 @@ import type {
   UserMessageResponse,
   UserReview,
   UserReviewResponse,
-  UserReviewsResponse,
   UserResponse,
   UserWithPassword,
+  AuthenticatedRequest,
 } from './user.types';
 import {
   isForeignKeyConstraintError,
   USER_RESPONSE_MESSAGES,
 } from './utils/user.utils';
+import { BaseQueryDto } from '@shared/dtos';
+import { PaginateRes, GetPageOptions } from '@shared/index';
 
 @Injectable()
 export class UserService {
@@ -71,16 +77,17 @@ export class UserService {
     return CrudResponse(DbModels.USER, CrudEnums.CREATE, createdUser);
   }
 
-  async findMe(userId: string): Promise<UserResponse> {
-    const dbUser = await this.findActiveUserById(userId);
+  async findMe(user: AuthenticatedRequest['user']): Promise<UserResponse> {
+    const dbUser = await this.findActiveUserById(user.sub);
 
     return CrudResponse(DbModels.USER, CrudEnums.READ, dbUser);
   }
 
   async updateMe(
-    userId: string,
+    user: AuthenticatedRequest['user'],
     updateUserDto: UpdateUserDto,
   ): Promise<UserResponse> {
+    const userId = user.sub;
     await this.findActiveUserById(userId);
     const data = { ...updateUserDto };
 
@@ -103,9 +110,10 @@ export class UserService {
   }
 
   async updatePassword(
-    userId: string,
+    user: AuthenticatedRequest['user'],
     updateUserPasswordDto: UpdateUserPasswordDto,
   ): Promise<UserMessageResponse> {
+    const userId = user.sub;
     const dbUser = await this.findUserWithPasswordById(userId);
 
     if (dbUser.deleted_at) {
@@ -144,9 +152,10 @@ export class UserService {
   }
 
   async createMyReview(
-    userId: string,
+    user: AuthenticatedRequest['user'],
     createUserReviewDto: CreateUserReviewDto,
   ): Promise<UserReviewResponse> {
+    const userId = user.sub;
     await this.findActiveUserById(userId);
     await this.findCompanyOrThrow(createUserReviewDto.company_id);
 
@@ -172,21 +181,38 @@ export class UserService {
     );
   }
 
-  async findMyReviews(userId: string): Promise<UserReviewsResponse> {
+  async findMyReviews(
+    user: AuthenticatedRequest['user'],
+    query: BaseQueryDto,
+  ): Promise<PaginationResponseInterface<UserReview>> {
+    const userId = user.sub;
+    const { page, limit, search, sort } = query;
     await this.findActiveUserById(userId);
 
-    const reviews = await this.prismaService.company_review.findMany({
-      where: { author_id: userId },
-      orderBy: { created_at: 'desc' },
-    });
-
-    return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.READ, reviews);
+    const [count, records] = await Promise.all([
+      this.prismaService.company_review.count({
+        where: { author_id: userId, ...(search && { name: search }) },
+      }),
+      this.prismaService.company_review.findMany({
+        ...GetPageOptions(Number(page), Number(limit)),
+        where: { author_id: userId, ...(search && { name: search }) },
+        orderBy: { created_at: sort || 'desc' },
+      }),
+    ]);
+    return PaginateRes(
+      records,
+      count,
+      records.length,
+      Number(page),
+      Number(limit),
+    );
   }
 
   async findMyReview(
-    userId: string,
+    user: AuthenticatedRequest['user'],
     reviewId: string,
   ): Promise<UserReviewResponse> {
+    const userId = user.sub;
     await this.findActiveUserById(userId);
     const review = await this.findOwnedReviewOrThrow(userId, reviewId);
 
@@ -194,10 +220,11 @@ export class UserService {
   }
 
   async updateMyReview(
-    userId: string,
+    user: AuthenticatedRequest['user'],
     reviewId: string,
     updateUserReviewDto: UpdateUserReviewDto,
   ): Promise<UserReviewResponse> {
+    const userId = user.sub;
     await this.findActiveUserById(userId);
     const existingReview = await this.findOwnedReviewOrThrow(userId, reviewId);
     const nextStatus = updateUserReviewDto.status ?? existingReview.status;
@@ -224,9 +251,10 @@ export class UserService {
   }
 
   async removeMyReview(
-    userId: string,
+    user: AuthenticatedRequest['user'],
     reviewId: string,
   ): Promise<UserMessageResponse> {
+    const userId = user.sub;
     await this.findActiveUserById(userId);
     await this.findOwnedReviewOrThrow(userId, reviewId);
 
@@ -241,7 +269,10 @@ export class UserService {
     );
   }
 
-  async removeMe(userId: string): Promise<UserMessageResponse> {
+  async removeMe(
+    user: AuthenticatedRequest['user'],
+  ): Promise<UserMessageResponse> {
+    const userId = user.sub;
     await this.findActiveUserById(userId);
 
     try {

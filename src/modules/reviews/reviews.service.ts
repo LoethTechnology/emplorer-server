@@ -3,6 +3,7 @@ import { CrudEnums, DbModels } from '../../shared/types';
 import type { ApiSuccessResponse } from '../../shared/utils/response';
 import { CrudResponse } from '../../shared/utils/response';
 import { CreateReviewDto, UpdateReviewDto } from './dto';
+import { BaseQueryDto } from '@shared/dtos';
 
 @Injectable()
 export class ReviewsService {
@@ -18,7 +19,8 @@ export class ReviewsService {
     );
   }
 
-  findAll(): ApiSuccessResponse<string[]> {
+  findAll(query: BaseQueryDto): ApiSuccessResponse<string[]> {
+    void query;
     return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.READ, []);
   }
 
