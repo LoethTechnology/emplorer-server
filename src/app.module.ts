@@ -24,6 +24,7 @@ import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
     PrismaModule,
     AuthModule,
     UserModule,
+    UserModule,
     ReviewsModule,
   ],
   controllers: [AppController],
