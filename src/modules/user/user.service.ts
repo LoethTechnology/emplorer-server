@@ -258,7 +258,7 @@ export class UserService {
     await this.findActiveUserById(userId);
     await this.findOwnedReviewOrThrow(userId, reviewId);
 
-    await this.prismaService.company_review.delete({
+    await this.prismaService.company_review.findFirst({
       where: { id: reviewId },
     });
 
