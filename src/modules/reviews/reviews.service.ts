@@ -24,7 +24,7 @@ export class ReviewsService {
     return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.READ, []);
   }
 
-  findOne(id: number): ApiSuccessResponse<string> {
+  findOne(id: string): ApiSuccessResponse<string> {
     return CrudResponse(
       DbModels.COMPANY_REVIEW,
       CrudEnums.READ,
@@ -33,9 +33,9 @@ export class ReviewsService {
   }
 
   update(
-    id: number,
+    id: string,
     updateReviewDto: UpdateReviewDto,
-  ): ApiSuccessResponse<{ id: number; review: UpdateReviewDto }> {
+  ): ApiSuccessResponse<{ id: string; review: UpdateReviewDto }> {
     void updateReviewDto;
 
     return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.UPDATE, {
@@ -44,7 +44,7 @@ export class ReviewsService {
     });
   }
 
-  remove(id: number): ApiSuccessResponse<string> {
+  remove(id: string): ApiSuccessResponse<string> {
     return CrudResponse(
       DbModels.COMPANY_REVIEW,
       CrudEnums.DELETE,
