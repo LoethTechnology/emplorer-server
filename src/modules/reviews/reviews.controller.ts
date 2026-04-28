@@ -15,7 +15,6 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BaseQueryDto } from '@shared/dtos/base-query.dto';
 
 @ApiTags('reviews')
-@ApiTags('reviews')
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
