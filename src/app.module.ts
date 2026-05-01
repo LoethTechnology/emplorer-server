@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
+import { CompaniesModule } from './modules/companies/companies.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { UserModule } from './modules/user/user.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
@@ -25,6 +26,7 @@ import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
     AuthModule,
     UserModule,
     ReviewsModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [
