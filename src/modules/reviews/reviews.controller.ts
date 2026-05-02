@@ -41,7 +41,7 @@ export class ReviewsController {
   @ApiResponse({ status: 200, description: 'Return a single review' })
   @ApiResponse({ status: 404, description: 'Review not found' })
   findOne(@Param('id') id: string): ApiSuccessResponse<string> {
-    return this.reviewsService.findOne(+id);
+    return this.reviewsService.findOne(id);
   }
 
   @Patch(':id')
@@ -51,8 +51,8 @@ export class ReviewsController {
   update(
     @Param('id') id: string,
     @Body() updateReviewDto: UpdateReviewDto,
-  ): ApiSuccessResponse<{ id: number; review: UpdateReviewDto }> {
-    return this.reviewsService.update(+id, updateReviewDto);
+  ): ApiSuccessResponse<{ id: string; review: UpdateReviewDto }> {
+    return this.reviewsService.update(id, updateReviewDto);
   }
 
   @Delete(':id')
@@ -60,6 +60,6 @@ export class ReviewsController {
   @ApiResponse({ status: 200, description: 'Review deleted successfully' })
   @ApiResponse({ status: 404, description: 'Review not found' })
   remove(@Param('id') id: string): ApiSuccessResponse<string> {
-    return this.reviewsService.remove(+id);
+    return this.reviewsService.remove(id);
   }
 }
