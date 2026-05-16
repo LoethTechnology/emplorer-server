@@ -22,7 +22,6 @@ import type { AuthenticatedRequest } from '@modules/user/user.types';
 import { BaseQueryDto } from '@shared/dtos';
 
 @ApiTags('reviews')
-@ApiTags('reviews')
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
