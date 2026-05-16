@@ -1,18 +1,25 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
-import type { ApiSuccessResponse } from '../../shared/utils/response';
 import { CreateReviewDto, UpdateReviewDto } from './dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { BaseQueryDto } from '@shared/dtos/base-query.dto';
+import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
+import { User } from '../auth/decorators/user.decorator';
+import type { AuthenticatedRequest } from '@modules/user/user.types';
+import { BaseQueryDto } from '@shared/dtos';
 
 @ApiTags('reviews')
 @ApiTags('reviews')
@@ -21,46 +28,72 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new review' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a review for a company' })
   @ApiResponse({ status: 201, description: 'Review created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Company not found' })
+  @ApiResponse({
+    status: 422,
+    description: 'Location does not belong to this company',
+  })
   create(
-    @Body() createReviewDto: CreateReviewDto,
-  ): ApiSuccessResponse<CreateReviewDto> {
-    return this.reviewsService.create(createReviewDto);
+    @User() user: AuthenticatedRequest['user'],
+    @Param('companyId') companyId: string,
+    @Body() dto: CreateReviewDto,
+  ) {
+    return this.reviewsService.create(user, companyId, dto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all reviews' })
+  @SkipAuth()
+  @ApiOperation({ summary: 'Get all published reviews for a company' })
   @ApiResponse({ status: 200, description: 'Return all reviews' })
-  findAll(@Query() query: BaseQueryDto): ApiSuccessResponse<string[]> {
-    return this.reviewsService.findAll(query);
+  findAll(@Param('companyId') companyId: string, @Query() query: BaseQueryDto) {
+    return this.reviewsService.findAll(companyId, query);
   }
 
-  @Get(':id')
+  @Get(':reviewId')
+  @SkipAuth()
   @ApiOperation({ summary: 'Get a review by ID' })
   @ApiResponse({ status: 200, description: 'Return a single review' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  findOne(@Param('id') id: string): ApiSuccessResponse<string> {
-    return this.reviewsService.findOne(+id);
+  findOne(
+    @Param('companyId') companyId: string,
+    @Param('reviewId') reviewId: string,
+  ) {
+    return this.reviewsService.findOne(companyId, reviewId);
   }
 
-  @Patch(':id')
+  @Patch(':reviewId')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a review' })
   @ApiResponse({ status: 200, description: 'Review updated successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Review not found' })
   update(
-    @Param('id') id: string,
-    @Body() updateReviewDto: UpdateReviewDto,
-  ): ApiSuccessResponse<{ id: number; review: UpdateReviewDto }> {
-    return this.reviewsService.update(+id, updateReviewDto);
+    @User() user: AuthenticatedRequest['user'],
+    @Param('companyId') companyId: string,
+    @Param('reviewId') reviewId: string,
+    @Body() dto: UpdateReviewDto,
+  ) {
+    return this.reviewsService.update(user, companyId, reviewId, dto);
   }
 
-  @Delete(':id')
+  @Delete(':reviewId')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a review' })
   @ApiResponse({ status: 200, description: 'Review deleted successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  remove(@Param('id') id: string): ApiSuccessResponse<string> {
-    return this.reviewsService.remove(+id);
+  remove(
+    @User() user: AuthenticatedRequest['user'],
+    @Param('companyId') companyId: string,
+    @Param('reviewId') reviewId: string,
+  ) {
+    return this.reviewsService.remove(user, companyId, reviewId);
   }
 }

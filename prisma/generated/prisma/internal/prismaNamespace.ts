@@ -417,6 +417,7 @@ export const ModelName = {
   tokens: 'tokens',
   auth_otp: 'auth_otp',
   company: 'company',
+  company_location: 'company_location',
   company_review: 'company_review',
   review_critique: 'review_critique',
   review_comment: 'review_comment',
@@ -448,6 +449,7 @@ export type TypeMap<
       | 'tokens'
       | 'auth_otp'
       | 'company'
+      | 'company_location'
       | 'company_review'
       | 'review_critique'
       | 'review_comment'
@@ -831,6 +833,82 @@ export type TypeMap<
           args: Prisma.companyCountArgs<ExtArgs>;
           result:
             | runtime.Types.Utils.Optional<Prisma.CompanyCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    company_location: {
+      payload: Prisma.$company_locationPayload<ExtArgs>;
+      fields: Prisma.company_locationFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.company_locationFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.company_locationFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>;
+        };
+        findFirst: {
+          args: Prisma.company_locationFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.company_locationFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>;
+        };
+        findMany: {
+          args: Prisma.company_locationFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>[];
+        };
+        create: {
+          args: Prisma.company_locationCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>;
+        };
+        createMany: {
+          args: Prisma.company_locationCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.company_locationCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>[];
+        };
+        delete: {
+          args: Prisma.company_locationDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>;
+        };
+        update: {
+          args: Prisma.company_locationUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>;
+        };
+        deleteMany: {
+          args: Prisma.company_locationDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.company_locationUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.company_locationUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>[];
+        };
+        upsert: {
+          args: Prisma.company_locationUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$company_locationPayload>;
+        };
+        aggregate: {
+          args: Prisma.Company_locationAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompany_location>;
+        };
+        groupBy: {
+          args: Prisma.company_locationGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.Company_locationGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.company_locationCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.Company_locationCountAggregateOutputType>
             | number;
         };
       };
@@ -1256,10 +1334,26 @@ export const CompanyScalarFieldEnum = {
 export type CompanyScalarFieldEnum =
   (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum];
 
+export const Company_locationScalarFieldEnum = {
+  id: 'id',
+  company_id: 'company_id',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  address: 'address',
+  is_headquarters: 'is_headquarters',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+} as const;
+
+export type Company_locationScalarFieldEnum =
+  (typeof Company_locationScalarFieldEnum)[keyof typeof Company_locationScalarFieldEnum];
+
 export const Company_reviewScalarFieldEnum = {
   id: 'id',
   company_id: 'company_id',
   author_id: 'author_id',
+  location_id: 'location_id',
   body: 'body',
   overall_rating: 'overall_rating',
   employment_context: 'employment_context',
@@ -1607,6 +1701,7 @@ export type GlobalOmitConfig = {
   tokens?: Prisma.tokensOmit;
   auth_otp?: Prisma.auth_otpOmit;
   company?: Prisma.companyOmit;
+  company_location?: Prisma.company_locationOmit;
   company_review?: Prisma.company_reviewOmit;
   review_critique?: Prisma.review_critiqueOmit;
   review_comment?: Prisma.review_commentOmit;

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
+import { PrismaService } from '../../shared/modules/prisma';
 
 describe('ReviewsController', () => {
   let controller: ReviewsController;
@@ -9,7 +9,7 @@ describe('ReviewsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ReviewsController],
-      providers: [ReviewsService],
+      providers: [ReviewsService, { provide: PrismaService, useValue: {} }],
     }).compile();
 
     controller = module.get<ReviewsController>(ReviewsController);
@@ -17,13 +17,5 @@ describe('ReviewsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });
-
-  it('should return wrapped review placeholders', () => {
-    expect(controller.findAll()).toEqual({
-      message: 'Company Review fetched successfully.',
-      code: HttpStatus.OK,
-      data: [],
-    });
   });
 });

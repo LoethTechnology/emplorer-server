@@ -119,31 +119,50 @@ model auth_otp {
 }
 
 model company {
-  id           String           @id @default(cuid())
+  id           String             @id @default(cuid())
   creator_id   String
   name         String
   description  String?
   website_url  String?
-  domain       String?          @unique
+  domain       String?            @unique
   linkedin_url String?
   logo_url     String?
   headquarters String?
   industry     String?
-  status       CompanyStatus    @default(PENDING)
-  created_at   DateTime         @default(now())
-  updated_at   DateTime         @updatedAt
-  creator      user             @relation(fields: [creator_id], references: [id], onDelete: Restrict)
+  status       CompanyStatus      @default(PENDING)
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
+  creator      user               @relation(fields: [creator_id], references: [id], onDelete: Restrict)
   reviews      company_review[]
+  locations    company_location[]
 
   @@index([creator_id])
   @@index([status])
   @@index([name])
 }
 
+model company_location {
+  id              String           @id @default(cuid())
+  company_id      String
+  city            String
+  state           String?
+  country         String
+  address         String?
+  is_headquarters Boolean          @default(false)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  company         company          @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  reviews         company_review[]
+
+  @@index([company_id])
+  @@index([country])
+}
+
 model company_review {
   id                 String            @id @default(cuid())
   company_id         String
   author_id          String
+  location_id        String?
   body               String
   overall_rating     Int
   employment_context String?
@@ -154,11 +173,13 @@ model company_review {
   updated_at         DateTime          @updatedAt
   company            company           @relation(fields: [company_id], references: [id], onDelete: Cascade)
   author             user              @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  location           company_location? @relation(fields: [location_id], references: [id], onDelete: SetNull)
   critiques          review_critique[]
   comments           review_comment[]
 
   @@index([company_id, status])
   @@index([author_id])
+  @@index([location_id])
   @@index([published_at])
 }
 

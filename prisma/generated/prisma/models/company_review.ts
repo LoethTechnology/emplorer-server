@@ -38,6 +38,7 @@ export type Company_reviewMinAggregateOutputType = {
   id: string | null;
   company_id: string | null;
   author_id: string | null;
+  location_id: string | null;
   body: string | null;
   overall_rating: number | null;
   employment_context: string | null;
@@ -52,6 +53,7 @@ export type Company_reviewMaxAggregateOutputType = {
   id: string | null;
   company_id: string | null;
   author_id: string | null;
+  location_id: string | null;
   body: string | null;
   overall_rating: number | null;
   employment_context: string | null;
@@ -66,6 +68,7 @@ export type Company_reviewCountAggregateOutputType = {
   id: number;
   company_id: number;
   author_id: number;
+  location_id: number;
   body: number;
   overall_rating: number;
   employment_context: number;
@@ -89,6 +92,7 @@ export type Company_reviewMinAggregateInputType = {
   id?: true;
   company_id?: true;
   author_id?: true;
+  location_id?: true;
   body?: true;
   overall_rating?: true;
   employment_context?: true;
@@ -103,6 +107,7 @@ export type Company_reviewMaxAggregateInputType = {
   id?: true;
   company_id?: true;
   author_id?: true;
+  location_id?: true;
   body?: true;
   overall_rating?: true;
   employment_context?: true;
@@ -117,6 +122,7 @@ export type Company_reviewCountAggregateInputType = {
   id?: true;
   company_id?: true;
   author_id?: true;
+  location_id?: true;
   body?: true;
   overall_rating?: true;
   employment_context?: true;
@@ -229,6 +235,7 @@ export type Company_reviewGroupByOutputType = {
   id: string;
   company_id: string;
   author_id: string;
+  location_id: string | null;
   body: string;
   overall_rating: number;
   employment_context: string | null;
@@ -265,6 +272,7 @@ export type company_reviewWhereInput = {
   id?: Prisma.StringFilter<'company_review'> | string;
   company_id?: Prisma.StringFilter<'company_review'> | string;
   author_id?: Prisma.StringFilter<'company_review'> | string;
+  location_id?: Prisma.StringNullableFilter<'company_review'> | string | null;
   body?: Prisma.StringFilter<'company_review'> | string;
   overall_rating?: Prisma.IntFilter<'company_review'> | number;
   employment_context?:
@@ -290,6 +298,10 @@ export type company_reviewWhereInput = {
     Prisma.companyWhereInput
   >;
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>;
+  location?: Prisma.XOR<
+    Prisma.Company_locationNullableScalarRelationFilter,
+    Prisma.company_locationWhereInput
+  > | null;
   critiques?: Prisma.Review_critiqueListRelationFilter;
   comments?: Prisma.Review_commentListRelationFilter;
 };
@@ -298,6 +310,7 @@ export type company_reviewOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
   author_id?: Prisma.SortOrder;
+  location_id?: Prisma.SortOrderInput | Prisma.SortOrder;
   body?: Prisma.SortOrder;
   overall_rating?: Prisma.SortOrder;
   employment_context?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -308,6 +321,7 @@ export type company_reviewOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder;
   company?: Prisma.companyOrderByWithRelationInput;
   author?: Prisma.userOrderByWithRelationInput;
+  location?: Prisma.company_locationOrderByWithRelationInput;
   critiques?: Prisma.review_critiqueOrderByRelationAggregateInput;
   comments?: Prisma.review_commentOrderByRelationAggregateInput;
 };
@@ -320,6 +334,7 @@ export type company_reviewWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.company_reviewWhereInput | Prisma.company_reviewWhereInput[];
     company_id?: Prisma.StringFilter<'company_review'> | string;
     author_id?: Prisma.StringFilter<'company_review'> | string;
+    location_id?: Prisma.StringNullableFilter<'company_review'> | string | null;
     body?: Prisma.StringFilter<'company_review'> | string;
     overall_rating?: Prisma.IntFilter<'company_review'> | number;
     employment_context?:
@@ -345,6 +360,10 @@ export type company_reviewWhereUniqueInput = Prisma.AtLeast<
       Prisma.companyWhereInput
     >;
     author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>;
+    location?: Prisma.XOR<
+      Prisma.Company_locationNullableScalarRelationFilter,
+      Prisma.company_locationWhereInput
+    > | null;
     critiques?: Prisma.Review_critiqueListRelationFilter;
     comments?: Prisma.Review_commentListRelationFilter;
   },
@@ -355,6 +374,7 @@ export type company_reviewOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
   author_id?: Prisma.SortOrder;
+  location_id?: Prisma.SortOrderInput | Prisma.SortOrder;
   body?: Prisma.SortOrder;
   overall_rating?: Prisma.SortOrder;
   employment_context?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -381,6 +401,10 @@ export type company_reviewScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<'company_review'> | string;
   company_id?: Prisma.StringWithAggregatesFilter<'company_review'> | string;
   author_id?: Prisma.StringWithAggregatesFilter<'company_review'> | string;
+  location_id?:
+    | Prisma.StringNullableWithAggregatesFilter<'company_review'>
+    | string
+    | null;
   body?: Prisma.StringWithAggregatesFilter<'company_review'> | string;
   overall_rating?: Prisma.IntWithAggregatesFilter<'company_review'> | number;
   employment_context?:
@@ -421,6 +445,7 @@ export type company_reviewCreateInput = {
   updated_at?: Date | string;
   company: Prisma.companyCreateNestedOneWithoutReviewsInput;
   author: Prisma.userCreateNestedOneWithoutCompany_reviewsInput;
+  location?: Prisma.company_locationCreateNestedOneWithoutReviewsInput;
   critiques?: Prisma.review_critiqueCreateNestedManyWithoutReviewInput;
   comments?: Prisma.review_commentCreateNestedManyWithoutReviewInput;
 };
@@ -429,6 +454,7 @@ export type company_reviewUncheckedCreateInput = {
   id?: string;
   company_id: string;
   author_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -465,6 +491,7 @@ export type company_reviewUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   company?: Prisma.companyUpdateOneRequiredWithoutReviewsNestedInput;
   author?: Prisma.userUpdateOneRequiredWithoutCompany_reviewsNestedInput;
+  location?: Prisma.company_locationUpdateOneWithoutReviewsNestedInput;
   critiques?: Prisma.review_critiqueUpdateManyWithoutReviewNestedInput;
   comments?: Prisma.review_commentUpdateManyWithoutReviewNestedInput;
 };
@@ -473,6 +500,7 @@ export type company_reviewUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
   author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -501,6 +529,7 @@ export type company_reviewCreateManyInput = {
   id?: string;
   company_id: string;
   author_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -539,6 +568,7 @@ export type company_reviewUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
   author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -575,6 +605,7 @@ export type company_reviewCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
   author_id?: Prisma.SortOrder;
+  location_id?: Prisma.SortOrder;
   body?: Prisma.SortOrder;
   overall_rating?: Prisma.SortOrder;
   employment_context?: Prisma.SortOrder;
@@ -593,6 +624,7 @@ export type company_reviewMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
   author_id?: Prisma.SortOrder;
+  location_id?: Prisma.SortOrder;
   body?: Prisma.SortOrder;
   overall_rating?: Prisma.SortOrder;
   employment_context?: Prisma.SortOrder;
@@ -607,6 +639,7 @@ export type company_reviewMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
   author_id?: Prisma.SortOrder;
+  location_id?: Prisma.SortOrder;
   body?: Prisma.SortOrder;
   overall_rating?: Prisma.SortOrder;
   employment_context?: Prisma.SortOrder;
@@ -846,6 +879,116 @@ export type company_reviewUncheckedUpdateManyWithoutCompanyNestedInput = {
     | Prisma.company_reviewScalarWhereInput[];
 };
 
+export type company_reviewCreateNestedManyWithoutLocationInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.company_reviewCreateWithoutLocationInput,
+        Prisma.company_reviewUncheckedCreateWithoutLocationInput
+      >
+    | Prisma.company_reviewCreateWithoutLocationInput[]
+    | Prisma.company_reviewUncheckedCreateWithoutLocationInput[];
+  connectOrCreate?:
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput[];
+  createMany?: Prisma.company_reviewCreateManyLocationInputEnvelope;
+  connect?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+};
+
+export type company_reviewUncheckedCreateNestedManyWithoutLocationInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.company_reviewCreateWithoutLocationInput,
+        Prisma.company_reviewUncheckedCreateWithoutLocationInput
+      >
+    | Prisma.company_reviewCreateWithoutLocationInput[]
+    | Prisma.company_reviewUncheckedCreateWithoutLocationInput[];
+  connectOrCreate?:
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput[];
+  createMany?: Prisma.company_reviewCreateManyLocationInputEnvelope;
+  connect?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+};
+
+export type company_reviewUpdateManyWithoutLocationNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.company_reviewCreateWithoutLocationInput,
+        Prisma.company_reviewUncheckedCreateWithoutLocationInput
+      >
+    | Prisma.company_reviewCreateWithoutLocationInput[]
+    | Prisma.company_reviewUncheckedCreateWithoutLocationInput[];
+  connectOrCreate?:
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput[];
+  upsert?:
+    | Prisma.company_reviewUpsertWithWhereUniqueWithoutLocationInput
+    | Prisma.company_reviewUpsertWithWhereUniqueWithoutLocationInput[];
+  createMany?: Prisma.company_reviewCreateManyLocationInputEnvelope;
+  set?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  disconnect?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  delete?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  connect?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  update?:
+    | Prisma.company_reviewUpdateWithWhereUniqueWithoutLocationInput
+    | Prisma.company_reviewUpdateWithWhereUniqueWithoutLocationInput[];
+  updateMany?:
+    | Prisma.company_reviewUpdateManyWithWhereWithoutLocationInput
+    | Prisma.company_reviewUpdateManyWithWhereWithoutLocationInput[];
+  deleteMany?:
+    | Prisma.company_reviewScalarWhereInput
+    | Prisma.company_reviewScalarWhereInput[];
+};
+
+export type company_reviewUncheckedUpdateManyWithoutLocationNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.company_reviewCreateWithoutLocationInput,
+        Prisma.company_reviewUncheckedCreateWithoutLocationInput
+      >
+    | Prisma.company_reviewCreateWithoutLocationInput[]
+    | Prisma.company_reviewUncheckedCreateWithoutLocationInput[];
+  connectOrCreate?:
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput
+    | Prisma.company_reviewCreateOrConnectWithoutLocationInput[];
+  upsert?:
+    | Prisma.company_reviewUpsertWithWhereUniqueWithoutLocationInput
+    | Prisma.company_reviewUpsertWithWhereUniqueWithoutLocationInput[];
+  createMany?: Prisma.company_reviewCreateManyLocationInputEnvelope;
+  set?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  disconnect?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  delete?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  connect?:
+    | Prisma.company_reviewWhereUniqueInput
+    | Prisma.company_reviewWhereUniqueInput[];
+  update?:
+    | Prisma.company_reviewUpdateWithWhereUniqueWithoutLocationInput
+    | Prisma.company_reviewUpdateWithWhereUniqueWithoutLocationInput[];
+  updateMany?:
+    | Prisma.company_reviewUpdateManyWithWhereWithoutLocationInput
+    | Prisma.company_reviewUpdateManyWithWhereWithoutLocationInput[];
+  deleteMany?:
+    | Prisma.company_reviewScalarWhereInput
+    | Prisma.company_reviewScalarWhereInput[];
+};
+
 export type NullableBoolFieldUpdateOperationsInput = {
   set?: boolean | null;
 };
@@ -917,6 +1060,7 @@ export type company_reviewCreateWithoutAuthorInput = {
   created_at?: Date | string;
   updated_at?: Date | string;
   company: Prisma.companyCreateNestedOneWithoutReviewsInput;
+  location?: Prisma.company_locationCreateNestedOneWithoutReviewsInput;
   critiques?: Prisma.review_critiqueCreateNestedManyWithoutReviewInput;
   comments?: Prisma.review_commentCreateNestedManyWithoutReviewInput;
 };
@@ -924,6 +1068,7 @@ export type company_reviewCreateWithoutAuthorInput = {
 export type company_reviewUncheckedCreateWithoutAuthorInput = {
   id?: string;
   company_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -990,6 +1135,7 @@ export type company_reviewScalarWhereInput = {
   id?: Prisma.StringFilter<'company_review'> | string;
   company_id?: Prisma.StringFilter<'company_review'> | string;
   author_id?: Prisma.StringFilter<'company_review'> | string;
+  location_id?: Prisma.StringNullableFilter<'company_review'> | string | null;
   body?: Prisma.StringFilter<'company_review'> | string;
   overall_rating?: Prisma.IntFilter<'company_review'> | number;
   employment_context?:
@@ -1023,6 +1169,7 @@ export type company_reviewCreateWithoutCompanyInput = {
   created_at?: Date | string;
   updated_at?: Date | string;
   author: Prisma.userCreateNestedOneWithoutCompany_reviewsInput;
+  location?: Prisma.company_locationCreateNestedOneWithoutReviewsInput;
   critiques?: Prisma.review_critiqueCreateNestedManyWithoutReviewInput;
   comments?: Prisma.review_commentCreateNestedManyWithoutReviewInput;
 };
@@ -1030,6 +1177,7 @@ export type company_reviewCreateWithoutCompanyInput = {
 export type company_reviewUncheckedCreateWithoutCompanyInput = {
   id?: string;
   author_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -1085,6 +1233,81 @@ export type company_reviewUpdateManyWithWhereWithoutCompanyInput = {
   >;
 };
 
+export type company_reviewCreateWithoutLocationInput = {
+  id?: string;
+  body: string;
+  overall_rating: number;
+  employment_context?: string | null;
+  would_recommend?: boolean | null;
+  status?: $Enums.ReviewStatus;
+  published_at?: Date | string | null;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+  company: Prisma.companyCreateNestedOneWithoutReviewsInput;
+  author: Prisma.userCreateNestedOneWithoutCompany_reviewsInput;
+  critiques?: Prisma.review_critiqueCreateNestedManyWithoutReviewInput;
+  comments?: Prisma.review_commentCreateNestedManyWithoutReviewInput;
+};
+
+export type company_reviewUncheckedCreateWithoutLocationInput = {
+  id?: string;
+  company_id: string;
+  author_id: string;
+  body: string;
+  overall_rating: number;
+  employment_context?: string | null;
+  would_recommend?: boolean | null;
+  status?: $Enums.ReviewStatus;
+  published_at?: Date | string | null;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+  critiques?: Prisma.review_critiqueUncheckedCreateNestedManyWithoutReviewInput;
+  comments?: Prisma.review_commentUncheckedCreateNestedManyWithoutReviewInput;
+};
+
+export type company_reviewCreateOrConnectWithoutLocationInput = {
+  where: Prisma.company_reviewWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.company_reviewCreateWithoutLocationInput,
+    Prisma.company_reviewUncheckedCreateWithoutLocationInput
+  >;
+};
+
+export type company_reviewCreateManyLocationInputEnvelope = {
+  data:
+    | Prisma.company_reviewCreateManyLocationInput
+    | Prisma.company_reviewCreateManyLocationInput[];
+  skipDuplicates?: boolean;
+};
+
+export type company_reviewUpsertWithWhereUniqueWithoutLocationInput = {
+  where: Prisma.company_reviewWhereUniqueInput;
+  update: Prisma.XOR<
+    Prisma.company_reviewUpdateWithoutLocationInput,
+    Prisma.company_reviewUncheckedUpdateWithoutLocationInput
+  >;
+  create: Prisma.XOR<
+    Prisma.company_reviewCreateWithoutLocationInput,
+    Prisma.company_reviewUncheckedCreateWithoutLocationInput
+  >;
+};
+
+export type company_reviewUpdateWithWhereUniqueWithoutLocationInput = {
+  where: Prisma.company_reviewWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.company_reviewUpdateWithoutLocationInput,
+    Prisma.company_reviewUncheckedUpdateWithoutLocationInput
+  >;
+};
+
+export type company_reviewUpdateManyWithWhereWithoutLocationInput = {
+  where: Prisma.company_reviewScalarWhereInput;
+  data: Prisma.XOR<
+    Prisma.company_reviewUpdateManyMutationInput,
+    Prisma.company_reviewUncheckedUpdateManyWithoutLocationInput
+  >;
+};
+
 export type company_reviewCreateWithoutCritiquesInput = {
   id?: string;
   body: string;
@@ -1097,6 +1320,7 @@ export type company_reviewCreateWithoutCritiquesInput = {
   updated_at?: Date | string;
   company: Prisma.companyCreateNestedOneWithoutReviewsInput;
   author: Prisma.userCreateNestedOneWithoutCompany_reviewsInput;
+  location?: Prisma.company_locationCreateNestedOneWithoutReviewsInput;
   comments?: Prisma.review_commentCreateNestedManyWithoutReviewInput;
 };
 
@@ -1104,6 +1328,7 @@ export type company_reviewUncheckedCreateWithoutCritiquesInput = {
   id?: string;
   company_id: string;
   author_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -1167,6 +1392,7 @@ export type company_reviewUpdateWithoutCritiquesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   company?: Prisma.companyUpdateOneRequiredWithoutReviewsNestedInput;
   author?: Prisma.userUpdateOneRequiredWithoutCompany_reviewsNestedInput;
+  location?: Prisma.company_locationUpdateOneWithoutReviewsNestedInput;
   comments?: Prisma.review_commentUpdateManyWithoutReviewNestedInput;
 };
 
@@ -1174,6 +1400,7 @@ export type company_reviewUncheckedUpdateWithoutCritiquesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
   author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -1209,6 +1436,7 @@ export type company_reviewCreateWithoutCommentsInput = {
   updated_at?: Date | string;
   company: Prisma.companyCreateNestedOneWithoutReviewsInput;
   author: Prisma.userCreateNestedOneWithoutCompany_reviewsInput;
+  location?: Prisma.company_locationCreateNestedOneWithoutReviewsInput;
   critiques?: Prisma.review_critiqueCreateNestedManyWithoutReviewInput;
 };
 
@@ -1216,6 +1444,7 @@ export type company_reviewUncheckedCreateWithoutCommentsInput = {
   id?: string;
   company_id: string;
   author_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -1279,6 +1508,7 @@ export type company_reviewUpdateWithoutCommentsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   company?: Prisma.companyUpdateOneRequiredWithoutReviewsNestedInput;
   author?: Prisma.userUpdateOneRequiredWithoutCompany_reviewsNestedInput;
+  location?: Prisma.company_locationUpdateOneWithoutReviewsNestedInput;
   critiques?: Prisma.review_critiqueUpdateManyWithoutReviewNestedInput;
 };
 
@@ -1286,6 +1516,7 @@ export type company_reviewUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
   author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -1312,6 +1543,7 @@ export type company_reviewUncheckedUpdateWithoutCommentsInput = {
 export type company_reviewCreateManyAuthorInput = {
   id?: string;
   company_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -1345,6 +1577,7 @@ export type company_reviewUpdateWithoutAuthorInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   company?: Prisma.companyUpdateOneRequiredWithoutReviewsNestedInput;
+  location?: Prisma.company_locationUpdateOneWithoutReviewsNestedInput;
   critiques?: Prisma.review_critiqueUpdateManyWithoutReviewNestedInput;
   comments?: Prisma.review_commentUpdateManyWithoutReviewNestedInput;
 };
@@ -1352,6 +1585,7 @@ export type company_reviewUpdateWithoutAuthorInput = {
 export type company_reviewUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -1379,6 +1613,7 @@ export type company_reviewUncheckedUpdateWithoutAuthorInput = {
 export type company_reviewUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -1404,6 +1639,7 @@ export type company_reviewUncheckedUpdateManyWithoutAuthorInput = {
 export type company_reviewCreateManyCompanyInput = {
   id?: string;
   author_id: string;
+  location_id?: string | null;
   body: string;
   overall_rating: number;
   employment_context?: string | null;
@@ -1437,6 +1673,7 @@ export type company_reviewUpdateWithoutCompanyInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   author?: Prisma.userUpdateOneRequiredWithoutCompany_reviewsNestedInput;
+  location?: Prisma.company_locationUpdateOneWithoutReviewsNestedInput;
   critiques?: Prisma.review_critiqueUpdateManyWithoutReviewNestedInput;
   comments?: Prisma.review_commentUpdateManyWithoutReviewNestedInput;
 };
@@ -1444,6 +1681,7 @@ export type company_reviewUpdateWithoutCompanyInput = {
 export type company_reviewUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
   employment_context?:
@@ -1470,6 +1708,103 @@ export type company_reviewUncheckedUpdateWithoutCompanyInput = {
 
 export type company_reviewUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
+  author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  location_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  body?: Prisma.StringFieldUpdateOperationsInput | string;
+  overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
+  employment_context?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  would_recommend?:
+    | Prisma.NullableBoolFieldUpdateOperationsInput
+    | boolean
+    | null;
+  status?:
+    | Prisma.EnumReviewStatusFieldUpdateOperationsInput
+    | $Enums.ReviewStatus;
+  published_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+export type company_reviewCreateManyLocationInput = {
+  id?: string;
+  company_id: string;
+  author_id: string;
+  body: string;
+  overall_rating: number;
+  employment_context?: string | null;
+  would_recommend?: boolean | null;
+  status?: $Enums.ReviewStatus;
+  published_at?: Date | string | null;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+};
+
+export type company_reviewUpdateWithoutLocationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  body?: Prisma.StringFieldUpdateOperationsInput | string;
+  overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
+  employment_context?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  would_recommend?:
+    | Prisma.NullableBoolFieldUpdateOperationsInput
+    | boolean
+    | null;
+  status?:
+    | Prisma.EnumReviewStatusFieldUpdateOperationsInput
+    | $Enums.ReviewStatus;
+  published_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  company?: Prisma.companyUpdateOneRequiredWithoutReviewsNestedInput;
+  author?: Prisma.userUpdateOneRequiredWithoutCompany_reviewsNestedInput;
+  critiques?: Prisma.review_critiqueUpdateManyWithoutReviewNestedInput;
+  comments?: Prisma.review_commentUpdateManyWithoutReviewNestedInput;
+};
+
+export type company_reviewUncheckedUpdateWithoutLocationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  author_id?: Prisma.StringFieldUpdateOperationsInput | string;
+  body?: Prisma.StringFieldUpdateOperationsInput | string;
+  overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
+  employment_context?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  would_recommend?:
+    | Prisma.NullableBoolFieldUpdateOperationsInput
+    | boolean
+    | null;
+  status?:
+    | Prisma.EnumReviewStatusFieldUpdateOperationsInput
+    | $Enums.ReviewStatus;
+  published_at?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  critiques?: Prisma.review_critiqueUncheckedUpdateManyWithoutReviewNestedInput;
+  comments?: Prisma.review_commentUncheckedUpdateManyWithoutReviewNestedInput;
+};
+
+export type company_reviewUncheckedUpdateManyWithoutLocationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  company_id?: Prisma.StringFieldUpdateOperationsInput | string;
   author_id?: Prisma.StringFieldUpdateOperationsInput | string;
   body?: Prisma.StringFieldUpdateOperationsInput | string;
   overall_rating?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1551,6 +1886,7 @@ export type company_reviewSelect<
     id?: boolean;
     company_id?: boolean;
     author_id?: boolean;
+    location_id?: boolean;
     body?: boolean;
     overall_rating?: boolean;
     employment_context?: boolean;
@@ -1561,6 +1897,7 @@ export type company_reviewSelect<
     updated_at?: boolean;
     company?: boolean | Prisma.companyDefaultArgs<ExtArgs>;
     author?: boolean | Prisma.userDefaultArgs<ExtArgs>;
+    location?: boolean | Prisma.company_review$locationArgs<ExtArgs>;
     critiques?: boolean | Prisma.company_review$critiquesArgs<ExtArgs>;
     comments?: boolean | Prisma.company_review$commentsArgs<ExtArgs>;
     _count?: boolean | Prisma.Company_reviewCountOutputTypeDefaultArgs<ExtArgs>;
@@ -1576,6 +1913,7 @@ export type company_reviewSelectCreateManyAndReturn<
     id?: boolean;
     company_id?: boolean;
     author_id?: boolean;
+    location_id?: boolean;
     body?: boolean;
     overall_rating?: boolean;
     employment_context?: boolean;
@@ -1586,6 +1924,7 @@ export type company_reviewSelectCreateManyAndReturn<
     updated_at?: boolean;
     company?: boolean | Prisma.companyDefaultArgs<ExtArgs>;
     author?: boolean | Prisma.userDefaultArgs<ExtArgs>;
+    location?: boolean | Prisma.company_review$locationArgs<ExtArgs>;
   },
   ExtArgs['result']['company_review']
 >;
@@ -1598,6 +1937,7 @@ export type company_reviewSelectUpdateManyAndReturn<
     id?: boolean;
     company_id?: boolean;
     author_id?: boolean;
+    location_id?: boolean;
     body?: boolean;
     overall_rating?: boolean;
     employment_context?: boolean;
@@ -1608,6 +1948,7 @@ export type company_reviewSelectUpdateManyAndReturn<
     updated_at?: boolean;
     company?: boolean | Prisma.companyDefaultArgs<ExtArgs>;
     author?: boolean | Prisma.userDefaultArgs<ExtArgs>;
+    location?: boolean | Prisma.company_review$locationArgs<ExtArgs>;
   },
   ExtArgs['result']['company_review']
 >;
@@ -1616,6 +1957,7 @@ export type company_reviewSelectScalar = {
   id?: boolean;
   company_id?: boolean;
   author_id?: boolean;
+  location_id?: boolean;
   body?: boolean;
   overall_rating?: boolean;
   employment_context?: boolean;
@@ -1633,6 +1975,7 @@ export type company_reviewOmit<
   | 'id'
   | 'company_id'
   | 'author_id'
+  | 'location_id'
   | 'body'
   | 'overall_rating'
   | 'employment_context'
@@ -1649,6 +1992,7 @@ export type company_reviewInclude<
 > = {
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>;
   author?: boolean | Prisma.userDefaultArgs<ExtArgs>;
+  location?: boolean | Prisma.company_review$locationArgs<ExtArgs>;
   critiques?: boolean | Prisma.company_review$critiquesArgs<ExtArgs>;
   comments?: boolean | Prisma.company_review$commentsArgs<ExtArgs>;
   _count?: boolean | Prisma.Company_reviewCountOutputTypeDefaultArgs<ExtArgs>;
@@ -1659,6 +2003,7 @@ export type company_reviewIncludeCreateManyAndReturn<
 > = {
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>;
   author?: boolean | Prisma.userDefaultArgs<ExtArgs>;
+  location?: boolean | Prisma.company_review$locationArgs<ExtArgs>;
 };
 export type company_reviewIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
@@ -1666,6 +2011,7 @@ export type company_reviewIncludeUpdateManyAndReturn<
 > = {
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>;
   author?: boolean | Prisma.userDefaultArgs<ExtArgs>;
+  location?: boolean | Prisma.company_review$locationArgs<ExtArgs>;
 };
 
 export type $company_reviewPayload<
@@ -1676,6 +2022,7 @@ export type $company_reviewPayload<
   objects: {
     company: Prisma.$companyPayload<ExtArgs>;
     author: Prisma.$userPayload<ExtArgs>;
+    location: Prisma.$company_locationPayload<ExtArgs> | null;
     critiques: Prisma.$review_critiquePayload<ExtArgs>[];
     comments: Prisma.$review_commentPayload<ExtArgs>[];
   };
@@ -1684,6 +2031,7 @@ export type $company_reviewPayload<
       id: string;
       company_id: string;
       author_id: string;
+      location_id: string | null;
       body: string;
       overall_rating: number;
       employment_context: string | null;
@@ -2282,6 +2630,19 @@ export interface Prisma__company_reviewClient<
     ExtArgs,
     GlobalOmitOptions
   >;
+  location<T extends Prisma.company_review$locationArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.company_review$locationArgs<ExtArgs>>,
+  ): Prisma.Prisma__company_locationClient<
+    runtime.Types.Result.GetResult<
+      Prisma.$company_locationPayload<ExtArgs>,
+      T,
+      'findUniqueOrThrow',
+      GlobalOmitOptions
+    > | null,
+    null,
+    ExtArgs,
+    GlobalOmitOptions
+  >;
   critiques<T extends Prisma.company_review$critiquesArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.company_review$critiquesArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
@@ -2349,6 +2710,7 @@ export interface company_reviewFieldRefs {
   readonly id: Prisma.FieldRef<'company_review', 'String'>;
   readonly company_id: Prisma.FieldRef<'company_review', 'String'>;
   readonly author_id: Prisma.FieldRef<'company_review', 'String'>;
+  readonly location_id: Prisma.FieldRef<'company_review', 'String'>;
   readonly body: Prisma.FieldRef<'company_review', 'String'>;
   readonly overall_rating: Prisma.FieldRef<'company_review', 'Int'>;
   readonly employment_context: Prisma.FieldRef<'company_review', 'String'>;
@@ -2830,6 +3192,28 @@ export type company_reviewDeleteManyArgs<
    * Limit how many company_reviews to delete.
    */
   limit?: number;
+};
+
+/**
+ * company_review.location
+ */
+export type company_review$locationArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the company_location
+   */
+  select?: Prisma.company_locationSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the company_location
+   */
+  omit?: Prisma.company_locationOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.company_locationInclude<ExtArgs> | null;
+  where?: Prisma.company_locationWhereInput;
 };
 
 /**

@@ -12,6 +12,7 @@ export type * from './models/oauth_account.js';
 export type * from './models/tokens.js';
 export type * from './models/auth_otp.js';
 export type * from './models/company.js';
+export type * from './models/company_location.js';
 export type * from './models/company_review.js';
 export type * from './models/review_critique.js';
 export type * from './models/review_comment.js';

@@ -12,6 +12,7 @@ export enum DbModels {
   TOKENS = 'Token',
   AUTH_OTP = 'Auth OTP',
   COMPANY = 'Company',
+  COMPANY_LOCATION = 'Company Location',
   COMPANY_REVIEW = 'Company Review',
   REVIEW_CRITIQUE = 'Review Critique',
   REVIEW_COMMENT = 'Review Comment',
