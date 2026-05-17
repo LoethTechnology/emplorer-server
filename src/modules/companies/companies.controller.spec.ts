@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompaniesController } from './companies.controller';
 import { CompaniesService } from './companies.service';
@@ -14,6 +15,7 @@ const mockAuthenticatedUser = (sub: string): AuthenticatedRequest['user'] => ({
 const mockCompaniesService = {
   create: jest.fn(),
   findAll: jest.fn(),
+  typeahead: jest.fn(),
   findOne: jest.fn(),
   findByDomain: jest.fn(),
   update: jest.fn(),
@@ -46,6 +48,35 @@ describe('CompaniesController', () => {
     await controller.create(user, dto);
 
     expect(mockCompaniesService.create).toHaveBeenCalledWith(user, dto);
+  });
+
+  describe('typeahead', () => {
+    it('should delegate to CompaniesService with the query string', async () => {
+      await controller.typeahead('acme');
+
+      expect(mockCompaniesService.typeahead).toHaveBeenCalledWith('acme');
+    });
+
+    it('should throw BadRequestException when q is an empty string', async () => {
+      await expect(controller.typeahead('')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(mockCompaniesService.typeahead).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException when q is whitespace only', async () => {
+      await expect(controller.typeahead('   ')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(mockCompaniesService.typeahead).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException when q is undefined', async () => {
+      await expect(
+        controller.typeahead(undefined as unknown as string),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(mockCompaniesService.typeahead).not.toHaveBeenCalled();
+    });
   });
 
   it('should delegate findAll to CompaniesService with the query', async () => {

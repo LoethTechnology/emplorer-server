@@ -19,7 +19,12 @@ import type {
   CreateCompanyDto,
   UpdateCompanyDto,
 } from './dto';
-import type { Company, CompanyResponse } from './companies.types';
+import type {
+  Company,
+  CompanyResponse,
+  CompanyTypeaheadItem,
+  CompanyTypeaheadResponse,
+} from './companies.types';
 import { COMPANIES_RESPONSE_MESSAGES } from './utils/companies.utils';
 
 @Injectable()
@@ -58,6 +63,37 @@ export class CompaniesService {
     });
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.CREATE, created);
+  }
+
+  async typeahead(q: string): Promise<CompanyTypeaheadResponse> {
+    const results = await this.prismaService.company.findMany({
+      where: {
+        status: CompanyStatus.APPROVED,
+        name: { startsWith: q.trim(), mode: 'insensitive' },
+      },
+      select: {
+        id: true,
+        name: true,
+        logo_url: true,
+        locations: {
+          select: {
+            city: true,
+            state: true,
+            country: true,
+            is_headquarters: true,
+          },
+          orderBy: { is_headquarters: 'desc' },
+        },
+      },
+      take: 10,
+      orderBy: { name: 'asc' },
+    });
+
+    return CrudResponse(
+      DbModels.COMPANY,
+      CrudEnums.READ,
+      results as CompanyTypeaheadItem[],
+    );
   }
 
   async findAll(
