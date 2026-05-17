@@ -46,6 +46,19 @@ const approvedCompany = (overrides: Partial<Record<string, unknown>> = {}) => ({
   ...overrides,
 });
 
+const typeaheadCompany = (
+  overrides: Partial<Record<string, unknown>> = {},
+) => ({
+  id: 'company-1',
+  name: 'Acme Inc.',
+  logo_url: null,
+  locations: [
+    { city: 'Lagos', state: null, country: 'Nigeria', is_headquarters: true },
+    { city: 'Abuja', state: null, country: 'Nigeria', is_headquarters: false },
+  ],
+  ...overrides,
+});
+
 describe('CompaniesService', () => {
   let service: CompaniesService;
 
@@ -207,6 +220,74 @@ describe('CompaniesService', () => {
 
       await expect(service.findByDomain('unknown.com')).rejects.toBeInstanceOf(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('typeahead', () => {
+    it('should return matching companies with their locations', async () => {
+      mockPrismaService.company.findMany.mockResolvedValue([
+        typeaheadCompany(),
+      ]);
+
+      const result = await service.typeahead('Acme');
+
+      expect(mockPrismaService.company.findMany).toHaveBeenCalledWith({
+        where: {
+          status: CompanyStatus.APPROVED,
+          name: { startsWith: 'Acme', mode: 'insensitive' },
+        },
+        select: {
+          id: true,
+          name: true,
+          logo_url: true,
+          locations: {
+            select: {
+              city: true,
+              state: true,
+              country: true,
+              is_headquarters: true,
+            },
+            orderBy: { is_headquarters: 'desc' },
+          },
+        },
+        take: 10,
+        orderBy: { name: 'asc' },
+      });
+      expect(result.data).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: 'company-1',
+            name: 'Acme Inc.',
+            locations: expect.arrayContaining([
+              expect.objectContaining({ city: 'Lagos', is_headquarters: true }),
+            ]),
+          }),
+        ]),
+      );
+    });
+
+    it('should return an empty array when no companies match', async () => {
+      mockPrismaService.company.findMany.mockResolvedValue([]);
+
+      const result = await service.typeahead('xyz');
+
+      expect(result.data).toEqual([]);
+    });
+
+    it('should trim whitespace from the query before searching', async () => {
+      mockPrismaService.company.findMany.mockResolvedValue([
+        typeaheadCompany(),
+      ]);
+
+      await service.typeahead('  Acme  ');
+
+      expect(mockPrismaService.company.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            name: { startsWith: 'Acme', mode: 'insensitive' },
+          }),
+        }),
       );
     });
   });
