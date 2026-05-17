@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -19,7 +20,11 @@ import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { User } from '../auth/decorators/user.decorator';
 import { CompaniesService } from './companies.service';
 import { CompanyQueryDto, CreateCompanyDto, UpdateCompanyDto } from './dto';
-import type { Company, CompanyResponse } from './companies.types';
+import type {
+  Company,
+  CompanyResponse,
+  CompanyTypeaheadResponse,
+} from './companies.types';
 import type { AuthenticatedRequest } from '@modules/user/user.types';
 import type { PaginationResponseInterface } from '@shared/types';
 
@@ -57,6 +62,21 @@ export class CompaniesController {
     @Query() query: CompanyQueryDto,
   ): Promise<PaginationResponseInterface<Company>> {
     return this.companiesService.findAll(query);
+  }
+
+  @Get('typeahead')
+  @SkipAuth()
+  @ApiOperation({ summary: 'Typeahead search for companies by name' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return up to 10 matching companies with their locations',
+  })
+  @ApiResponse({ status: 400, description: 'Query parameter q is required' })
+  async typeahead(@Query('q') q: string): Promise<CompanyTypeaheadResponse> {
+    if (!q?.trim()) {
+      throw new BadRequestException('Query parameter "q" is required.');
+    }
+    return this.companiesService.typeahead(q);
   }
 
   @Get('domain/:domain')
