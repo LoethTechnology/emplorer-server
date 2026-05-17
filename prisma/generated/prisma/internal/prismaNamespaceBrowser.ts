@@ -59,6 +59,7 @@ export const ModelName = {
   tokens: 'tokens',
   auth_otp: 'auth_otp',
   company: 'company',
+  company_location: 'company_location',
   company_review: 'company_review',
   review_critique: 'review_critique',
   review_comment: 'review_comment',
@@ -159,10 +160,26 @@ export const CompanyScalarFieldEnum = {
 export type CompanyScalarFieldEnum =
   (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum];
 
+export const Company_locationScalarFieldEnum = {
+  id: 'id',
+  company_id: 'company_id',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  address: 'address',
+  is_headquarters: 'is_headquarters',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+} as const;
+
+export type Company_locationScalarFieldEnum =
+  (typeof Company_locationScalarFieldEnum)[keyof typeof Company_locationScalarFieldEnum];
+
 export const Company_reviewScalarFieldEnum = {
   id: 'id',
   company_id: 'company_id',
   author_id: 'author_id',
+  location_id: 'location_id',
   body: 'body',
   overall_rating: 'overall_rating',
   employment_context: 'employment_context',

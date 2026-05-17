@@ -70,6 +70,11 @@ export type auth_otp = Prisma.auth_otpModel;
  */
 export type company = Prisma.companyModel;
 /**
+ * Model company_location
+ *
+ */
+export type company_location = Prisma.company_locationModel;
+/**
  * Model company_review
  *
  */

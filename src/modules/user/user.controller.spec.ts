@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import type { AuthenticatedRequest } from './user.types';
 
 jest.mock('../../shared/modules/prisma', () => ({
@@ -92,7 +93,7 @@ describe('UserController', () => {
       company_id: 'company-1',
       body: 'A strong team with clear expectations.',
       overall_rating: 5,
-      status: 'DRAFT',
+      status: ReviewStatus.DRAFT,
     };
 
     await controller.createMyReview(user, createReviewDto);
@@ -124,7 +125,7 @@ describe('UserController', () => {
     const user = mockAuthenticatedUser('user-7');
     const updateReviewDto = {
       body: 'Updated review body',
-      status: 'PUBLISHED',
+      status: ReviewStatus.PUBLISHED,
     };
 
     await controller.updateMyReview(user, 'review-2', updateReviewDto);
