@@ -6,6 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { LocationsModule } from './modules/locations/locations.module';
+import { CritiquesModule } from './modules/critiques/critiques.module';
+import { CommentsModule } from './modules/comments/comments.module';
 import { UserModule } from './modules/user/user.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from '@shared/modules/prisma';
@@ -25,9 +28,11 @@ import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
     PrismaModule,
     AuthModule,
     UserModule,
-    UserModule,
     ReviewsModule,
     CompaniesModule,
+    LocationsModule,
+    CritiquesModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
