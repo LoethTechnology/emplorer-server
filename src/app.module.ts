@@ -10,6 +10,7 @@ import { LocationsModule } from './modules/locations/locations.module';
 import { CritiquesModule } from './modules/critiques/critiques.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { UserModule } from './modules/user/user.module';
+import { PublicModule } from './modules/public/public.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from '@shared/modules/prisma';
 import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
@@ -33,6 +34,7 @@ import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
     LocationsModule,
     CritiquesModule,
     CommentsModule,
+    PublicModule,
   ],
   controllers: [AppController],
   providers: [
