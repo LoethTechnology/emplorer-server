@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PublicController } from './public.controller';
 import { PublicService } from './public.service';
+import { PublicCompanyQueryDto } from './dto/public-company-query.dto';
+import { BaseQueryDto } from '@shared/dtos';
 
 jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
@@ -45,7 +47,7 @@ describe('PublicController', () => {
       const query = { name: 'Acme', location: 'Lagos', rating: 4 };
       mockPublicService.findCompanies.mockResolvedValue(paginatedResponse());
 
-      await controller.findCompanies(query as any);
+      await controller.findCompanies(query as PublicCompanyQueryDto);
 
       expect(mockPublicService.findCompanies).toHaveBeenCalledWith(query);
     });
@@ -56,7 +58,9 @@ describe('PublicController', () => {
       ]);
       mockPublicService.findCompanies.mockResolvedValue(expected);
 
-      const result = await controller.findCompanies({} as any);
+      const result = await controller.findCompanies(
+        {} as unknown as PublicCompanyQueryDto,
+      );
 
       expect(result).toBe(expected);
     });
@@ -64,7 +68,7 @@ describe('PublicController', () => {
     it('should pass an empty query when no params are provided', async () => {
       mockPublicService.findCompanies.mockResolvedValue(paginatedResponse());
 
-      await controller.findCompanies({} as any);
+      await controller.findCompanies({} as unknown as PublicCompanyQueryDto);
 
       expect(mockPublicService.findCompanies).toHaveBeenCalledWith({});
     });
@@ -77,7 +81,10 @@ describe('PublicController', () => {
         paginatedResponse(),
       );
 
-      await controller.findCompanyReviews('company-1', query as any);
+      await controller.findCompanyReviews(
+        'company-1',
+        query as unknown as BaseQueryDto,
+      );
 
       expect(mockPublicService.findCompanyReviews).toHaveBeenCalledWith(
         'company-1',
@@ -93,7 +100,7 @@ describe('PublicController', () => {
 
       const result = await controller.findCompanyReviews(
         'company-1',
-        {} as any,
+        {} as unknown as BaseQueryDto,
       );
 
       expect(result).toBe(expected);
@@ -104,7 +111,10 @@ describe('PublicController', () => {
         paginatedResponse(),
       );
 
-      await controller.findCompanyReviews('company-99', {} as any);
+      await controller.findCompanyReviews(
+        'company-99',
+        {} as unknown as BaseQueryDto,
+      );
 
       expect(mockPublicService.findCompanyReviews).toHaveBeenCalledWith(
         'company-99',
