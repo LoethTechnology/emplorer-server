@@ -8,6 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import { UserService } from './user.service';
 import type { AuthenticatedRequest } from './user.types';
 
@@ -19,6 +20,17 @@ jest.mock('argon2', () => ({
 jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
+
+jest.mock('../../shared/modules/mail', () => ({
+  MailService: jest.fn(),
+}));
+
+const mockMailService = {
+  sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
+  sendPasswordChangedEmail: jest.fn().mockResolvedValue(undefined),
+  sendAccountDeletedEmail: jest.fn().mockResolvedValue(undefined),
+  sendReviewPublishedEmail: jest.fn().mockResolvedValue(undefined),
+};
 
 const mockPrismaService = {
   company: {
@@ -54,6 +66,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
+        { provide: MailService, useValue: mockMailService },
       ],
     }).compile();
 

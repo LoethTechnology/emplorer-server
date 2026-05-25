@@ -7,12 +7,21 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import { CompaniesService } from './companies.service';
 import type { AuthenticatedRequest } from '@modules/user/user.types';
 
 jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
+
+jest.mock('../../shared/modules/mail', () => ({
+  MailService: jest.fn(),
+}));
+
+const mockMailService = {
+  sendCompanySubmittedEmail: jest.fn().mockResolvedValue(undefined),
+};
 
 const mockPrismaService = {
   company: {
@@ -22,6 +31,9 @@ const mockPrismaService = {
     count: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
+  },
+  user: {
+    findUnique: jest.fn().mockResolvedValue(null),
   },
 };
 
@@ -69,6 +81,7 @@ describe('CompaniesService', () => {
       providers: [
         CompaniesService,
         { provide: PrismaService, useValue: mockPrismaService },
+        { provide: MailService, useValue: mockMailService },
       ],
     }).compile();
 
