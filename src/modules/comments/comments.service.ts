@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { CommentStatus, ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import {
   CrudEnums,
   DbModels,
@@ -32,14 +33,17 @@ const MESSAGES = {
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
 
   async create(
     user: AuthenticatedRequest['user'],
     reviewId: string,
     dto: CreateCommentDto,
   ): Promise<ReviewCommentResponse> {
-    await this.findPublishedReviewOrThrow(reviewId);
+    const review = await this.findPublishedReviewOrThrow(reviewId);
 
     if (dto.parent_comment_id) {
       await this.assertParentCommentBelongsToReview(
@@ -56,6 +60,22 @@ export class CommentsService {
         parent_comment_id: dto.parent_comment_id ?? null,
       },
     });
+
+    if (review.author_id !== user.sub) {
+      this.prismaService.user
+        .findUnique({
+          where: { id: review.author_id },
+          select: { email: true, first_name: true },
+        })
+        .then((author) => {
+          if (author?.email) {
+            this.mailService
+              .sendNewCommentEmail(author.email, author.first_name)
+              .catch(() => {});
+          }
+        })
+        .catch(() => {});
+    }
 
     return CrudResponse(DbModels.REVIEW_COMMENT, CrudEnums.CREATE, comment);
   }
@@ -217,7 +237,7 @@ export class CommentsService {
   private async findPublishedReviewOrThrow(reviewId: string) {
     const review = await this.prismaService.company_review.findFirst({
       where: { id: reviewId, status: ReviewStatus.PUBLISHED },
-      select: { id: true },
+      select: { id: true, author_id: true },
     });
 
     if (!review) {

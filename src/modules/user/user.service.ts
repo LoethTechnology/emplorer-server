@@ -7,6 +7,7 @@ import {
 import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import {
   CrudEnums,
   DbModels,
@@ -38,7 +39,10 @@ import { PaginateRes, GetPageOptions } from '@shared/index';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
     const existingUser = await this.findUserWithPasswordByEmail(
@@ -67,12 +71,20 @@ export class UserService {
         data: userData,
       });
 
+      this.mailService
+        .sendWelcomeEmail(userData.email, userData.first_name)
+        .catch(() => {});
+
       return CrudResponse(DbModels.USER, CrudEnums.CREATE, updatedUser);
     }
 
     const createdUser = await this.prismaService.user.create({
       data: userData,
     });
+
+    this.mailService
+      .sendWelcomeEmail(userData.email, userData.first_name)
+      .catch(() => {});
 
     return CrudResponse(DbModels.USER, CrudEnums.CREATE, createdUser);
   }
@@ -143,6 +155,10 @@ export class UserService {
       where: { id: userId },
       data: { password: nextPasswordHash },
     });
+
+    this.mailService
+      .sendPasswordChangedEmail(dbUser.email ?? '', '')
+      .catch(() => {});
 
     return CrudResponse(
       DbModels.USER,
@@ -225,7 +241,7 @@ export class UserService {
     updateUserReviewDto: UpdateUserReviewDto,
   ): Promise<UserReviewResponse> {
     const userId = user.sub;
-    await this.findActiveUserById(userId);
+    const activeUser = await this.findActiveUserById(userId);
     const existingReview = await this.findOwnedReviewOrThrow(userId, reviewId);
     const nextStatus = updateUserReviewDto.status ?? existingReview.status;
 
@@ -242,6 +258,28 @@ export class UserService {
         published_at: this.resolvePublishedAt(existingReview, nextStatus),
       },
     });
+
+    const justPublished =
+      existingReview.status !== ReviewStatus.PUBLISHED &&
+      nextStatus === ReviewStatus.PUBLISHED;
+
+    if (justPublished && activeUser.email) {
+      this.prismaService.company
+        .findUnique({
+          where: { id: existingReview.company_id },
+          select: { name: true },
+        })
+        .then((company) => {
+          this.mailService
+            .sendReviewPublishedEmail(
+              activeUser.email!,
+              activeUser.first_name,
+              company?.name ?? '',
+            )
+            .catch(() => {});
+        })
+        .catch(() => {});
+    }
 
     return CrudResponse(
       DbModels.COMPANY_REVIEW,
@@ -273,7 +311,7 @@ export class UserService {
     user: AuthenticatedRequest['user'],
   ): Promise<UserMessageResponse> {
     const userId = user.sub;
-    await this.findActiveUserById(userId);
+    const activeUser = await this.findActiveUserById(userId);
 
     try {
       await this.prismaService.user.delete({
@@ -288,6 +326,10 @@ export class UserService {
 
       throw error;
     }
+
+    this.mailService
+      .sendAccountDeletedEmail(activeUser.email ?? '', activeUser.first_name)
+      .catch(() => {});
 
     return CrudResponse(
       DbModels.USER,

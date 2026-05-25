@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { CompanyStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import {
   CrudEnums,
   DbModels,
@@ -29,7 +30,10 @@ import { COMPANIES_RESPONSE_MESSAGES } from './utils/companies.utils';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
 
   async create(
     user: AuthenticatedRequest['user'],
@@ -61,6 +65,24 @@ export class CompaniesService {
         industry: createCompanyDto.industry ?? null,
       },
     });
+
+    this.prismaService.user
+      .findUnique({
+        where: { id: user.sub },
+        select: { email: true, first_name: true },
+      })
+      .then((creator) => {
+        if (creator?.email) {
+          this.mailService
+            .sendCompanySubmittedEmail(
+              creator.email,
+              creator.first_name,
+              created.name,
+            )
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.CREATE, created);
   }
