@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import { CrudEnums, DbModels } from '../../shared/types';
 import { CrudResponse } from '../../shared/utils/response';
 import type {
@@ -19,6 +20,7 @@ export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly authHandlerService: AuthHandlerService,
+    private readonly mailService: MailService,
   ) {}
 
   async findOrCreateUserFromLinkedin(
@@ -147,6 +149,15 @@ export class AuthService {
       });
     });
 
+    this.mailService
+      .sendPasswordResetOtpEmail(
+        email,
+        dbUser.first_name,
+        otp,
+        this.authHandlerService.getOtpTtlMinutes(),
+      )
+      .catch(() => {});
+
     if (this.authHandlerService.shouldExposeOtp()) {
       return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, { otp });
     }
@@ -204,6 +215,10 @@ export class AuthService {
         data: { consumed_at: new Date() },
       });
     });
+
+    this.mailService
+      .sendPasswordResetConfirmationEmail(email, dbUser.first_name)
+      .catch(() => {});
 
     return CrudResponse(
       DbModels.USER,
