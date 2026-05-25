@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import {
   CrudEnums,
   DbModels,
@@ -25,14 +26,17 @@ const MESSAGES = {
 
 @Injectable()
 export class CritiquesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
 
   async create(
     user: AuthenticatedRequest['user'],
     reviewId: string,
     dto: CreateCritiqueDto,
   ): Promise<ReviewCritiqueResponse> {
-    await this.findPublishedReviewOrThrow(reviewId);
+    const review = await this.findPublishedReviewOrThrow(reviewId);
 
     const critique = await this.prismaService.review_critique.create({
       data: {
@@ -45,6 +49,22 @@ export class CritiquesService {
         published_at: new Date(),
       },
     });
+
+    if (review.author_id !== user.sub) {
+      this.prismaService.user
+        .findUnique({
+          where: { id: review.author_id },
+          select: { email: true, first_name: true },
+        })
+        .then((author) => {
+          if (author?.email) {
+            this.mailService
+              .sendNewCritiqueEmail(author.email, author.first_name, dto.title)
+              .catch(() => {});
+          }
+        })
+        .catch(() => {});
+    }
 
     return CrudResponse(DbModels.REVIEW_CRITIQUE, CrudEnums.CREATE, critique);
   }
@@ -142,7 +162,7 @@ export class CritiquesService {
   private async findPublishedReviewOrThrow(reviewId: string) {
     const review = await this.prismaService.company_review.findFirst({
       where: { id: reviewId, status: ReviewStatus.PUBLISHED },
-      select: { id: true },
+      select: { id: true, author_id: true },
     });
 
     if (!review) {

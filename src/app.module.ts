@@ -13,6 +13,7 @@ import { UserModule } from './modules/user/user.module';
 import { PublicModule } from './modules/public/public.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from '@shared/modules/prisma';
+import { MailModule } from '@shared/modules/mail';
 import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
 
 @Module({
@@ -27,6 +28,7 @@ import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
       ],
     }),
     PrismaModule,
+    MailModule,
     AuthModule,
     UserModule,
     ReviewsModule,
