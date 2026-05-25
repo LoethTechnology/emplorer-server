@@ -4,6 +4,7 @@ import * as argon2 from 'argon2';
 import { AuthService } from './auth.service';
 import { AuthHandlerService } from './handlers/auth.handler.service';
 import { PrismaService } from '../../shared/modules/prisma';
+import { MailService } from '../../shared/modules/mail';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 
 jest.mock('argon2', () => ({
@@ -14,6 +15,16 @@ jest.mock('argon2', () => ({
 jest.mock('../../shared/modules/prisma', () => ({
   PrismaService: jest.fn(),
 }));
+
+jest.mock('../../shared/modules/mail', () => ({
+  MailService: jest.fn(),
+}));
+
+const mockMailService = {
+  sendPasswordResetOtpEmail: jest.fn().mockResolvedValue(undefined),
+  sendPasswordResetConfirmationEmail: jest.fn().mockResolvedValue(undefined),
+  sendPasswordChangedEmail: jest.fn().mockResolvedValue(undefined),
+};
 
 const mockPrismaService = {
   oauth_account: {
@@ -90,6 +101,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: AuthHandlerService, useValue: mockAuthHandlerService },
+        { provide: MailService, useValue: mockMailService },
       ],
     }).compile();
 
