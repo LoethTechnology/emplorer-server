@@ -8,6 +8,7 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { CloudinaryService } from '../../shared/modules/cloudinary';
 import {
   CrudEnums,
   DbModels,
@@ -42,6 +43,7 @@ export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly mailService: MailService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
@@ -93,6 +95,28 @@ export class UserService {
     const dbUser = await this.findActiveUserById(user.sub);
 
     return CrudResponse(DbModels.USER, CrudEnums.READ, dbUser);
+  }
+
+  async uploadAvatar(
+    user: AuthenticatedRequest['user'],
+    file: Express.Multer.File,
+  ): Promise<UserResponse> {
+    const userId = user.sub;
+    const dbUser = await this.findActiveUserById(userId);
+    const publicId = `emplorer/users/${userId}/avatar`;
+
+    if (dbUser.avatar_url) {
+      await this.cloudinaryService.deleteImage(publicId).catch(() => {});
+    }
+
+    const result = await this.cloudinaryService.uploadImage(file, publicId);
+
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: userId },
+      data: { avatar_url: result.secure_url },
+    });
+
+    return CrudResponse(DbModels.USER, CrudEnums.UPDATE, updatedUser);
   }
 
   async updateMe(

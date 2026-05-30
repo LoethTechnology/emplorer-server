@@ -9,6 +9,7 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { CloudinaryService } from '../../shared/modules/cloudinary';
 import { UserService } from './user.service';
 import type { AuthenticatedRequest } from './user.types';
 
@@ -25,11 +26,22 @@ jest.mock('../../shared/modules/mail', () => ({
   MailService: jest.fn(),
 }));
 
+jest.mock('../../shared/modules/cloudinary', () => ({
+  CloudinaryService: jest.fn(),
+}));
+
 const mockMailService = {
   sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
   sendPasswordChangedEmail: jest.fn().mockResolvedValue(undefined),
   sendAccountDeletedEmail: jest.fn().mockResolvedValue(undefined),
   sendReviewPublishedEmail: jest.fn().mockResolvedValue(undefined),
+};
+
+const mockCloudinaryService = {
+  deleteImage: jest.fn().mockResolvedValue(undefined),
+  uploadImage: jest
+    .fn()
+    .mockResolvedValue({ secure_url: 'https://avatar.test' }),
 };
 
 const mockPrismaService = {
@@ -67,6 +79,7 @@ describe('UserService', () => {
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: MailService, useValue: mockMailService },
+        { provide: CloudinaryService, useValue: mockCloudinaryService },
       ],
     }).compile();
 

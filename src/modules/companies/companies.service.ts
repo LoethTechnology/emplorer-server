@@ -7,6 +7,7 @@ import {
 import { CompanyStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { CloudinaryService } from '../../shared/modules/cloudinary';
 import {
   CrudEnums,
   DbModels,
@@ -33,6 +34,7 @@ export class CompaniesService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly mailService: MailService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(
@@ -168,6 +170,35 @@ export class CompaniesService {
     }
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.READ, company);
+  }
+
+  async uploadLogo(
+    user: AuthenticatedRequest['user'],
+    id: string,
+    file: Express.Multer.File,
+  ): Promise<CompanyResponse> {
+    const existing = await this.findCompanyOrThrow(id);
+
+    if (existing.creator_id !== user.sub) {
+      throw new ForbiddenException(
+        COMPANIES_RESPONSE_MESSAGES.companyForbidden,
+      );
+    }
+
+    const publicId = `emplorer/companies/${id}/logo`;
+
+    if (existing.logo_url) {
+      await this.cloudinaryService.deleteImage(publicId).catch(() => {});
+    }
+
+    const result = await this.cloudinaryService.uploadImage(file, publicId);
+
+    const updated = await this.prismaService.company.update({
+      where: { id },
+      data: { logo_url: result.secure_url },
+    });
+
+    return CrudResponse(DbModels.COMPANY, CrudEnums.UPDATE, updated);
   }
 
   async update(
