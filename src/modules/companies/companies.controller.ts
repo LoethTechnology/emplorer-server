@@ -8,13 +8,21 @@ import {
   Query,
   UseGuards,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { User } from '../auth/decorators/user.decorator';
@@ -95,6 +103,38 @@ export class CompaniesController {
   @ApiResponse({ status: 404, description: 'Company not found' })
   findOne(@Param('id') id: string): Promise<CompanyResponse> {
     return this.companiesService.findOne(id);
+  }
+
+  @Post(':id/logo')
+  @ApiBearerAuth()
+  @UseInterceptors(FileInterceptor('logo'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { logo: { type: 'string', format: 'binary' } },
+    },
+  })
+  @ApiOperation({ summary: 'Upload or replace the logo for a company' })
+  @ApiResponse({ status: 200, description: 'Logo uploaded successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid file' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Company not found' })
+  uploadLogo(
+    @User() user: AuthenticatedRequest['user'],
+    @Param('id') id: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /^image\/(jpeg|png|webp)$/ }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ): Promise<CompanyResponse> {
+    return this.companiesService.uploadLogo(user, id, file);
   }
 
   @Patch(':id')
