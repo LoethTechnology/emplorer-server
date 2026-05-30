@@ -14,6 +14,7 @@ import { PublicModule } from './modules/public/public.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from '@shared/modules/prisma';
 import { MailModule } from '@shared/modules/mail';
+import { CloudinaryModule } from '@shared/modules/cloudinary';
 import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
 
 @Module({
@@ -29,6 +30,7 @@ import { UserInterceptor } from '@modules/auth/interceptors/user.interceptor';
     }),
     PrismaModule,
     MailModule,
+    CloudinaryModule,
     AuthModule,
     UserModule,
     ReviewsModule,
