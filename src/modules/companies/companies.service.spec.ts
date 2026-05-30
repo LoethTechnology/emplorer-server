@@ -8,6 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { CloudinaryService } from '../../shared/modules/cloudinary';
 import { CompaniesService } from './companies.service';
 import type { AuthenticatedRequest } from '@modules/user/user.types';
 
@@ -19,8 +20,17 @@ jest.mock('../../shared/modules/mail', () => ({
   MailService: jest.fn(),
 }));
 
+jest.mock('../../shared/modules/cloudinary', () => ({
+  CloudinaryService: jest.fn(),
+}));
+
 const mockMailService = {
   sendCompanySubmittedEmail: jest.fn().mockResolvedValue(undefined),
+};
+
+const mockCloudinaryService = {
+  deleteImage: jest.fn().mockResolvedValue(undefined),
+  uploadImage: jest.fn().mockResolvedValue({ secure_url: 'https://logo.test' }),
 };
 
 const mockPrismaService = {
@@ -82,6 +92,7 @@ describe('CompaniesService', () => {
         CompaniesService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: MailService, useValue: mockMailService },
+        { provide: CloudinaryService, useValue: mockCloudinaryService },
       ],
     }).compile();
 
