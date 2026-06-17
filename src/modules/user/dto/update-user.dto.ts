@@ -44,15 +44,6 @@ export class UpdateUserDto {
   last_name?: string;
 
   @ApiPropertyOptional({
-    example: 'https://example.com/avatar.jpg',
-    description: 'The avatar URL of the user',
-  })
-  @IsOptional()
-  @IsUrl()
-  @Transform(({ value }) => normalizeOptionalUrl(value))
-  avatar_url?: string;
-
-  @ApiPropertyOptional({
     example: 'https://linkedin.com/in/test-user',
     description: 'The LinkedIn profile URL of the user',
   })

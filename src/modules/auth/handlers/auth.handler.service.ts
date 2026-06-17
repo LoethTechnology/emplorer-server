@@ -25,9 +25,10 @@ export class AuthHandlerService {
   async validateLocalUser(email: string, password: string): Promise<user> {
     const dbUser = await this.prismaService.user.findUnique({
       where: { email },
+      omit: { password: false },
     });
 
-    if (!dbUser || !dbUser.password || dbUser.deleted_at) {
+    if (!dbUser || !dbUser.password) {
       throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
     }
 
@@ -36,7 +37,6 @@ export class AuthHandlerService {
     if (!passwordMatches) {
       throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
     }
-
     return dbUser;
   }
 

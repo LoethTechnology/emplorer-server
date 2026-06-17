@@ -56,12 +56,10 @@ model user {
   first_name           String
   last_name            String
   password             String?
-  avatar_url           String?
   linkedin_profile_url String?
   tokens               tokens?
   created_at           DateTime          @default(now())
   updated_at           DateTime          @updatedAt
-  deleted_at           DateTime?
   oauth_accounts       oauth_account[]
   companies_created    company[]
   company_reviews      company_review[]
@@ -204,16 +202,15 @@ model review_critique {
 
 model review_comment {
   id                String           @id @default(cuid())
-  review_id         String
-  author_id         String
+  review_id         String?
+  author_id         String?
   parent_comment_id String?
   body              String
   status            CommentStatus    @default(PUBLISHED)
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
-  deleted_at        DateTime?
-  review            company_review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
-  author            user             @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  review            company_review?  @relation(fields: [review_id], references: [id], onDelete: SetNull)
+  author            user?            @relation(fields: [author_id], references: [id], onDelete: SetNull)
   parent_comment    review_comment?  @relation("ReviewCommentReplies", fields: [parent_comment_id], references: [id], onDelete: Cascade)
   replies           review_comment[] @relation("ReviewCommentReplies")
   votes             comment_vote[]

@@ -1263,11 +1263,9 @@ export const UserScalarFieldEnum = {
   first_name: 'first_name',
   last_name: 'last_name',
   password: 'password',
-  avatar_url: 'avatar_url',
   linkedin_profile_url: 'linkedin_profile_url',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  deleted_at: 'deleted_at',
 } as const;
 
 export type UserScalarFieldEnum =
@@ -1392,7 +1390,6 @@ export const Review_commentScalarFieldEnum = {
   status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  deleted_at: 'deleted_at',
 } as const;
 
 export type Review_commentScalarFieldEnum =
