@@ -28,7 +28,7 @@ export class AuthHandlerService {
       omit: { password: false },
     });
 
-    if (!dbUser || !dbUser.password || dbUser.deleted_at) {
+    if (!dbUser || !dbUser.password) {
       throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
     }
 

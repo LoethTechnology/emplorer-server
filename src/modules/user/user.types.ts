@@ -11,7 +11,6 @@ export interface UserWithPassword {
   id: string;
   email: string | null;
   password: string | null;
-  deleted_at: Date | null;
 }
 
 export type UserResponse = ApiSuccessResponse<PublicUser>;

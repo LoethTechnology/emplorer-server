@@ -8,21 +8,13 @@ import {
   Post,
   UseGuards,
   Query,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards';
 import {
   CreateUserDto,
@@ -71,35 +63,6 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'User account not found' })
   findMe(@User() user: AuthenticatedRequest['user']): Promise<UserResponse> {
     return this.userService.findMe(user);
-  }
-
-  @Post('me/avatar')
-  @ApiBearerAuth()
-  @UseInterceptors(FileInterceptor('avatar'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: { avatar: { type: 'string', format: 'binary' } },
-    },
-  })
-  @ApiOperation({ summary: 'Upload or replace the current user avatar' })
-  @ApiResponse({ status: 200, description: 'Avatar uploaded successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid file' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  uploadAvatar(
-    @User() user: AuthenticatedRequest['user'],
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: /^image\/(jpeg|png|webp)$/ }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-  ): Promise<UserResponse> {
-    return this.userService.uploadAvatar(user, file);
   }
 
   @Patch('me')

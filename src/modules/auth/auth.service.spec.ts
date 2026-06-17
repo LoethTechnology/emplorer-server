@@ -129,7 +129,6 @@ describe('AuthService', () => {
       displayName: 'John Doe',
       name: { givenName: 'John', familyName: 'Doe' },
       emails: [{ value: 'john@example.com' }],
-      photos: [{ value: 'https://example.com/photo.jpg' }],
       _json: { publicProfileUrl: 'https://linkedin.com/in/johndoe' },
     } as unknown as import('passport-linkedin-oauth2').Profile;
 
@@ -145,7 +144,6 @@ describe('AuthService', () => {
         email: 'john@example.com',
         first_name: 'John',
         last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
         linkedin_profile_url: 'https://linkedin.com/in/johndoe',
       };
       const existingOAuthAccount = { id: 'oauth-1', user: existingUser };
@@ -187,7 +185,6 @@ describe('AuthService', () => {
         email: 'john@example.com',
         first_name: 'John',
         last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
         linkedin_profile_url: 'https://linkedin.com/in/johndoe',
       };
       const updatedUser = { ...existingUser };
@@ -202,14 +199,12 @@ describe('AuthService', () => {
         update: {
           first_name: 'John',
           last_name: 'Doe',
-          avatar_url: 'https://example.com/photo.jpg',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         },
         create: {
           email: 'john@example.com',
           first_name: 'John',
           last_name: 'Doe',
-          avatar_url: 'https://example.com/photo.jpg',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         },
       });
@@ -232,7 +227,6 @@ describe('AuthService', () => {
         email: 'john@example.com',
         first_name: 'John',
         last_name: 'Doe',
-        avatar_url: 'https://example.com/photo.jpg',
         linkedin_profile_url: 'https://linkedin.com/in/johndoe',
       };
       mockPrismaService.oauth_account.findUnique.mockResolvedValue(null);
@@ -246,14 +240,12 @@ describe('AuthService', () => {
         update: {
           first_name: 'John',
           last_name: 'Doe',
-          avatar_url: 'https://example.com/photo.jpg',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         },
         create: {
           email: 'john@example.com',
           first_name: 'John',
           last_name: 'Doe',
-          avatar_url: 'https://example.com/photo.jpg',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
         },
       });
@@ -301,7 +293,6 @@ describe('AuthService', () => {
         first_name: 'Reset',
         last_name: 'User',
         password: 'hashed-password',
-        deleted_at: null,
       });
       jest.mocked(argon2.hash).mockResolvedValue('hashed-otp');
 
@@ -360,7 +351,6 @@ describe('AuthService', () => {
         first_name: 'Reset',
         last_name: 'User',
         password: 'old-password-hash',
-        deleted_at: null,
       });
       mockPrismaService.auth_otp.findFirst.mockResolvedValue({
         id: 'otp-1',

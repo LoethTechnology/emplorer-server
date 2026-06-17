@@ -31,11 +31,9 @@ export type UserMinAggregateOutputType = {
   first_name: string | null;
   last_name: string | null;
   password: string | null;
-  avatar_url: string | null;
   linkedin_profile_url: string | null;
   created_at: Date | null;
   updated_at: Date | null;
-  deleted_at: Date | null;
 };
 
 export type UserMaxAggregateOutputType = {
@@ -45,11 +43,9 @@ export type UserMaxAggregateOutputType = {
   first_name: string | null;
   last_name: string | null;
   password: string | null;
-  avatar_url: string | null;
   linkedin_profile_url: string | null;
   created_at: Date | null;
   updated_at: Date | null;
-  deleted_at: Date | null;
 };
 
 export type UserCountAggregateOutputType = {
@@ -59,11 +55,9 @@ export type UserCountAggregateOutputType = {
   first_name: number;
   last_name: number;
   password: number;
-  avatar_url: number;
   linkedin_profile_url: number;
   created_at: number;
   updated_at: number;
-  deleted_at: number;
   _all: number;
 };
 
@@ -74,11 +68,9 @@ export type UserMinAggregateInputType = {
   first_name?: true;
   last_name?: true;
   password?: true;
-  avatar_url?: true;
   linkedin_profile_url?: true;
   created_at?: true;
   updated_at?: true;
-  deleted_at?: true;
 };
 
 export type UserMaxAggregateInputType = {
@@ -88,11 +80,9 @@ export type UserMaxAggregateInputType = {
   first_name?: true;
   last_name?: true;
   password?: true;
-  avatar_url?: true;
   linkedin_profile_url?: true;
   created_at?: true;
   updated_at?: true;
-  deleted_at?: true;
 };
 
 export type UserCountAggregateInputType = {
@@ -102,11 +92,9 @@ export type UserCountAggregateInputType = {
   first_name?: true;
   last_name?: true;
   password?: true;
-  avatar_url?: true;
   linkedin_profile_url?: true;
   created_at?: true;
   updated_at?: true;
-  deleted_at?: true;
   _all?: true;
 };
 
@@ -196,11 +184,9 @@ export type UserGroupByOutputType = {
   first_name: string;
   last_name: string;
   password: string | null;
-  avatar_url: string | null;
   linkedin_profile_url: string | null;
   created_at: Date;
   updated_at: Date;
-  deleted_at: Date | null;
   _count: UserCountAggregateOutputType | null;
   _min: UserMinAggregateOutputType | null;
   _max: UserMaxAggregateOutputType | null;
@@ -233,11 +219,9 @@ export type userWhereInput = {
   first_name?: Prisma.StringFilter<'user'> | string;
   last_name?: Prisma.StringFilter<'user'> | string;
   password?: Prisma.StringNullableFilter<'user'> | string | null;
-  avatar_url?: Prisma.StringNullableFilter<'user'> | string | null;
   linkedin_profile_url?: Prisma.StringNullableFilter<'user'> | string | null;
   created_at?: Prisma.DateTimeFilter<'user'> | Date | string;
   updated_at?: Prisma.DateTimeFilter<'user'> | Date | string;
-  deleted_at?: Prisma.DateTimeNullableFilter<'user'> | Date | string | null;
   tokens?: Prisma.XOR<
     Prisma.TokensNullableScalarRelationFilter,
     Prisma.tokensWhereInput
@@ -258,11 +242,9 @@ export type userOrderByWithRelationInput = {
   first_name?: Prisma.SortOrder;
   last_name?: Prisma.SortOrder;
   password?: Prisma.SortOrderInput | Prisma.SortOrder;
-  avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder;
   linkedin_profile_url?: Prisma.SortOrderInput | Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
   updated_at?: Prisma.SortOrder;
-  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder;
   tokens?: Prisma.tokensOrderByWithRelationInput;
   oauth_accounts?: Prisma.oauth_accountOrderByRelationAggregateInput;
   companies_created?: Prisma.companyOrderByRelationAggregateInput;
@@ -288,11 +270,9 @@ export type userWhereUniqueInput = Prisma.AtLeast<
     first_name?: Prisma.StringFilter<'user'> | string;
     last_name?: Prisma.StringFilter<'user'> | string;
     password?: Prisma.StringNullableFilter<'user'> | string | null;
-    avatar_url?: Prisma.StringNullableFilter<'user'> | string | null;
     linkedin_profile_url?: Prisma.StringNullableFilter<'user'> | string | null;
     created_at?: Prisma.DateTimeFilter<'user'> | Date | string;
     updated_at?: Prisma.DateTimeFilter<'user'> | Date | string;
-    deleted_at?: Prisma.DateTimeNullableFilter<'user'> | Date | string | null;
     tokens?: Prisma.XOR<
       Prisma.TokensNullableScalarRelationFilter,
       Prisma.tokensWhereInput
@@ -315,11 +295,9 @@ export type userOrderByWithAggregationInput = {
   first_name?: Prisma.SortOrder;
   last_name?: Prisma.SortOrder;
   password?: Prisma.SortOrderInput | Prisma.SortOrder;
-  avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder;
   linkedin_profile_url?: Prisma.SortOrderInput | Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
   updated_at?: Prisma.SortOrder;
-  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.userCountOrderByAggregateInput;
   _max?: Prisma.userMaxOrderByAggregateInput;
   _min?: Prisma.userMinOrderByAggregateInput;
@@ -343,21 +321,12 @@ export type userScalarWhereWithAggregatesInput = {
   first_name?: Prisma.StringWithAggregatesFilter<'user'> | string;
   last_name?: Prisma.StringWithAggregatesFilter<'user'> | string;
   password?: Prisma.StringNullableWithAggregatesFilter<'user'> | string | null;
-  avatar_url?:
-    | Prisma.StringNullableWithAggregatesFilter<'user'>
-    | string
-    | null;
   linkedin_profile_url?:
     | Prisma.StringNullableWithAggregatesFilter<'user'>
     | string
     | null;
   created_at?: Prisma.DateTimeWithAggregatesFilter<'user'> | Date | string;
   updated_at?: Prisma.DateTimeWithAggregatesFilter<'user'> | Date | string;
-  deleted_at?:
-    | Prisma.DateTimeNullableWithAggregatesFilter<'user'>
-    | Date
-    | string
-    | null;
 };
 
 export type userCreateInput = {
@@ -367,11 +336,9 @@ export type userCreateInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
@@ -389,11 +356,9 @@ export type userUncheckedCreateInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
@@ -415,18 +380,12 @@ export type userUpdateInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
@@ -448,18 +407,12 @@ export type userUncheckedUpdateInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
@@ -477,11 +430,9 @@ export type userCreateManyInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
 };
 
 export type userUpdateManyMutationInput = {
@@ -495,18 +446,12 @@ export type userUpdateManyMutationInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
 };
 
 export type userUncheckedUpdateManyInput = {
@@ -520,18 +465,12 @@ export type userUncheckedUpdateManyInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
 };
 
 export type userCountOrderByAggregateInput = {
@@ -541,11 +480,9 @@ export type userCountOrderByAggregateInput = {
   first_name?: Prisma.SortOrder;
   last_name?: Prisma.SortOrder;
   password?: Prisma.SortOrder;
-  avatar_url?: Prisma.SortOrder;
   linkedin_profile_url?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
   updated_at?: Prisma.SortOrder;
-  deleted_at?: Prisma.SortOrder;
 };
 
 export type userMaxOrderByAggregateInput = {
@@ -555,11 +492,9 @@ export type userMaxOrderByAggregateInput = {
   first_name?: Prisma.SortOrder;
   last_name?: Prisma.SortOrder;
   password?: Prisma.SortOrder;
-  avatar_url?: Prisma.SortOrder;
   linkedin_profile_url?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
   updated_at?: Prisma.SortOrder;
-  deleted_at?: Prisma.SortOrder;
 };
 
 export type userMinOrderByAggregateInput = {
@@ -569,16 +504,19 @@ export type userMinOrderByAggregateInput = {
   first_name?: Prisma.SortOrder;
   last_name?: Prisma.SortOrder;
   password?: Prisma.SortOrder;
-  avatar_url?: Prisma.SortOrder;
   linkedin_profile_url?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
   updated_at?: Prisma.SortOrder;
-  deleted_at?: Prisma.SortOrder;
 };
 
 export type UserScalarRelationFilter = {
   is?: Prisma.userWhereInput;
   isNot?: Prisma.userWhereInput;
+};
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.userWhereInput | null;
+  isNot?: Prisma.userWhereInput | null;
 };
 
 export type StringFieldUpdateOperationsInput = {
@@ -762,13 +700,15 @@ export type userCreateNestedOneWithoutReview_commentsInput = {
   connect?: Prisma.userWhereUniqueInput;
 };
 
-export type userUpdateOneRequiredWithoutReview_commentsNestedInput = {
+export type userUpdateOneWithoutReview_commentsNestedInput = {
   create?: Prisma.XOR<
     Prisma.userCreateWithoutReview_commentsInput,
     Prisma.userUncheckedCreateWithoutReview_commentsInput
   >;
   connectOrCreate?: Prisma.userCreateOrConnectWithoutReview_commentsInput;
   upsert?: Prisma.userUpsertWithoutReview_commentsInput;
+  disconnect?: Prisma.userWhereInput | boolean;
+  delete?: Prisma.userWhereInput | boolean;
   connect?: Prisma.userWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
@@ -812,11 +752,9 @@ export type userCreateWithoutOauth_accountsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
   company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
@@ -833,11 +771,9 @@ export type userUncheckedCreateWithoutOauth_accountsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
   company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
@@ -886,18 +822,12 @@ export type userUpdateWithoutOauth_accountsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
   company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
@@ -918,18 +848,12 @@ export type userUncheckedUpdateWithoutOauth_accountsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
   company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
@@ -946,11 +870,9 @@ export type userCreateWithoutTokensInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
   company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
@@ -967,11 +889,9 @@ export type userUncheckedCreateWithoutTokensInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
   company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
@@ -1020,18 +940,12 @@ export type userUpdateWithoutTokensInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
   company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
@@ -1052,18 +966,12 @@ export type userUncheckedUpdateWithoutTokensInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
   company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
@@ -1080,11 +988,9 @@ export type userCreateWithoutAuth_otpsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
@@ -1101,11 +1007,9 @@ export type userUncheckedCreateWithoutAuth_otpsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
@@ -1154,18 +1058,12 @@ export type userUpdateWithoutAuth_otpsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
@@ -1186,18 +1084,12 @@ export type userUncheckedUpdateWithoutAuth_otpsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
@@ -1214,11 +1106,9 @@ export type userCreateWithoutCompanies_createdInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   company_reviews?: Prisma.company_reviewCreateNestedManyWithoutAuthorInput;
@@ -1235,11 +1125,9 @@ export type userUncheckedCreateWithoutCompanies_createdInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   company_reviews?: Prisma.company_reviewUncheckedCreateNestedManyWithoutAuthorInput;
@@ -1288,18 +1176,12 @@ export type userUpdateWithoutCompanies_createdInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   company_reviews?: Prisma.company_reviewUpdateManyWithoutAuthorNestedInput;
@@ -1320,18 +1202,12 @@ export type userUncheckedUpdateWithoutCompanies_createdInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   company_reviews?: Prisma.company_reviewUncheckedUpdateManyWithoutAuthorNestedInput;
@@ -1348,11 +1224,9 @@ export type userCreateWithoutCompany_reviewsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
@@ -1369,11 +1243,9 @@ export type userUncheckedCreateWithoutCompany_reviewsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
@@ -1422,18 +1294,12 @@ export type userUpdateWithoutCompany_reviewsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
@@ -1454,18 +1320,12 @@ export type userUncheckedUpdateWithoutCompany_reviewsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
@@ -1482,11 +1342,9 @@ export type userCreateWithoutReview_critiquesInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
@@ -1503,11 +1361,9 @@ export type userUncheckedCreateWithoutReview_critiquesInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
@@ -1556,18 +1412,12 @@ export type userUpdateWithoutReview_critiquesInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
@@ -1588,18 +1438,12 @@ export type userUncheckedUpdateWithoutReview_critiquesInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
@@ -1616,11 +1460,9 @@ export type userCreateWithoutReview_commentsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
@@ -1637,11 +1479,9 @@ export type userUncheckedCreateWithoutReview_commentsInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
@@ -1690,18 +1530,12 @@ export type userUpdateWithoutReview_commentsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
@@ -1722,18 +1556,12 @@ export type userUncheckedUpdateWithoutReview_commentsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
@@ -1750,11 +1578,9 @@ export type userCreateWithoutComment_votesInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyCreateNestedManyWithoutCreatorInput;
@@ -1771,11 +1597,9 @@ export type userUncheckedCreateWithoutComment_votesInput = {
   first_name: string;
   last_name: string;
   password?: string | null;
-  avatar_url?: string | null;
   linkedin_profile_url?: string | null;
   created_at?: Date | string;
   updated_at?: Date | string;
-  deleted_at?: Date | string | null;
   tokens?: Prisma.tokensUncheckedCreateNestedOneWithoutUserInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedCreateNestedManyWithoutUserInput;
   companies_created?: Prisma.companyUncheckedCreateNestedManyWithoutCreatorInput;
@@ -1824,18 +1648,12 @@ export type userUpdateWithoutComment_votesInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUpdateManyWithoutCreatorNestedInput;
@@ -1856,18 +1674,12 @@ export type userUncheckedUpdateWithoutComment_votesInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string;
   last_name?: Prisma.StringFieldUpdateOperationsInput | string;
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_profile_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deleted_at?:
-    | Prisma.NullableDateTimeFieldUpdateOperationsInput
-    | Date
-    | string
-    | null;
   tokens?: Prisma.tokensUncheckedUpdateOneWithoutUserNestedInput;
   oauth_accounts?: Prisma.oauth_accountUncheckedUpdateManyWithoutUserNestedInput;
   companies_created?: Prisma.companyUncheckedUpdateManyWithoutCreatorNestedInput;
@@ -1998,11 +1810,9 @@ export type userSelect<
     first_name?: boolean;
     last_name?: boolean;
     password?: boolean;
-    avatar_url?: boolean;
     linkedin_profile_url?: boolean;
     created_at?: boolean;
     updated_at?: boolean;
-    deleted_at?: boolean;
     tokens?: boolean | Prisma.user$tokensArgs<ExtArgs>;
     oauth_accounts?: boolean | Prisma.user$oauth_accountsArgs<ExtArgs>;
     companies_created?: boolean | Prisma.user$companies_createdArgs<ExtArgs>;
@@ -2027,11 +1837,9 @@ export type userSelectCreateManyAndReturn<
     first_name?: boolean;
     last_name?: boolean;
     password?: boolean;
-    avatar_url?: boolean;
     linkedin_profile_url?: boolean;
     created_at?: boolean;
     updated_at?: boolean;
-    deleted_at?: boolean;
   },
   ExtArgs['result']['user']
 >;
@@ -2047,11 +1855,9 @@ export type userSelectUpdateManyAndReturn<
     first_name?: boolean;
     last_name?: boolean;
     password?: boolean;
-    avatar_url?: boolean;
     linkedin_profile_url?: boolean;
     created_at?: boolean;
     updated_at?: boolean;
-    deleted_at?: boolean;
   },
   ExtArgs['result']['user']
 >;
@@ -2063,11 +1869,9 @@ export type userSelectScalar = {
   first_name?: boolean;
   last_name?: boolean;
   password?: boolean;
-  avatar_url?: boolean;
   linkedin_profile_url?: boolean;
   created_at?: boolean;
   updated_at?: boolean;
-  deleted_at?: boolean;
 };
 
 export type userOmit<
@@ -2080,11 +1884,9 @@ export type userOmit<
   | 'first_name'
   | 'last_name'
   | 'password'
-  | 'avatar_url'
   | 'linkedin_profile_url'
   | 'created_at'
-  | 'updated_at'
-  | 'deleted_at',
+  | 'updated_at',
   ExtArgs['result']['user']
 >;
 export type userInclude<
@@ -2133,11 +1935,9 @@ export type $userPayload<
       first_name: string;
       last_name: string;
       password: string | null;
-      avatar_url: string | null;
       linkedin_profile_url: string | null;
       created_at: Date;
       updated_at: Date;
-      deleted_at: Date | null;
     },
     ExtArgs['result']['user']
   >;
@@ -2826,11 +2626,9 @@ export interface userFieldRefs {
   readonly first_name: Prisma.FieldRef<'user', 'String'>;
   readonly last_name: Prisma.FieldRef<'user', 'String'>;
   readonly password: Prisma.FieldRef<'user', 'String'>;
-  readonly avatar_url: Prisma.FieldRef<'user', 'String'>;
   readonly linkedin_profile_url: Prisma.FieldRef<'user', 'String'>;
   readonly created_at: Prisma.FieldRef<'user', 'DateTime'>;
   readonly updated_at: Prisma.FieldRef<'user', 'DateTime'>;
-  readonly deleted_at: Prisma.FieldRef<'user', 'DateTime'>;
 }
 
 // Custom InputTypes

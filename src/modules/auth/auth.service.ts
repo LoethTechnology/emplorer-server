@@ -31,7 +31,6 @@ export class AuthService {
     const email = profile.emails?.[0]?.value ?? null;
     const first_name = this.authHandlerService.getLinkedInFirstName(profile);
     const last_name = this.authHandlerService.getLinkedInLastName(profile);
-    const avatar_url = profile.photos?.[0]?.value ?? null;
     const linkedin_profile_url =
       (profile._json as Record<string, string> | undefined)?.publicProfileUrl ??
       null;
@@ -65,7 +64,6 @@ export class AuthService {
     const userProfileData = {
       first_name,
       last_name,
-      avatar_url,
       linkedin_profile_url,
     };
 
@@ -117,7 +115,7 @@ export class AuthService {
       where: { email },
     });
 
-    if (!dbUser || dbUser.deleted_at) {
+    if (!dbUser) {
       return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, null);
     }
 
@@ -173,7 +171,7 @@ export class AuthService {
       where: { email },
     });
 
-    if (!dbUser || dbUser.deleted_at) {
+    if (!dbUser) {
       throw new BadRequestException(AUTH_RESPONSE_MESSAGES.invalidResetOtp);
     }
 

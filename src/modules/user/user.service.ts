@@ -8,7 +8,6 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
-import { CloudinaryService } from '../../shared/modules/cloudinary';
 import {
   CrudEnums,
   DbModels,
@@ -43,7 +42,6 @@ export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly mailService: MailService,
-    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
@@ -55,13 +53,8 @@ export class UserService {
       first_name: createUserDto.first_name,
       last_name: createUserDto.last_name,
       password: await argon2.hash(createUserDto.password),
-      avatar_url: createUserDto.avatar_url ?? null,
       linkedin_profile_url: createUserDto.linkedin_profile_url ?? null,
     };
-
-    if (existingUser?.deleted_at) {
-      throw new ConflictException(USER_RESPONSE_MESSAGES.emailAlreadyInUse);
-    }
 
     if (existingUser?.password) {
       throw new ConflictException(USER_RESPONSE_MESSAGES.localAccountExists);
@@ -97,28 +90,6 @@ export class UserService {
     return CrudResponse(DbModels.USER, CrudEnums.READ, dbUser);
   }
 
-  async uploadAvatar(
-    user: AuthenticatedRequest['user'],
-    file: Express.Multer.File,
-  ): Promise<UserResponse> {
-    const userId = user.sub;
-    const dbUser = await this.findActiveUserById(userId);
-    const publicId = `emplorer/users/${userId}/avatar`;
-
-    if (dbUser.avatar_url) {
-      await this.cloudinaryService.deleteImage(publicId).catch(() => {});
-    }
-
-    const result = await this.cloudinaryService.uploadImage(file, publicId);
-
-    const updatedUser = await this.prismaService.user.update({
-      where: { id: userId },
-      data: { avatar_url: result.secure_url },
-    });
-
-    return CrudResponse(DbModels.USER, CrudEnums.UPDATE, updatedUser);
-  }
-
   async updateMe(
     user: AuthenticatedRequest['user'],
     updateUserDto: UpdateUserDto,
@@ -151,10 +122,6 @@ export class UserService {
   ): Promise<UserMessageResponse> {
     const userId = user.sub;
     const dbUser = await this.findUserWithPasswordById(userId);
-
-    if (dbUser.deleted_at) {
-      throw new NotFoundException(USER_RESPONSE_MESSAGES.userNotFound);
-    }
 
     if (!dbUser.email || !dbUser.password) {
       throw new BadRequestException(
@@ -367,7 +334,7 @@ export class UserService {
       where: { id: userId },
     });
 
-    if (!dbUser || dbUser.deleted_at) {
+    if (!dbUser) {
       throw new NotFoundException(USER_RESPONSE_MESSAGES.userNotFound);
     }
 
@@ -412,7 +379,6 @@ export class UserService {
         id: true,
         email: true,
         password: true,
-        deleted_at: true,
       },
     })) as UserWithPassword | null;
 
@@ -432,7 +398,6 @@ export class UserService {
         id: true,
         email: true,
         password: true,
-        deleted_at: true,
       },
     })) as UserWithPassword | null;
   }

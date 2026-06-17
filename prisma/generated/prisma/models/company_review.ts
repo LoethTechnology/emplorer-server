@@ -659,6 +659,11 @@ export type Company_reviewScalarRelationFilter = {
   isNot?: Prisma.company_reviewWhereInput;
 };
 
+export type Company_reviewNullableScalarRelationFilter = {
+  is?: Prisma.company_reviewWhereInput | null;
+  isNot?: Prisma.company_reviewWhereInput | null;
+};
+
 export type company_reviewCreateNestedManyWithoutAuthorInput = {
   create?:
     | Prisma.XOR<
@@ -1032,13 +1037,15 @@ export type company_reviewCreateNestedOneWithoutCommentsInput = {
   connect?: Prisma.company_reviewWhereUniqueInput;
 };
 
-export type company_reviewUpdateOneRequiredWithoutCommentsNestedInput = {
+export type company_reviewUpdateOneWithoutCommentsNestedInput = {
   create?: Prisma.XOR<
     Prisma.company_reviewCreateWithoutCommentsInput,
     Prisma.company_reviewUncheckedCreateWithoutCommentsInput
   >;
   connectOrCreate?: Prisma.company_reviewCreateOrConnectWithoutCommentsInput;
   upsert?: Prisma.company_reviewUpsertWithoutCommentsInput;
+  disconnect?: Prisma.company_reviewWhereInput | boolean;
+  delete?: Prisma.company_reviewWhereInput | boolean;
   connect?: Prisma.company_reviewWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<

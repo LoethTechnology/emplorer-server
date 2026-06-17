@@ -9,7 +9,6 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
-import { CloudinaryService } from '../../shared/modules/cloudinary';
 import { UserService } from './user.service';
 import type { AuthenticatedRequest } from './user.types';
 
@@ -26,22 +25,11 @@ jest.mock('../../shared/modules/mail', () => ({
   MailService: jest.fn(),
 }));
 
-jest.mock('../../shared/modules/cloudinary', () => ({
-  CloudinaryService: jest.fn(),
-}));
-
 const mockMailService = {
   sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
   sendPasswordChangedEmail: jest.fn().mockResolvedValue(undefined),
   sendAccountDeletedEmail: jest.fn().mockResolvedValue(undefined),
   sendReviewPublishedEmail: jest.fn().mockResolvedValue(undefined),
-};
-
-const mockCloudinaryService = {
-  deleteImage: jest.fn().mockResolvedValue(undefined),
-  uploadImage: jest
-    .fn()
-    .mockResolvedValue({ secure_url: 'https://avatar.test' }),
 };
 
 const mockPrismaService = {
@@ -79,7 +67,6 @@ describe('UserService', () => {
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: MailService, useValue: mockMailService },
-        { provide: CloudinaryService, useValue: mockCloudinaryService },
       ],
     }).compile();
 
@@ -98,11 +85,9 @@ describe('UserService', () => {
         email: 'test@example.com',
         first_name: 'Test',
         last_name: 'User',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       jest.mocked(argon2.hash).mockResolvedValue('hashed-password');
 
@@ -119,7 +104,6 @@ describe('UserService', () => {
           password: 'hashed-password',
           first_name: 'Test',
           last_name: 'User',
-          avatar_url: null,
           linkedin_profile_url: null,
         },
       });
@@ -139,11 +123,9 @@ describe('UserService', () => {
         email: 'test@example.com',
         first_name: 'OAuth',
         last_name: 'User',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
         password: null,
       });
       mockPrismaService.user.update.mockResolvedValue({ id: 'user-2' });
@@ -163,7 +145,6 @@ describe('UserService', () => {
           password: 'hashed-password',
           first_name: 'Test',
           last_name: 'User',
-          avatar_url: null,
           linkedin_profile_url: null,
         },
       });
@@ -175,11 +156,9 @@ describe('UserService', () => {
         email: 'test@example.com',
         first_name: 'Existing',
         last_name: 'User',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
         password: 'hashed-password',
       });
       jest.mocked(argon2.hash).mockResolvedValue('hashed-password');
@@ -202,11 +181,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Test',
         last_name: 'User',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
 
       const result = await service.findMe(mockAuthenticatedUser('user-4'));
@@ -238,11 +215,9 @@ describe('UserService', () => {
           email: 'user@example.com',
           first_name: 'Current',
           last_name: 'User',
-          avatar_url: null,
           linkedin_profile_url: null,
           created_at: new Date(),
           updated_at: new Date(),
-          deleted_at: null,
         })
         .mockResolvedValueOnce(null);
       mockPrismaService.user.update.mockResolvedValue({
@@ -250,11 +225,9 @@ describe('UserService', () => {
         email: 'next@example.com',
         first_name: 'Updated',
         last_name: 'User',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
 
       const result = await service.updateMe(mockAuthenticatedUser('user-5'), {
@@ -286,22 +259,18 @@ describe('UserService', () => {
           email: 'user@example.com',
           first_name: 'Current',
           last_name: 'User',
-          avatar_url: null,
           linkedin_profile_url: null,
           created_at: new Date(),
           updated_at: new Date(),
-          deleted_at: null,
         })
         .mockResolvedValueOnce({
           id: 'user-7',
           email: 'taken@example.com',
           first_name: 'Taken',
           last_name: 'User',
-          avatar_url: null,
           linkedin_profile_url: null,
           created_at: new Date(),
           updated_at: new Date(),
-          deleted_at: null,
         });
 
       await expect(
@@ -318,7 +287,6 @@ describe('UserService', () => {
         id: 'user-8',
         email: 'user@example.com',
         password: 'hashed-password',
-        deleted_at: null,
       });
       mockPrismaService.user.update.mockResolvedValue({ id: 'user-8' });
       jest.mocked(argon2.verify).mockResolvedValue(true);
@@ -352,7 +320,6 @@ describe('UserService', () => {
         id: 'user-9',
         email: 'oauth@example.com',
         password: null,
-        deleted_at: null,
       });
 
       await expect(
@@ -368,7 +335,6 @@ describe('UserService', () => {
         id: 'user-10',
         email: 'user@example.com',
         password: 'hashed-password',
-        deleted_at: null,
       });
       jest.mocked(argon2.verify).mockResolvedValue(false);
 
@@ -388,11 +354,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Delete',
         last_name: 'Me',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.user.delete.mockResolvedValue({ id: 'user-11' });
 
@@ -414,11 +378,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Delete',
         last_name: 'Blocked',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.user.delete.mockRejectedValue({ code: 'P2003' });
 
@@ -435,11 +397,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company.findUnique.mockResolvedValue({
         id: 'company-1',
@@ -496,11 +456,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company.findUnique.mockResolvedValue({
         id: 'company-2',
@@ -542,11 +500,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company.findUnique.mockResolvedValue(null);
 
@@ -567,11 +523,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company_review.findMany.mockResolvedValue([
         {
@@ -627,11 +581,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company_review.findFirst.mockResolvedValue({
         id: 'review-4',
@@ -665,11 +617,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company_review.findFirst.mockResolvedValue(null);
 
@@ -703,11 +653,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company_review.findFirst.mockResolvedValue(
         existingReview,
@@ -748,11 +696,9 @@ describe('UserService', () => {
         email: 'user@example.com',
         first_name: 'Review',
         last_name: 'Author',
-        avatar_url: null,
         linkedin_profile_url: null,
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
       });
       mockPrismaService.company_review.findFirst.mockResolvedValue({
         id: 'review-6',

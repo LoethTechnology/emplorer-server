@@ -90,7 +90,6 @@ export class CommentsService {
       review_id: reviewId,
       parent_comment_id: null,
       status: { not: CommentStatus.REMOVED },
-      deleted_at: null,
     };
 
     const [count, records] = await Promise.all([
@@ -101,7 +100,7 @@ export class CommentsService {
         orderBy: { created_at: sort || 'asc' },
         include: {
           replies: {
-            where: { status: { not: CommentStatus.REMOVED }, deleted_at: null },
+            where: { status: { not: CommentStatus.REMOVED } },
             orderBy: { created_at: 'asc' },
           },
         },
@@ -126,11 +125,10 @@ export class CommentsService {
         id: commentId,
         review_id: reviewId,
         status: { not: CommentStatus.REMOVED },
-        deleted_at: null,
       },
       include: {
         replies: {
-          where: { status: { not: CommentStatus.REMOVED }, deleted_at: null },
+          where: { status: { not: CommentStatus.REMOVED } },
           orderBy: { created_at: 'asc' },
         },
       },
@@ -174,12 +172,8 @@ export class CommentsService {
       commentId,
     );
 
-    const deleted = await this.prismaService.review_comment.update({
+    const deleted = await this.prismaService.review_comment.delete({
       where: { id: existing.id },
-      data: {
-        status: CommentStatus.REMOVED,
-        deleted_at: new Date(),
-      },
     });
 
     return CrudResponse(DbModels.REVIEW_COMMENT, CrudEnums.DELETE, deleted);
@@ -256,7 +250,6 @@ export class CommentsService {
         id: commentId,
         review_id: reviewId,
         status: { not: CommentStatus.REMOVED },
-        deleted_at: null,
       },
     });
 
@@ -276,7 +269,7 @@ export class CommentsService {
       where: {
         id: commentId,
         review_id: reviewId,
-        deleted_at: null,
+        status: { not: CommentStatus.REMOVED },
       },
     });
 
@@ -299,7 +292,6 @@ export class CommentsService {
       where: {
         id: parentCommentId,
         review_id: reviewId,
-        deleted_at: null,
       },
       select: { id: true },
     });
