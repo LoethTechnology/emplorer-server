@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { AuthOtpPurpose, OAuthProvider } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
@@ -6,6 +6,7 @@ import { MailService } from '../../shared/modules/mail';
 import { CrudEnums, DbModels } from '../../shared/types';
 import { CrudResponse } from '../../shared/utils/response';
 import type {
+  AuthMailer,
   AuthTokenResponse,
   ForgotPasswordResponse,
   LinkedInOAuthUser,
@@ -27,7 +28,7 @@ export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly authHandlerService: AuthHandlerService,
-    private readonly mailService: MailService,
+    @Inject(MailService) private readonly mailService: AuthMailer,
   ) {}
 
   async findOrCreateUserFromLinkedin(
@@ -277,7 +278,7 @@ export class AuthService {
       });
     });
 
-    this.mailService
+    void this.mailService
       .sendEmailVerificationOtpEmail(
         email,
         dbUser.first_name,
@@ -354,7 +355,7 @@ export class AuthService {
       });
     });
 
-    this.mailService
+    void this.mailService
       .sendEmailVerifiedConfirmationEmail(email, dbUser.first_name)
       .catch(() => {});
 

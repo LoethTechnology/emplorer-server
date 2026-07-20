@@ -31,3 +31,26 @@ export type SendVerificationEmailResponse =
   ApiSuccessResponse<SendVerificationEmailData | null>;
 
 export type MessageResponse = ApiSuccessResponse<string>;
+
+export type AuthMailer = {
+  sendPasswordResetOtpEmail(
+    email: string,
+    firstName: string,
+    otp: string,
+    ttlMinutes: number,
+  ): Promise<void>;
+  sendPasswordResetConfirmationEmail(
+    email: string,
+    firstName: string,
+  ): Promise<void>;
+  sendEmailVerificationOtpEmail(
+    email: string,
+    firstName: string,
+    otp: string,
+    ttlMinutes: number,
+  ): Promise<void>;
+  sendEmailVerifiedConfirmationEmail(
+    email: string,
+    firstName: string,
+  ): Promise<void>;
+};
