@@ -1,5 +1,5 @@
 info:
-  name: Delete Review
+  name: 'Delete Review #'
   type: http
   seq: 5
 
