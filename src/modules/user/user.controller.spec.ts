@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Reflector } from '@nestjs/core';
+import { PrismaService } from '../../shared/modules/prisma';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
@@ -25,6 +27,12 @@ const mockUserService = {
   removeMe: jest.fn(),
 };
 
+const mockPrismaService = {
+  user: {
+    findUnique: jest.fn(),
+  },
+};
+
 describe('UserController', () => {
   let controller: UserController;
 
@@ -32,7 +40,11 @@ describe('UserController', () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [{ provide: UserService, useValue: mockUserService }],
+      providers: [
+        { provide: UserService, useValue: mockUserService },
+        { provide: PrismaService, useValue: mockPrismaService },
+        Reflector,
+      ],
     }).compile();
 
     controller = module.get<UserController>(UserController);

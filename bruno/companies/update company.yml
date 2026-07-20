@@ -13,7 +13,6 @@ http:
         "description": "Updated company description.",
         "website_url": "https://acme.com",
         "linkedin_url": "https://linkedin.com/company/acme",
-        "logo_url": "https://acme.com/logo.png",
         "headquarters": "Lagos, Nigeria",
         "industry": "Technology"
       }

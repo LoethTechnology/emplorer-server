@@ -45,6 +45,27 @@ export class CompaniesController {
   @Post()
   @UseGuards(EmailVerifiedGuard)
   @ApiBearerAuth()
+  @UseInterceptors(FileInterceptor('logo'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['name'],
+      properties: {
+        name: { type: 'string', example: 'Acme Inc.' },
+        description: { type: 'string' },
+        website_url: { type: 'string', example: 'https://acme.com' },
+        domain: { type: 'string', example: 'acme.com' },
+        linkedin_url: {
+          type: 'string',
+          example: 'https://linkedin.com/company/acme',
+        },
+        headquarters: { type: 'string', example: 'Lagos, Nigeria' },
+        industry: { type: 'string', example: 'Technology' },
+        logo: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   @ApiOperation({ summary: 'Create a new company' })
   @ApiResponse({ status: 201, description: 'Company created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
@@ -56,8 +77,18 @@ export class CompaniesController {
   create(
     @User() user: AuthenticatedRequest['user'],
     @Body() createCompanyDto: CreateCompanyDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /^image\/(jpeg|png|webp)$/ }),
+        ],
+      }),
+    )
+    file?: Express.Multer.File,
   ): Promise<CompanyResponse> {
-    return this.companiesService.create(user, createCompanyDto);
+    return this.companiesService.create(user, createCompanyDto, file);
   }
 
   @Get()

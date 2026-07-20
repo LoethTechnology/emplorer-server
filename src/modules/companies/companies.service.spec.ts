@@ -51,6 +51,12 @@ const mockAuthenticatedUser = (sub: string): AuthenticatedRequest['user'] => ({
   sub,
 });
 
+const mockLogoFile = {
+  buffer: Buffer.from('logo'),
+  mimetype: 'image/png',
+  originalname: 'logo.png',
+} as Express.Multer.File;
+
 const approvedCompany = (overrides: Partial<Record<string, unknown>> = {}) => ({
   id: 'company-1',
   creator_id: 'user-1',
@@ -86,6 +92,18 @@ describe('CompaniesService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockPrismaService.company.findUnique.mockResolvedValue(null);
+    mockPrismaService.company.findFirst.mockResolvedValue(null);
+    mockPrismaService.company.findMany.mockResolvedValue([]);
+    mockPrismaService.company.count.mockResolvedValue(0);
+    mockPrismaService.company.create.mockResolvedValue(approvedCompany());
+    mockPrismaService.company.update.mockResolvedValue(approvedCompany());
+    mockPrismaService.user.findUnique.mockResolvedValue(null);
+    mockMailService.sendCompanySubmittedEmail.mockResolvedValue(undefined);
+    mockCloudinaryService.deleteImage.mockResolvedValue(undefined);
+    mockCloudinaryService.uploadImage.mockResolvedValue({
+      secure_url: 'https://logo.test',
+    });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -123,6 +141,7 @@ describe('CompaniesService', () => {
           creator_id: 'user-1',
           name: 'Acme Inc.',
           domain: 'acme.com',
+          logo_url: null,
         }),
       });
       expect(result).toEqual({
@@ -157,6 +176,36 @@ describe('CompaniesService', () => {
 
       expect(mockPrismaService.company.findUnique).not.toHaveBeenCalled();
       expect(mockPrismaService.company.create).toHaveBeenCalled();
+    });
+
+    it('should upload a logo to Cloudinary and store the secure URL when a logo file is provided', async () => {
+      const createdCompany = approvedCompany({ logo_url: null });
+      const updatedCompany = approvedCompany({ logo_url: 'https://logo.test' });
+      mockPrismaService.company.create.mockResolvedValue(createdCompany);
+      mockPrismaService.company.update.mockResolvedValue(updatedCompany);
+
+      const result = await service.create(
+        mockAuthenticatedUser('user-1'),
+        {
+          name: 'Acme Inc.',
+          domain: 'acme.com',
+        },
+        mockLogoFile,
+      );
+
+      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
+        mockLogoFile,
+        'emplorer/companies/company-1/logo',
+      );
+      expect(mockPrismaService.company.update).toHaveBeenCalledWith({
+        where: { id: 'company-1' },
+        data: { logo_url: 'https://logo.test' },
+      });
+      expect(result).toEqual({
+        message: 'Company created successfully.',
+        code: HttpStatus.CREATED,
+        data: expect.objectContaining({ logo_url: 'https://logo.test' }),
+      });
     });
   });
 

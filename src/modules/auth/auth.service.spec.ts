@@ -200,12 +200,14 @@ describe('AuthService', () => {
           first_name: 'John',
           last_name: 'Doe',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+          email_verified_at: expect.any(Date),
         },
         create: {
           email: 'john@example.com',
           first_name: 'John',
           last_name: 'Doe',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+          email_verified_at: expect.any(Date),
         },
       });
       expect(mockPrismaService.oauth_account.create).toHaveBeenCalledWith({
@@ -241,12 +243,14 @@ describe('AuthService', () => {
           first_name: 'John',
           last_name: 'Doe',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+          email_verified_at: expect.any(Date),
         },
         create: {
           email: 'john@example.com',
           first_name: 'John',
           last_name: 'Doe',
           linkedin_profile_url: 'https://linkedin.com/in/johndoe',
+          email_verified_at: expect.any(Date),
         },
       });
       expect(result).toEqual({

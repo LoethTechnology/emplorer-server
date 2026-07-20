@@ -40,6 +40,7 @@ export class CompaniesService {
   async create(
     user: AuthenticatedRequest['user'],
     createCompanyDto: CreateCompanyDto,
+    file?: Express.Multer.File,
   ): Promise<CompanyResponse> {
     if (createCompanyDto.domain) {
       const existing = await this.prismaService.company.findUnique({
@@ -62,12 +63,16 @@ export class CompaniesService {
         website_url: createCompanyDto.website_url ?? null,
         domain: createCompanyDto.domain ?? null,
         linkedin_url: createCompanyDto.linkedin_url ?? null,
-        logo_url: createCompanyDto.logo_url ?? null,
+        logo_url: null,
         headquarters: createCompanyDto.headquarters ?? null,
         industry: createCompanyDto.industry ?? null,
         status: CompanyStatus.APPROVED,
       },
     });
+
+    const company = file
+      ? await this.saveLogoForCompany(created.id, file)
+      : created;
 
     this.prismaService.user
       .findUnique({
@@ -80,14 +85,14 @@ export class CompaniesService {
             .sendCompanySubmittedEmail(
               creator.email,
               creator.first_name,
-              created.name,
+              company.name,
             )
             .catch(() => {});
         }
       })
       .catch(() => {});
 
-    return CrudResponse(DbModels.COMPANY, CrudEnums.CREATE, created);
+    return CrudResponse(DbModels.COMPANY, CrudEnums.CREATE, company);
   }
 
   async typeahead(q: string): Promise<CompanyTypeaheadResponse> {
@@ -192,12 +197,7 @@ export class CompaniesService {
       await this.cloudinaryService.deleteImage(publicId).catch(() => {});
     }
 
-    const result = await this.cloudinaryService.uploadImage(file, publicId);
-
-    const updated = await this.prismaService.company.update({
-      where: { id },
-      data: { logo_url: result.secure_url },
-    });
+    const updated = await this.saveLogoForCompany(id, file);
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.UPDATE, updated);
   }
@@ -221,7 +221,6 @@ export class CompaniesService {
         description: updateCompanyDto.description ?? existing.description,
         website_url: updateCompanyDto.website_url ?? existing.website_url,
         linkedin_url: updateCompanyDto.linkedin_url ?? existing.linkedin_url,
-        logo_url: updateCompanyDto.logo_url ?? existing.logo_url,
         headquarters: updateCompanyDto.headquarters ?? existing.headquarters,
         industry: updateCompanyDto.industry ?? existing.industry,
       },
@@ -255,5 +254,18 @@ export class CompaniesService {
     }
 
     return company;
+  }
+
+  private async saveLogoForCompany(
+    id: string,
+    file: Express.Multer.File,
+  ): Promise<Company> {
+    const publicId = `emplorer/companies/${id}/logo`;
+    const result = await this.cloudinaryService.uploadImage(file, publicId);
+
+    return this.prismaService.company.update({
+      where: { id },
+      data: { logo_url: result.secure_url },
+    });
   }
 }

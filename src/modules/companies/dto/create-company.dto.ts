@@ -61,15 +61,6 @@ export class CreateCompanyDto {
   linkedin_url?: string;
 
   @ApiPropertyOptional({
-    example: 'https://acme.com/logo.png',
-    description: 'Company logo URL',
-  })
-  @IsOptional()
-  @IsUrl()
-  @Transform(normalizeOptionalUrl)
-  logo_url?: string;
-
-  @ApiPropertyOptional({
     example: 'Lagos, Nigeria',
     description: 'Company headquarters location',
   })

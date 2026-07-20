@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Reflector } from '@nestjs/core';
+import { PrismaService } from '../../shared/modules/prisma';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
 import type { AuthenticatedRequest } from '@modules/user/user.types';
@@ -17,6 +19,12 @@ const mockReviewsService = {
   remove: jest.fn(),
 };
 
+const mockPrismaService = {
+  user: {
+    findUnique: jest.fn(),
+  },
+};
+
 describe('ReviewsController', () => {
   let controller: ReviewsController;
 
@@ -25,7 +33,11 @@ describe('ReviewsController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ReviewsController],
-      providers: [{ provide: ReviewsService, useValue: mockReviewsService }],
+      providers: [
+        { provide: ReviewsService, useValue: mockReviewsService },
+        { provide: PrismaService, useValue: mockPrismaService },
+        Reflector,
+      ],
     }).compile();
 
     controller = module.get<ReviewsController>(ReviewsController);

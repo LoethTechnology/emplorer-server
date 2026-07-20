@@ -9,6 +9,7 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
 import type { AuthenticatedRequest } from './user.types';
 
@@ -30,6 +31,10 @@ const mockMailService = {
   sendPasswordChangedEmail: jest.fn().mockResolvedValue(undefined),
   sendAccountDeletedEmail: jest.fn().mockResolvedValue(undefined),
   sendReviewPublishedEmail: jest.fn().mockResolvedValue(undefined),
+};
+
+const mockAuthService = {
+  sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockPrismaService = {
@@ -67,6 +72,7 @@ describe('UserService', () => {
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: MailService, useValue: mockMailService },
+        { provide: AuthService, useValue: mockAuthService },
       ],
     }).compile();
 
@@ -239,6 +245,7 @@ describe('UserService', () => {
         where: { id: 'user-5' },
         data: {
           email: 'next@example.com',
+          email_verified_at: null,
           first_name: 'Updated',
         },
       });
@@ -391,7 +398,7 @@ describe('UserService', () => {
   });
 
   describe('createMyReview', () => {
-    it('should create a draft review for the current user', async () => {
+    it('should create a published review for the current user', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue({
         id: 'user-review-1',
         email: 'user@example.com',
@@ -412,8 +419,8 @@ describe('UserService', () => {
         overall_rating: 4,
         employment_context: null,
         would_recommend: true,
-        status: ReviewStatus.DRAFT,
-        published_at: null,
+        status: ReviewStatus.PUBLISHED,
+        published_at: new Date(),
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -436,8 +443,8 @@ describe('UserService', () => {
           overall_rating: 4,
           employment_context: null,
           would_recommend: true,
-          status: ReviewStatus.DRAFT,
-          published_at: null,
+          status: ReviewStatus.PUBLISHED,
+          published_at: expect.any(Date),
         },
       });
       expect(result).toEqual({

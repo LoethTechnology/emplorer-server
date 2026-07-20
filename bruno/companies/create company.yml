@@ -7,18 +7,40 @@ http:
   method: POST
   url: '{{local}}/companies'
   body:
-    type: json
-    data: |-
-      {
-        "name": "Acme Inc.",
-        "description": "A technology company.",
-        "website_url": "https://acme.com",
-        "domain": "acme.com",
-        "linkedin_url": "https://linkedin.com/company/acme",
-        "logo_url": "https://acme.com/logo.png",
-        "headquarters": "Lagos, Nigeria",
-        "industry": "Technology"
-      }
+    type: multipartForm
+    data:
+      - name: name
+        value: Acme Inc.
+        type: text
+        enabled: true
+      - name: description
+        value: A technology company.
+        type: text
+        enabled: true
+      - name: website_url
+        value: https://acme.com
+        type: text
+        enabled: true
+      - name: domain
+        value: acme.com
+        type: text
+        enabled: true
+      - name: linkedin_url
+        value: https://linkedin.com/company/acme
+        type: text
+        enabled: true
+      - name: headquarters
+        value: Lagos, Nigeria
+        type: text
+        enabled: true
+      - name: industry
+        value: Technology
+        type: text
+        enabled: true
+      - name: logo
+        value: ''
+        type: file
+        enabled: true
   auth: inherit
 
 settings:
