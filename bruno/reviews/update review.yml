@@ -1,0 +1,25 @@
+info:
+  name: Update Review
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: '{{local}}/companies/{{companyId}}/reviews/{{reviewId}}'
+  body:
+    type: json
+    data: |-
+      {
+        "body": "Updated review body with more detail.",
+        "overall_rating": 5,
+        "employment_context": "Contractor",
+        "would_recommend": true,
+        "location_id": "{{locationId}}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

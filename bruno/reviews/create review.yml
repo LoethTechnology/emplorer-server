@@ -1,0 +1,25 @@
+info:
+  name: Create Review
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: '{{local}}/companies/{{companyId}}/reviews'
+  body:
+    type: json
+    data: |-
+      {
+        "body": "Strong engineering culture with supportive managers.",
+        "overall_rating": 4,
+        "employment_context": "Full-time",
+        "would_recommend": true,
+        "location_id": "{{locationId}}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

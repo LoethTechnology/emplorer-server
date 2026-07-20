@@ -1,0 +1,21 @@
+info:
+  name: Cast Vote
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: '{{local}}/reviews/{{reviewId}}/comments/{{commentId}}/votes'
+  body:
+    type: json
+    data: |-
+      {
+        "value": "HELPFUL"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

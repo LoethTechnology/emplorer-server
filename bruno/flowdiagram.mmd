@@ -20,18 +20,16 @@ flowchart TD
     SubmitCo -->|Yes, approved| WriteReview
     Approve --> WriteReview
 
-    WriteReview["POST /user/me/reviews<br/>company_id, body, overall_rating<br/>status = DRAFT"]
-    WriteReview --> EditReview["PATCH /user/me/reviews/:id<br/>edit while DRAFT"]
-    EditReview --> Publish["PATCH /user/me/reviews/:id<br/>status = PUBLISHED"]
+    WriteReview["POST /user/me/reviews<br/>company_id, body, overall_rating<br/>published on creation"]
+    WriteReview --> EditReview["PATCH /user/me/reviews/:id<br/>body, rating, context, status"]
 
-    Publish --> Public["Review visible publicly<br/>GET /public/companies/:id/reviews"]
+    EditReview --> Public["Review visible publicly<br/>GET /public/companies/:id/reviews"]
 
     Public --> Engage{Community engagement}
     Engage --> Critique["POST /reviews/:id/critiques<br/>title, body, rating"]
     Engage --> Comment["POST /reviews/:id/comments<br/>body, parent_comment_id?"]
-    Comment --> Vote["POST /comments/:id/votes<br/>HELPFUL / NOT_HELPFUL"]
+    Comment --> Vote["POST /reviews/:reviewId/comments/:commentId/votes<br/>HELPFUL / NOT_HELPFUL"]
 
     style Start fill:#e1f5fe
     style Auth fill:#fff3e0
-    style Publish fill:#e8f5e9
     style Public fill:#e8f5e9

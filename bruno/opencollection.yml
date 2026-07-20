@@ -1,0 +1,41 @@
+opencollection: 1.0.0
+
+info:
+  name: Emplorer Docs
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ''
+      port: ''
+      auth:
+        username: ''
+        password: ''
+      bypassProxy: ''
+
+request:
+  auth:
+    type: bearer
+    token: '{{token}}'
+  variables:
+    - name: local
+      value: http://localhost:3000
+    - name: token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbXJ0cTk4bWswMDAwMWs5a2ptdWMxYTNpIiwiaWF0IjoxNzg0NTgzNTgxLCJleHAiOjE3ODQ4NDI3ODF9.klRWjTPiYboJgcUHIKeRzTnPoPZTx7Jy2Ef6y6WIWng
+    - name: companyId
+      value: company_id_here
+    - name: locationId
+      value: location_id_here
+    - name: reviewId
+      value: review_id_here
+    - name: commentId
+      value: comment_id_here
+    - name: critiqueId
+      value: critique_id_here
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

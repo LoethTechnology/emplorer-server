@@ -1,0 +1,23 @@
+info:
+  name: Create Critique
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: '{{local}}/reviews/{{reviewId}}/critiques'
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Balanced perspective",
+        "body": "This critique adds useful context to the original review.",
+        "rating": 4
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

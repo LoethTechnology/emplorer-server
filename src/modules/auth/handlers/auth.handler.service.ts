@@ -13,6 +13,7 @@ import { PrismaService } from '../../../shared/modules/prisma';
 
 const INVALID_CREDENTIALS_MESSAGE = 'Invalid email or password.';
 const INVALID_RESET_OTP_MESSAGE = 'Invalid or expired OTP.';
+const EMAIL_NOT_VERIFIED_MESSAGE = 'Email not verified.';
 
 @Injectable()
 export class AuthHandlerService {
@@ -37,6 +38,11 @@ export class AuthHandlerService {
     if (!passwordMatches) {
       throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
     }
+
+    if (!dbUser.email_verified_at) {
+      throw new UnauthorizedException(EMAIL_NOT_VERIFIED_MESSAGE);
+    }
+
     return dbUser;
   }
 

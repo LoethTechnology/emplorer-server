@@ -1,0 +1,25 @@
+info:
+  name: Create My Review
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: '{{local}}/user/me/reviews'
+  body:
+    type: json
+    data: |-
+      {
+        "company_id": "{{companyId}}",
+        "body": "Strong engineering culture with supportive managers.",
+        "overall_rating": 4,
+        "employment_context": "Former full-time backend engineer",
+        "would_recommend": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

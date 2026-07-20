@@ -1,0 +1,21 @@
+info:
+  name: Update Comment
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: '{{local}}/reviews/{{reviewId}}/comments/{{commentId}}'
+  body:
+    type: json
+    data: |-
+      {
+        "body": "Updated comment body."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

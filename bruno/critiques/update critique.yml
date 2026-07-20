@@ -1,0 +1,23 @@
+info:
+  name: Update Critique
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: '{{local}}/reviews/{{reviewId}}/critiques/{{critiqueId}}'
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Updated critique title",
+        "body": "Updated critique body with more detail.",
+        "rating": 5
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

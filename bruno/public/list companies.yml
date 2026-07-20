@@ -1,0 +1,18 @@
+info:
+  name: List Companies
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: '{{local}}/public/companies?page=1&limit=10&search=acme&sort=desc&name=Acme&location=Lagos&rating=4'
+  body:
+    type: json
+    data: ''
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

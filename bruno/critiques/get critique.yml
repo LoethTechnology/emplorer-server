@@ -1,0 +1,18 @@
+info:
+  name: Get Critique
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: '{{local}}/reviews/{{reviewId}}/critiques/{{critiqueId}}'
+  body:
+    type: json
+    data: ''
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

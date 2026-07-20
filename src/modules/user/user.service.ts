@@ -37,6 +37,7 @@ import {
 } from './utils/user.utils';
 import { BaseQueryDto } from '@shared/dtos';
 import { PaginateRes, GetPageOptions } from '@shared/index';
+import { user } from 'prisma/generated/prisma/client';
 
 @Injectable()
 export class UserService {
@@ -106,7 +107,7 @@ export class UserService {
   ): Promise<UserResponse> {
     const userId = user.sub;
     await this.findActiveUserById(userId);
-    const data = { ...updateUserDto };
+    const data: Partial<user> = { ...updateUserDto };
 
     if (data.email) {
       const existingUser = await this.prismaService.user.findUnique({
@@ -116,6 +117,8 @@ export class UserService {
       if (existingUser && existingUser.id !== userId) {
         throw new ConflictException(USER_RESPONSE_MESSAGES.emailAlreadyInUse);
       }
+
+      data.email_verified_at = null;
     }
 
     const updatedUser = await this.prismaService.user.update({

@@ -1,0 +1,21 @@
+info:
+  name: Send Verification Email
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: '{{local}}/auth/send-verification-email'
+  body:
+    type: json
+    data: |-
+      {
+        "email": "test@test.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

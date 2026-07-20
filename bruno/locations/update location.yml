@@ -1,0 +1,25 @@
+info:
+  name: Update Location
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: '{{local}}/companies/{{companyId}}/locations/{{locationId}}'
+  body:
+    type: json
+    data: |-
+      {
+        "city": "Lagos",
+        "state": "Lagos State",
+        "country": "Nigeria",
+        "address": "20 Marina Road",
+        "is_headquarters": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,22 @@
+info:
+  name: Upload Logo
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: '{{local}}/companies/{{companyId}}/logo'
+  body:
+    type: multipartForm
+    data:
+      - name: logo
+        value: ''
+        type: file
+        enabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

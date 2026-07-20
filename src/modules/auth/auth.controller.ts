@@ -17,8 +17,10 @@ import {
 } from './dto';
 import { LinkedInAuthGuard } from './guards';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SkipAuth } from './decorators/skip-auth.decorator';
 
 @ApiTags('auth')
+@SkipAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
