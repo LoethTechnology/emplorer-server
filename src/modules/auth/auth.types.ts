@@ -23,4 +23,11 @@ export interface ForgotPasswordData {
 export type ForgotPasswordResponse =
   ApiSuccessResponse<ForgotPasswordData | null>;
 
+export interface SendVerificationEmailData {
+  otp?: string;
+}
+
+export type SendVerificationEmailResponse =
+  ApiSuccessResponse<SendVerificationEmailData | null>;
+
 export type MessageResponse = ApiSuccessResponse<string>;

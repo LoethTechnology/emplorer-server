@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards';
+import { EmailVerifiedGuard, JwtAuthGuard } from '../auth/guards';
 import {
   CreateUserDto,
   CreateUserReviewDto,
@@ -97,6 +97,7 @@ export class UserController {
   }
 
   @Post('me/reviews')
+  @UseGuards(EmailVerifiedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a review for the current user' })
   @ApiResponse({ status: 201, description: 'Review created successfully' })

@@ -54,6 +54,8 @@ export class ReviewsService {
         overall_rating: dto.overall_rating,
         employment_context: dto.employment_context ?? null,
         would_recommend: dto.would_recommend ?? null,
+        status: ReviewStatus.PUBLISHED,
+        published_at: new Date(),
       },
     });
 

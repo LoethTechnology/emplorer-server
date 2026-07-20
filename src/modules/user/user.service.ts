@@ -8,6 +8,7 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { AuthService } from '../auth/auth.service';
 import {
   CrudEnums,
   DbModels,
@@ -42,6 +43,7 @@ export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly mailService: MailService,
+    private readonly authService: AuthService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
@@ -70,6 +72,10 @@ export class UserService {
         .sendWelcomeEmail(userData.email, userData.first_name)
         .catch(() => {});
 
+      this.authService
+        .sendVerificationEmail({ email: userData.email })
+        .catch(() => {});
+
       return CrudResponse(DbModels.USER, CrudEnums.CREATE, updatedUser);
     }
 
@@ -79,6 +85,10 @@ export class UserService {
 
     this.mailService
       .sendWelcomeEmail(userData.email, userData.first_name)
+      .catch(() => {});
+
+    this.authService
+      .sendVerificationEmail({ email: userData.email })
       .catch(() => {});
 
     return CrudResponse(DbModels.USER, CrudEnums.CREATE, createdUser);
@@ -166,7 +176,6 @@ export class UserService {
     await this.findActiveUserById(userId);
     await this.findCompanyOrThrow(createUserReviewDto.company_id);
 
-    const reviewStatus = createUserReviewDto.status ?? ReviewStatus.DRAFT;
     const createdReview = await this.prismaService.company_review.create({
       data: {
         company_id: createUserReviewDto.company_id,
@@ -175,9 +184,8 @@ export class UserService {
         overall_rating: createUserReviewDto.overall_rating,
         employment_context: createUserReviewDto.employment_context ?? null,
         would_recommend: createUserReviewDto.would_recommend ?? null,
-        status: reviewStatus,
-        published_at:
-          reviewStatus === ReviewStatus.PUBLISHED ? new Date() : null,
+        status: ReviewStatus.PUBLISHED,
+        published_at: new Date(),
       },
     });
 

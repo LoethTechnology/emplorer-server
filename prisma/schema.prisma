@@ -127,7 +127,7 @@ model company {
   logo_url     String?
   headquarters String?
   industry     String?
-  status       CompanyStatus      @default(PENDING)
+  status       CompanyStatus      @default(APPROVED)
   created_at   DateTime           @default(now())
   updated_at   DateTime           @updatedAt
   creator      user               @relation(fields: [creator_id], references: [id], onDelete: Restrict)
@@ -165,7 +165,7 @@ model company_review {
   overall_rating     Int
   employment_context String?
   would_recommend    Boolean?
-  status             ReviewStatus      @default(DRAFT)
+  status             ReviewStatus      @default(PUBLISHED)
   published_at       DateTime?
   created_at         DateTime          @default(now())
   updated_at         DateTime          @updatedAt
@@ -188,7 +188,7 @@ model review_critique {
   title        String
   body         String
   rating       Int
-  status       ReviewStatus   @default(DRAFT)
+  status       ReviewStatus   @default(PUBLISHED)
   published_at DateTime?
   created_at   DateTime       @default(now())
   updated_at   DateTime       @updatedAt

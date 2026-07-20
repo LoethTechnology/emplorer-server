@@ -46,6 +46,36 @@ export class MailService {
     });
   }
 
+  async sendEmailVerificationOtpEmail(
+    email: string,
+    firstName: string,
+    otp: string,
+    ttlMinutes: number,
+  ): Promise<void> {
+    await this.send({
+      to: email,
+      subject: 'Verify your Emplorer email address',
+      html: `<p>Hi ${firstName},</p>
+<p>Use the code below to verify your email address. It expires in ${ttlMinutes} minutes.</p>
+<p style="font-size:24px;font-weight:bold;letter-spacing:4px">${otp}</p>
+<p>If you did not request this, you can safely ignore this email.</p>
+<p>— The Emplorer Team</p>`,
+    });
+  }
+
+  async sendEmailVerifiedConfirmationEmail(
+    email: string,
+    firstName: string,
+  ): Promise<void> {
+    await this.send({
+      to: email,
+      subject: 'Your Emplorer email has been verified',
+      html: `<p>Hi ${firstName},</p>
+<p>Your email address has been successfully verified. You now have full access to Emplorer.</p>
+<p>— The Emplorer Team</p>`,
+    });
+  }
+
   async sendPasswordResetConfirmationEmail(
     email: string,
     firstName: string,
@@ -96,10 +126,10 @@ export class MailService {
   ): Promise<void> {
     await this.send({
       to: email,
-      subject: `Your company "${companyName}" has been submitted`,
+      subject: `Your company "${companyName}" is now live on Emplorer`,
       html: `<p>Hi ${firstName},</p>
-<p>Your submission for <strong>${companyName}</strong> is now under review.</p>
-<p>Once approved, the company profile will be visible to the public and open for reviews.</p>
+<p>Your submission for <strong>${companyName}</strong> has been added to Emplorer.</p>
+<p>The company profile is now visible to the public and open for reviews.</p>
 <p>— The Emplorer Team</p>`,
     });
   }

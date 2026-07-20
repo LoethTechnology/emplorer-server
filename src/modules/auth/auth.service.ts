@@ -10,8 +10,15 @@ import type {
   ForgotPasswordResponse,
   LinkedInOAuthUser,
   MessageResponse,
+  SendVerificationEmailResponse,
 } from './auth.types';
-import type { ForgotPasswordDto, LoginAuthDto, ResetPasswordDto } from './dto';
+import type {
+  ForgotPasswordDto,
+  LoginAuthDto,
+  ResetPasswordDto,
+  SendVerificationEmailDto,
+  VerifyEmailDto,
+} from './dto';
 import { AuthHandlerService } from './handlers/auth.handler.service';
 import { AUTH_RESPONSE_MESSAGES } from './utils/auth.utils';
 
@@ -65,6 +72,9 @@ export class AuthService {
       first_name,
       last_name,
       linkedin_profile_url,
+      // LinkedIn already verifies the account's email address, so we can
+      // trust it without running our own OTP verification flow.
+      ...(email ? { email_verified_at: new Date() } : {}),
     };
 
     const dbUser = email
@@ -140,6 +150,7 @@ export class AuthService {
       await transaction.auth_otp.create({
         data: {
           user_id: dbUser.id,
+          purpose: AuthOtpPurpose.PASSWORD_RESET,
           code_hash: codeHash,
           expires_at: expiresAt,
           max_attempts: this.authHandlerService.getOtpMaxAttempts(),
@@ -222,6 +233,135 @@ export class AuthService {
       DbModels.USER,
       CrudEnums.UPDATE,
       AUTH_RESPONSE_MESSAGES.passwordReset,
+    );
+  }
+
+  async sendVerificationEmail(
+    sendVerificationEmailDto: SendVerificationEmailDto,
+  ): Promise<SendVerificationEmailResponse> {
+    const email = sendVerificationEmailDto.email;
+    const dbUser = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!dbUser || dbUser.email_verified_at) {
+      return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, null);
+    }
+
+    const otp = this.authHandlerService.generateOtp();
+    const codeHash = await argon2.hash(otp);
+    const expiresAt = new Date(
+      Date.now() + this.authHandlerService.getOtpTtlMinutes() * 60 * 1000,
+    );
+
+    await this.prismaService.$transaction(async (transaction) => {
+      await transaction.auth_otp.updateMany({
+        where: {
+          user_id: dbUser.id,
+          purpose: AuthOtpPurpose.EMAIL_VERIFICATION,
+          consumed_at: null,
+        },
+        data: {
+          consumed_at: new Date(),
+        },
+      });
+
+      await transaction.auth_otp.create({
+        data: {
+          user_id: dbUser.id,
+          purpose: AuthOtpPurpose.EMAIL_VERIFICATION,
+          code_hash: codeHash,
+          expires_at: expiresAt,
+          max_attempts: this.authHandlerService.getOtpMaxAttempts(),
+        },
+      });
+    });
+
+    this.mailService
+      .sendEmailVerificationOtpEmail(
+        email,
+        dbUser.first_name,
+        otp,
+        this.authHandlerService.getOtpTtlMinutes(),
+      )
+      .catch(() => {});
+
+    if (this.authHandlerService.shouldExposeOtp()) {
+      return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, { otp });
+    }
+
+    return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, null);
+  }
+
+  async verifyEmail(verifyEmailDto: VerifyEmailDto): Promise<MessageResponse> {
+    const email = verifyEmailDto.email;
+    const dbUser = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!dbUser) {
+      throw new BadRequestException(
+        AUTH_RESPONSE_MESSAGES.invalidVerificationOtp,
+      );
+    }
+
+    if (dbUser.email_verified_at) {
+      return CrudResponse(
+        DbModels.USER,
+        CrudEnums.UPDATE,
+        AUTH_RESPONSE_MESSAGES.emailVerified,
+      );
+    }
+
+    const otpRecord = await this.prismaService.auth_otp.findFirst({
+      where: {
+        user_id: dbUser.id,
+        purpose: AuthOtpPurpose.EMAIL_VERIFICATION,
+        consumed_at: null,
+      },
+      orderBy: { created_at: 'desc' },
+    });
+
+    if (!otpRecord) {
+      throw new BadRequestException(
+        AUTH_RESPONSE_MESSAGES.invalidVerificationOtp,
+      );
+    }
+
+    await this.authHandlerService.ensureOtpCanBeUsed(otpRecord);
+
+    const otpMatches = await argon2.verify(
+      otpRecord.code_hash,
+      verifyEmailDto.otp,
+    );
+
+    if (!otpMatches) {
+      await this.authHandlerService.recordFailedOtpAttempt(otpRecord);
+      throw new BadRequestException(
+        AUTH_RESPONSE_MESSAGES.invalidVerificationOtp,
+      );
+    }
+
+    await this.prismaService.$transaction(async (transaction) => {
+      await transaction.user.update({
+        where: { id: dbUser.id },
+        data: { email_verified_at: new Date() },
+      });
+
+      await transaction.auth_otp.update({
+        where: { id: otpRecord.id },
+        data: { consumed_at: new Date() },
+      });
+    });
+
+    this.mailService
+      .sendEmailVerifiedConfirmationEmail(email, dbUser.first_name)
+      .catch(() => {});
+
+    return CrudResponse(
+      DbModels.USER,
+      CrudEnums.UPDATE,
+      AUTH_RESPONSE_MESSAGES.emailVerified,
     );
   }
 }

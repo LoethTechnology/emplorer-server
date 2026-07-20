@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
-  IsEnum,
   IsInt,
   IsOptional,
   IsString,
@@ -10,7 +9,6 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { trimStringValue } from '../utils/user.utils';
 
 export class CreateUserReviewDto {
@@ -60,13 +58,4 @@ export class CreateUserReviewDto {
   @IsOptional()
   @IsBoolean()
   would_recommend?: boolean;
-
-  @ApiPropertyOptional({
-    enum: ReviewStatus,
-    example: ReviewStatus.DRAFT,
-    description: 'The publication status of the review',
-  })
-  @IsOptional()
-  @IsEnum(ReviewStatus)
-  status?: ReviewStatus;
 }

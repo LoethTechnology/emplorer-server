@@ -1,0 +1,37 @@
+flowchart TD
+    Start([New Visitor]) --> AuthChoice{Sign up method?}
+
+    AuthChoice -->|Email/Password| Register["POST /user<br/>email, password, first_name, last_name"]
+    AuthChoice -->|LinkedIn| OAuthStart["GET /auth/linkedin"]
+
+    Register --> Login["POST /auth/login<br/>returns JWT"]
+    OAuthStart --> OAuthCallback["GET /auth/linkedin/callback<br/>finds/creates user + JWT"]
+
+    Login --> Auth[("Authenticated<br/>Bearer JWT")]
+    OAuthCallback --> Auth
+
+    Auth --> Profile["Optional: GET/PATCH /user/me<br/>PATCH /user/password"]
+
+    Auth --> Browse["Browse companies (public)<br/>GET /companies, /public/companies"]
+
+    Auth --> SubmitCo{Company already exists?}
+    SubmitCo -->|No| CreateCo["POST /companies<br/>status = PENDING"]
+    CreateCo --> Approve["Manual/admin approval<br/>(offline - no API)<br/>PENDING to APPROVED"]
+    SubmitCo -->|Yes, approved| WriteReview
+    Approve --> WriteReview
+
+    WriteReview["POST /user/me/reviews<br/>company_id, body, overall_rating<br/>status = DRAFT"]
+    WriteReview --> EditReview["PATCH /user/me/reviews/:id<br/>edit while DRAFT"]
+    EditReview --> Publish["PATCH /user/me/reviews/:id<br/>status = PUBLISHED"]
+
+    Publish --> Public["Review visible publicly<br/>GET /public/companies/:id/reviews"]
+
+    Public --> Engage{Community engagement}
+    Engage --> Critique["POST /reviews/:id/critiques<br/>title, body, rating"]
+    Engage --> Comment["POST /reviews/:id/comments<br/>body, parent_comment_id?"]
+    Comment --> Vote["POST /comments/:id/votes<br/>HELPFUL / NOT_HELPFUL"]
+
+    style Start fill:#e1f5fe
+    style Auth fill:#fff3e0
+    style Publish fill:#e8f5e9
+    style Public fill:#e8f5e9

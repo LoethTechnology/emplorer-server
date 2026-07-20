@@ -65,6 +65,7 @@ export class CompaniesService {
         logo_url: createCompanyDto.logo_url ?? null,
         headquarters: createCompanyDto.headquarters ?? null,
         industry: createCompanyDto.industry ?? null,
+        status: CompanyStatus.APPROVED,
       },
     });
 
