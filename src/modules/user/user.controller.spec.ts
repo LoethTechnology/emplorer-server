@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Reflector } from '@nestjs/core';
+import { PrismaService } from '../../shared/modules/prisma';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
@@ -17,12 +19,17 @@ const mockUserService = {
   findMe: jest.fn(),
   updateMe: jest.fn(),
   updatePassword: jest.fn(),
-  createMyReview: jest.fn(),
   findMyReviews: jest.fn(),
   findMyReview: jest.fn(),
   updateMyReview: jest.fn(),
   removeMyReview: jest.fn(),
   removeMe: jest.fn(),
+};
+
+const mockPrismaService = {
+  user: {
+    findUnique: jest.fn(),
+  },
 };
 
 describe('UserController', () => {
@@ -32,7 +39,11 @@ describe('UserController', () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [{ provide: UserService, useValue: mockUserService }],
+      providers: [
+        { provide: UserService, useValue: mockUserService },
+        { provide: PrismaService, useValue: mockPrismaService },
+        Reflector,
+      ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
@@ -84,23 +95,6 @@ describe('UserController', () => {
     expect(mockUserService.updatePassword).toHaveBeenCalledWith(
       user,
       updatePasswordDto,
-    );
-  });
-
-  it('should delegate createMyReview to UserService with the authenticated user', async () => {
-    const user = mockAuthenticatedUser('user-4');
-    const createReviewDto = {
-      company_id: 'company-1',
-      body: 'A strong team with clear expectations.',
-      overall_rating: 5,
-      status: ReviewStatus.DRAFT,
-    };
-
-    await controller.createMyReview(user, createReviewDto);
-
-    expect(mockUserService.createMyReview).toHaveBeenCalledWith(
-      user,
-      createReviewDto,
     );
   });
 

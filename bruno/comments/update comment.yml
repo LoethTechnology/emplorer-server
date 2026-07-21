@@ -1,0 +1,98 @@
+info:
+  name: Update Comment
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: '{{local}}/reviews/{{reviewId}}/comments/{{commentId}}'
+  body:
+    type: json
+    data: |-
+      {
+        "body": "Updated comment body."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: ok
+    request:
+      url: '{{local}}/reviews/{{reviewId}}/comments/{{commentId}}'
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "body": "Updated comment body."
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: content-security-policy
+          value: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+        - name: cross-origin-opener-policy
+          value: same-origin
+        - name: cross-origin-resource-policy
+          value: same-origin
+        - name: origin-agent-cluster
+          value: ?1
+        - name: referrer-policy
+          value: no-referrer
+        - name: strict-transport-security
+          value: max-age=31536000; includeSubDomains
+        - name: x-content-type-options
+          value: nosniff
+        - name: x-dns-prefetch-control
+          value: off
+        - name: x-download-options
+          value: noopen
+        - name: x-frame-options
+          value: SAMEORIGIN
+        - name: x-permitted-cross-domain-policies
+          value: none
+        - name: x-xss-protection
+          value: '0'
+        - name: access-control-allow-origin
+          value: '*'
+        - name: x-ratelimit-limit
+          value: '10'
+        - name: x-ratelimit-remaining
+          value: '9'
+        - name: x-ratelimit-reset
+          value: '60'
+        - name: content-type
+          value: application/json; charset=utf-8
+        - name: content-length
+          value: '340'
+        - name: etag
+          value: W/"154-Zcx7sbhMh62FETC/NeLjiJKJum0"
+        - name: date
+          value: Tue, 21 Jul 2026 21:00:13 GMT
+        - name: connection
+          value: keep-alive
+        - name: keep-alive
+          value: timeout=5
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Review Comment updated successfully.",
+            "code": 200,
+            "data": {
+              "id": "cmrv4wjkc0004h09ki10vll54",
+              "review_id": "cmrv4fqls0002h09k816969uh",
+              "author_id": "cmrtq98mk00001k9kjmuc1a3i",
+              "parent_comment_id": null,
+              "body": "Updated comment body.",
+              "status": "PUBLISHED",
+              "created_at": "2026-07-21T20:57:01.452Z",
+              "updated_at": "2026-07-21T21:00:13.083Z"
+            }
+          }

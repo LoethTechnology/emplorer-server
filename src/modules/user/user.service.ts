@@ -8,6 +8,7 @@ import * as argon2 from 'argon2';
 import { ReviewStatus } from 'prisma/generated/prisma/enums';
 import { PrismaService } from '../../shared/modules/prisma';
 import { MailService } from '../../shared/modules/mail';
+import { AuthService } from '../auth/auth.service';
 import {
   CrudEnums,
   DbModels,
@@ -16,7 +17,6 @@ import {
 import { CrudResponse } from '../../shared/utils/response';
 import type {
   CreateUserDto,
-  CreateUserReviewDto,
   UpdateUserDto,
   UpdateUserPasswordDto,
   UpdateUserReviewDto,
@@ -36,12 +36,14 @@ import {
 } from './utils/user.utils';
 import { BaseQueryDto } from '@shared/dtos';
 import { PaginateRes, GetPageOptions } from '@shared/index';
+import { user } from 'prisma/generated/prisma/client';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly mailService: MailService,
+    private readonly authService: AuthService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
@@ -70,6 +72,10 @@ export class UserService {
         .sendWelcomeEmail(userData.email, userData.first_name)
         .catch(() => {});
 
+      this.authService
+        .sendVerificationEmail({ email: userData.email })
+        .catch(() => {});
+
       return CrudResponse(DbModels.USER, CrudEnums.CREATE, updatedUser);
     }
 
@@ -79,6 +85,10 @@ export class UserService {
 
     this.mailService
       .sendWelcomeEmail(userData.email, userData.first_name)
+      .catch(() => {});
+
+    this.authService
+      .sendVerificationEmail({ email: userData.email })
       .catch(() => {});
 
     return CrudResponse(DbModels.USER, CrudEnums.CREATE, createdUser);
@@ -96,7 +106,7 @@ export class UserService {
   ): Promise<UserResponse> {
     const userId = user.sub;
     await this.findActiveUserById(userId);
-    const data = { ...updateUserDto };
+    const data: Partial<user> = { ...updateUserDto };
 
     if (data.email) {
       const existingUser = await this.prismaService.user.findUnique({
@@ -106,6 +116,8 @@ export class UserService {
       if (existingUser && existingUser.id !== userId) {
         throw new ConflictException(USER_RESPONSE_MESSAGES.emailAlreadyInUse);
       }
+
+      data.email_verified_at = null;
     }
 
     const updatedUser = await this.prismaService.user.update({
@@ -155,36 +167,6 @@ export class UserService {
       DbModels.USER,
       CrudEnums.UPDATE,
       USER_RESPONSE_MESSAGES.passwordUpdated,
-    );
-  }
-
-  async createMyReview(
-    user: AuthenticatedRequest['user'],
-    createUserReviewDto: CreateUserReviewDto,
-  ): Promise<UserReviewResponse> {
-    const userId = user.sub;
-    await this.findActiveUserById(userId);
-    await this.findCompanyOrThrow(createUserReviewDto.company_id);
-
-    const reviewStatus = createUserReviewDto.status ?? ReviewStatus.DRAFT;
-    const createdReview = await this.prismaService.company_review.create({
-      data: {
-        company_id: createUserReviewDto.company_id,
-        author_id: userId,
-        body: createUserReviewDto.body,
-        overall_rating: createUserReviewDto.overall_rating,
-        employment_context: createUserReviewDto.employment_context ?? null,
-        would_recommend: createUserReviewDto.would_recommend ?? null,
-        status: reviewStatus,
-        published_at:
-          reviewStatus === ReviewStatus.PUBLISHED ? new Date() : null,
-      },
-    });
-
-    return CrudResponse(
-      DbModels.COMPANY_REVIEW,
-      CrudEnums.CREATE,
-      createdReview,
     );
   }
 

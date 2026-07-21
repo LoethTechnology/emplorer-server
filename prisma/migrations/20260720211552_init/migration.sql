@@ -24,11 +24,9 @@ CREATE TABLE "user" (
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
     "password" TEXT,
-    "avatar_url" TEXT,
     "linkedin_profile_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -87,7 +85,7 @@ CREATE TABLE "company" (
     "logo_url" TEXT,
     "headquarters" TEXT,
     "industry" TEXT,
-    "status" "CompanyStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "CompanyStatus" NOT NULL DEFAULT 'APPROVED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -95,15 +93,31 @@ CREATE TABLE "company" (
 );
 
 -- CreateTable
+CREATE TABLE "company_location" (
+    "id" TEXT NOT NULL,
+    "company_id" TEXT NOT NULL,
+    "city" TEXT NOT NULL,
+    "state" TEXT,
+    "country" TEXT NOT NULL,
+    "address" TEXT,
+    "is_headquarters" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "company_location_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "company_review" (
     "id" TEXT NOT NULL,
     "company_id" TEXT NOT NULL,
     "author_id" TEXT NOT NULL,
+    "location_id" TEXT,
     "body" TEXT NOT NULL,
     "overall_rating" INTEGER NOT NULL,
     "employment_context" TEXT,
     "would_recommend" BOOLEAN,
-    "status" "ReviewStatus" NOT NULL DEFAULT 'DRAFT',
+    "status" "ReviewStatus" NOT NULL DEFAULT 'PUBLISHED',
     "published_at" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -119,7 +133,7 @@ CREATE TABLE "review_critique" (
     "title" TEXT NOT NULL,
     "body" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
-    "status" "ReviewStatus" NOT NULL DEFAULT 'DRAFT',
+    "status" "ReviewStatus" NOT NULL DEFAULT 'PUBLISHED',
     "published_at" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -130,14 +144,13 @@ CREATE TABLE "review_critique" (
 -- CreateTable
 CREATE TABLE "review_comment" (
     "id" TEXT NOT NULL,
-    "review_id" TEXT NOT NULL,
-    "author_id" TEXT NOT NULL,
+    "review_id" TEXT,
+    "author_id" TEXT,
     "parent_comment_id" TEXT,
     "body" TEXT NOT NULL,
     "status" "CommentStatus" NOT NULL DEFAULT 'PUBLISHED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "review_comment_pkey" PRIMARY KEY ("id")
 );
@@ -197,10 +210,19 @@ CREATE INDEX "company_status_idx" ON "company"("status");
 CREATE INDEX "company_name_idx" ON "company"("name");
 
 -- CreateIndex
+CREATE INDEX "company_location_company_id_idx" ON "company_location"("company_id");
+
+-- CreateIndex
+CREATE INDEX "company_location_country_idx" ON "company_location"("country");
+
+-- CreateIndex
 CREATE INDEX "company_review_company_id_status_idx" ON "company_review"("company_id", "status");
 
 -- CreateIndex
 CREATE INDEX "company_review_author_id_idx" ON "company_review"("author_id");
+
+-- CreateIndex
+CREATE INDEX "company_review_location_id_idx" ON "company_review"("location_id");
 
 -- CreateIndex
 CREATE INDEX "company_review_published_at_idx" ON "company_review"("published_at");
@@ -242,10 +264,16 @@ ALTER TABLE "auth_otp" ADD CONSTRAINT "auth_otp_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "company" ADD CONSTRAINT "company_creator_id_fkey" FOREIGN KEY ("creator_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "company_location" ADD CONSTRAINT "company_location_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "company_review" ADD CONSTRAINT "company_review_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "company_review" ADD CONSTRAINT "company_review_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "company_review" ADD CONSTRAINT "company_review_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "company_location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "review_critique" ADD CONSTRAINT "review_critique_review_id_fkey" FOREIGN KEY ("review_id") REFERENCES "company_review"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -254,10 +282,10 @@ ALTER TABLE "review_critique" ADD CONSTRAINT "review_critique_review_id_fkey" FO
 ALTER TABLE "review_critique" ADD CONSTRAINT "review_critique_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "review_comment" ADD CONSTRAINT "review_comment_review_id_fkey" FOREIGN KEY ("review_id") REFERENCES "company_review"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "review_comment" ADD CONSTRAINT "review_comment_review_id_fkey" FOREIGN KEY ("review_id") REFERENCES "company_review"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "review_comment" ADD CONSTRAINT "review_comment_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "review_comment" ADD CONSTRAINT "review_comment_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "review_comment" ADD CONSTRAINT "review_comment_parent_comment_id_fkey" FOREIGN KEY ("parent_comment_id") REFERENCES "review_comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;

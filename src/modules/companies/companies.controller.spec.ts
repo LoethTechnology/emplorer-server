@@ -1,5 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from '../../shared/modules/prisma';
 import { CompaniesController } from './companies.controller';
 import { CompaniesService } from './companies.service';
 import type { AuthenticatedRequest } from '@modules/user/user.types';
@@ -12,13 +14,25 @@ const mockAuthenticatedUser = (sub: string): AuthenticatedRequest['user'] => ({
   sub,
 });
 
+const mockLogoFile = {
+  buffer: Buffer.from('logo'),
+  mimetype: 'image/png',
+  originalname: 'logo.png',
+} as Express.Multer.File;
+
 const mockCompaniesService = {
   create: jest.fn(),
   findAll: jest.fn(),
   typeahead: jest.fn(),
   findOne: jest.fn(),
-  findByDomain: jest.fn(),
+  uploadLogo: jest.fn(),
   update: jest.fn(),
+};
+
+const mockPrismaService = {
+  user: {
+    findUnique: jest.fn(),
+  },
 };
 
 describe('CompaniesController', () => {
@@ -31,6 +45,8 @@ describe('CompaniesController', () => {
       controllers: [CompaniesController],
       providers: [
         { provide: CompaniesService, useValue: mockCompaniesService },
+        { provide: PrismaService, useValue: mockPrismaService },
+        Reflector,
       ],
     }).compile();
 
@@ -43,11 +59,34 @@ describe('CompaniesController', () => {
 
   it('should delegate create to CompaniesService with the authenticated user', async () => {
     const user = mockAuthenticatedUser('user-1');
-    const dto = { name: 'Acme Inc.', domain: 'acme.com' };
+    const dto = {
+      name: 'Acme Inc.',
+      address: '14 Admiralty Way, Lekki',
+    };
 
     await controller.create(user, dto);
 
-    expect(mockCompaniesService.create).toHaveBeenCalledWith(user, dto);
+    expect(mockCompaniesService.create).toHaveBeenCalledWith(
+      user,
+      dto,
+      undefined,
+    );
+  });
+
+  it('should delegate create to CompaniesService with an uploaded logo file', async () => {
+    const user = mockAuthenticatedUser('user-1');
+    const dto = {
+      name: 'Acme Inc.',
+      address: '14 Admiralty Way, Lekki',
+    };
+
+    await controller.create(user, dto, mockLogoFile);
+
+    expect(mockCompaniesService.create).toHaveBeenCalledWith(
+      user,
+      dto,
+      mockLogoFile,
+    );
   });
 
   describe('typeahead', () => {
@@ -91,12 +130,6 @@ describe('CompaniesController', () => {
     await controller.findOne('company-1');
 
     expect(mockCompaniesService.findOne).toHaveBeenCalledWith('company-1');
-  });
-
-  it('should delegate findByDomain to CompaniesService with the domain', async () => {
-    await controller.findByDomain('acme.com');
-
-    expect(mockCompaniesService.findByDomain).toHaveBeenCalledWith('acme.com');
   });
 
   it('should delegate update to CompaniesService with the authenticated user and company id', async () => {

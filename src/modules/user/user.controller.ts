@@ -18,7 +18,6 @@ import {
 import { JwtAuthGuard } from '../auth/guards';
 import {
   CreateUserDto,
-  CreateUserReviewDto,
   UpdateUserDto,
   UpdateUserPasswordDto,
   UpdateUserReviewDto,
@@ -94,20 +93,6 @@ export class UserController {
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
   ): Promise<UserMessageResponse> {
     return this.userService.updatePassword(user, updateUserPasswordDto);
-  }
-
-  @Post('me/reviews')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create a review for the current user' })
-  @ApiResponse({ status: 201, description: 'Review created successfully' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'User or company not found' })
-  createMyReview(
-    @User() user: AuthenticatedRequest['user'],
-    @Body() createUserReviewDto: CreateUserReviewDto,
-  ): Promise<UserReviewResponse> {
-    return this.userService.createMyReview(user, createUserReviewDto);
   }
 
   @Get('me/reviews')

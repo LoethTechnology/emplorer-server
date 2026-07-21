@@ -6,7 +6,7 @@ import type { StringValue } from 'ms';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthHandlerService } from './handlers/auth.handler.service';
-import { JwtAuthGuard } from './guards';
+import { EmailVerifiedGuard, JwtAuthGuard } from './guards';
 import { JwtStrategy, LinkedInStrategy } from './strategies';
 
 @Module({
@@ -31,9 +31,16 @@ import { JwtStrategy, LinkedInStrategy } from './strategies';
     AuthService,
     AuthHandlerService,
     JwtAuthGuard,
+    EmailVerifiedGuard,
     LinkedInStrategy,
     JwtStrategy,
   ],
-  exports: [AuthService, AuthHandlerService, JwtAuthGuard, JwtModule],
+  exports: [
+    AuthService,
+    AuthHandlerService,
+    JwtAuthGuard,
+    EmailVerifiedGuard,
+    JwtModule,
+  ],
 })
 export class AuthModule {}

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -35,11 +36,8 @@ export class LocationsService {
     const location = await this.prismaService.company_location.create({
       data: {
         company_id: companyId,
-        city: dto.city,
-        state: dto.state ?? null,
-        country: dto.country,
-        address: dto.address ?? null,
-        is_headquarters: dto.is_headquarters ?? false,
+        address: dto.address,
+        country: dto.country ?? null,
       },
     });
 
@@ -89,13 +87,25 @@ export class LocationsService {
     await this.findOwnedCompanyOrThrow(user.sub, companyId);
     const existing = await this.findLocationOrThrow(companyId, locationId);
 
+    // check to have only one headquarters
+    if (dto.is_headquarters) {
+      const headquarters = await this.prismaService.company_location.findFirst({
+        where: { company_id: companyId, is_headquarters: true },
+        select: { id: true },
+      });
+
+      if (headquarters) {
+        throw new BadRequestException(
+          LOCATIONS_RESPONSE_MESSAGES.headquartersAlreadyExists,
+        );
+      }
+    }
+
     const updated = await this.prismaService.company_location.update({
       where: { id: existing.id },
       data: {
-        city: dto.city ?? existing.city,
-        state: dto.state !== undefined ? dto.state : existing.state,
-        country: dto.country ?? existing.country,
         address: dto.address !== undefined ? dto.address : existing.address,
+        country: dto.country !== undefined ? dto.country : existing.country,
         is_headquarters:
           dto.is_headquarters !== undefined
             ? dto.is_headquarters

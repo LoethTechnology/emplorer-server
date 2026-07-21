@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   ForbiddenException,
   HttpStatus,
   NotFoundException,
@@ -51,20 +50,31 @@ const mockAuthenticatedUser = (sub: string): AuthenticatedRequest['user'] => ({
   sub,
 });
 
+const mockLogoFile = {
+  buffer: Buffer.from('logo'),
+  mimetype: 'image/png',
+  originalname: 'logo.png',
+} as Express.Multer.File;
+
 const approvedCompany = (overrides: Partial<Record<string, unknown>> = {}) => ({
   id: 'company-1',
   creator_id: 'user-1',
   name: 'Acme Inc.',
   description: null,
   website_url: null,
-  domain: 'acme.com',
   linkedin_url: null,
   logo_url: null,
-  headquarters: null,
   industry: 'Technology',
   status: CompanyStatus.APPROVED,
   created_at: new Date(),
   updated_at: new Date(),
+  locations: [
+    {
+      address: '14 Admiralty Way, Lekki',
+      country: 'Nigeria',
+      is_headquarters: true,
+    },
+  ],
   ...overrides,
 });
 
@@ -75,8 +85,16 @@ const typeaheadCompany = (
   name: 'Acme Inc.',
   logo_url: null,
   locations: [
-    { city: 'Lagos', state: null, country: 'Nigeria', is_headquarters: true },
-    { city: 'Abuja', state: null, country: 'Nigeria', is_headquarters: false },
+    {
+      address: '14 Admiralty Way, Lekki',
+      country: 'Nigeria',
+      is_headquarters: true,
+    },
+    {
+      address: 'Central Business District',
+      country: 'Nigeria',
+      is_headquarters: false,
+    },
   ],
   ...overrides,
 });
@@ -86,6 +104,18 @@ describe('CompaniesService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockPrismaService.company.findUnique.mockResolvedValue(null);
+    mockPrismaService.company.findFirst.mockResolvedValue(null);
+    mockPrismaService.company.findMany.mockResolvedValue([]);
+    mockPrismaService.company.count.mockResolvedValue(0);
+    mockPrismaService.company.create.mockResolvedValue(approvedCompany());
+    mockPrismaService.company.update.mockResolvedValue(approvedCompany());
+    mockPrismaService.user.findUnique.mockResolvedValue(null);
+    mockMailService.sendCompanySubmittedEmail.mockResolvedValue(undefined);
+    mockCloudinaryService.deleteImage.mockResolvedValue(undefined);
+    mockCloudinaryService.uploadImage.mockResolvedValue({
+      secure_url: 'https://logo.test',
+    });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -104,26 +134,36 @@ describe('CompaniesService', () => {
   });
 
   describe('create', () => {
-    it('should create a company with PENDING status and the authenticated creator', async () => {
-      mockPrismaService.company.create.mockResolvedValue(
-        approvedCompany({ status: CompanyStatus.PENDING }),
-      );
+    it('should create an approved company with creator and headquarters location', async () => {
+      mockPrismaService.company.create.mockResolvedValue(approvedCompany());
 
       const result = await service.create(mockAuthenticatedUser('user-1'), {
         name: 'Acme Inc.',
-        domain: 'acme.com',
+        address: '14 Admiralty Way, Lekki',
+        country: 'Nigeria',
       });
 
-      expect(mockPrismaService.company.findUnique).toHaveBeenCalledWith({
-        where: { domain: 'acme.com' },
-        select: { id: true },
-      });
       expect(mockPrismaService.company.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           creator_id: 'user-1',
           name: 'Acme Inc.',
-          domain: 'acme.com',
+          description: null,
+          website_url: null,
+          linkedin_url: null,
+          logo_url: null,
+          industry: null,
+          status: CompanyStatus.APPROVED,
+          locations: {
+            create: {
+              address: '14 Admiralty Way, Lekki',
+              country: 'Nigeria',
+              is_headquarters: true,
+            },
+          },
         }),
+        include: {
+          locations: true,
+        },
       });
       expect(result).toEqual({
         message: 'Company created successfully.',
@@ -132,31 +172,34 @@ describe('CompaniesService', () => {
       });
     });
 
-    it('should reject a duplicate domain', async () => {
-      mockPrismaService.company.findUnique.mockResolvedValue({
-        id: 'existing-company',
-      });
+    it('should upload a logo to Cloudinary and store the secure URL when a logo file is provided', async () => {
+      const createdCompany = approvedCompany({ logo_url: 'https://logo.test' });
+      mockPrismaService.company.create.mockResolvedValue(createdCompany);
 
-      await expect(
-        service.create(mockAuthenticatedUser('user-1'), {
+      const result = await service.create(
+        mockAuthenticatedUser('user-1'),
+        {
           name: 'Acme Inc.',
-          domain: 'acme.com',
-        }),
-      ).rejects.toBeInstanceOf(ConflictException);
-      expect(mockPrismaService.company.create).not.toHaveBeenCalled();
-    });
-
-    it('should skip the domain uniqueness check when no domain is provided', async () => {
-      mockPrismaService.company.create.mockResolvedValue(
-        approvedCompany({ domain: null }),
+          address: '14 Admiralty Way, Lekki',
+        },
+        mockLogoFile,
       );
 
-      await service.create(mockAuthenticatedUser('user-1'), {
-        name: 'Acme Inc.',
+      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
+        mockLogoFile,
+        'emplorer/companies/user-1/logo',
+      );
+      expect(mockPrismaService.company.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ logo_url: 'https://logo.test' }),
+        }),
+      );
+      expect(mockPrismaService.company.update).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        message: 'Company created successfully.',
+        code: HttpStatus.CREATED,
+        data: expect.objectContaining({ logo_url: 'https://logo.test' }),
       });
-
-      expect(mockPrismaService.company.findUnique).not.toHaveBeenCalled();
-      expect(mockPrismaService.company.create).toHaveBeenCalled();
     });
   });
 
@@ -210,6 +253,9 @@ describe('CompaniesService', () => {
 
       expect(mockPrismaService.company.findFirst).toHaveBeenCalledWith({
         where: { id: 'company-1', status: CompanyStatus.APPROVED },
+        include: {
+          locations: true,
+        },
       });
       expect(result).toEqual({
         message: 'Company fetched successfully.',
@@ -222,27 +268,6 @@ describe('CompaniesService', () => {
       mockPrismaService.company.findFirst.mockResolvedValue(null);
 
       await expect(service.findOne('missing')).rejects.toBeInstanceOf(
-        NotFoundException,
-      );
-    });
-  });
-
-  describe('findByDomain', () => {
-    it('should return an approved company by domain', async () => {
-      mockPrismaService.company.findFirst.mockResolvedValue(approvedCompany());
-
-      const result = await service.findByDomain('acme.com');
-
-      expect(mockPrismaService.company.findFirst).toHaveBeenCalledWith({
-        where: { domain: 'acme.com', status: CompanyStatus.APPROVED },
-      });
-      expect(result.data).toEqual(expect.objectContaining({ id: 'company-1' }));
-    });
-
-    it('should throw when no approved company matches the domain', async () => {
-      mockPrismaService.company.findFirst.mockResolvedValue(null);
-
-      await expect(service.findByDomain('unknown.com')).rejects.toBeInstanceOf(
         NotFoundException,
       );
     });
@@ -267,8 +292,7 @@ describe('CompaniesService', () => {
           logo_url: true,
           locations: {
             select: {
-              city: true,
-              state: true,
+              address: true,
               country: true,
               is_headquarters: true,
             },
@@ -284,7 +308,10 @@ describe('CompaniesService', () => {
             id: 'company-1',
             name: 'Acme Inc.',
             locations: expect.arrayContaining([
-              expect.objectContaining({ city: 'Lagos', is_headquarters: true }),
+              expect.objectContaining({
+                address: '14 Admiralty Way, Lekki',
+                is_headquarters: true,
+              }),
             ]),
           }),
         ]),
@@ -334,6 +361,9 @@ describe('CompaniesService', () => {
       expect(mockPrismaService.company.update).toHaveBeenCalledWith({
         where: { id: 'company-1' },
         data: expect.objectContaining({ description: 'Updated description' }),
+        include: {
+          locations: true,
+        },
       });
       expect(result.data).toEqual(
         expect.objectContaining({ description: 'Updated description' }),

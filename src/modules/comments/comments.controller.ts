@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards';
+import { EmailVerifiedGuard, JwtAuthGuard } from '../auth/guards';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { User } from '../auth/decorators/user.decorator';
 import { CommentsService } from './comments.service';
@@ -36,6 +36,7 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post()
+  @UseGuards(EmailVerifiedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add a comment to a review' })
   @ApiResponse({ status: 201, description: 'Comment created successfully' })
@@ -111,6 +112,7 @@ export class CommentsController {
   }
 
   @Post(':commentId/votes')
+  @UseGuards(EmailVerifiedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Cast or update a vote on a comment' })
   @ApiResponse({ status: 201, description: 'Vote recorded successfully' })

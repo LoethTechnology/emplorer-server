@@ -8,7 +8,7 @@ export type CompanyResponse = ApiSuccessResponse<Company>;
 export type CompanyTypeaheadItem = Pick<company, 'id' | 'name' | 'logo_url'> & {
   locations: Pick<
     company_location,
-    'city' | 'state' | 'country' | 'is_headquarters'
+    'address' | 'country' | 'is_headquarters'
   >[];
 };
 

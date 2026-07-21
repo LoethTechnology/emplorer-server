@@ -1,0 +1,22 @@
+info:
+  name: Verify Email
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: '{{local}}/auth/verify-email'
+  body:
+    type: json
+    data: |-
+      {
+        "email": "test@test.com",
+        "otp": "123456"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

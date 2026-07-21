@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
-  IsFQDN,
   IsOptional,
   IsString,
   IsUrl,
@@ -43,15 +42,6 @@ export class CreateCompanyDto {
   website_url?: string;
 
   @ApiPropertyOptional({
-    example: 'acme.com',
-    description: 'Unique company domain used for duplicate detection',
-  })
-  @IsOptional()
-  @IsFQDN()
-  @Transform(trim)
-  domain?: string;
-
-  @ApiPropertyOptional({
     example: 'https://linkedin.com/company/acme',
     description: 'Company LinkedIn URL',
   })
@@ -60,24 +50,25 @@ export class CreateCompanyDto {
   @Transform(normalizeOptionalUrl)
   linkedin_url?: string;
 
-  @ApiPropertyOptional({
-    example: 'https://acme.com/logo.png',
-    description: 'Company logo URL',
+  @ApiProperty({
+    example: '14 Admiralty Way, Lekki',
+    description: 'Company headquarters address',
   })
-  @IsOptional()
-  @IsUrl()
-  @Transform(normalizeOptionalUrl)
-  logo_url?: string;
+  @IsString()
+  @MinLength(1)
+  @MaxLength(300)
+  @Transform(trim)
+  address!: string;
 
   @ApiPropertyOptional({
-    example: 'Lagos, Nigeria',
-    description: 'Company headquarters location',
+    example: 'Nigeria',
+    description: 'Company headquarters country',
   })
   @IsOptional()
   @IsString()
-  @MaxLength(200)
+  @MaxLength(100)
   @Transform(trim)
-  headquarters?: string;
+  country?: string;
 
   @ApiPropertyOptional({
     example: 'Technology',

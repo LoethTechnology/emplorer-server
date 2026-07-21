@@ -6,12 +6,21 @@ import type {
   ForgotPasswordResponse,
   LinkedInOAuthUser,
   MessageResponse,
+  SendVerificationEmailResponse,
 } from './auth.types';
-import { ForgotPasswordDto, LoginAuthDto, ResetPasswordDto } from './dto';
+import {
+  ForgotPasswordDto,
+  LoginAuthDto,
+  ResetPasswordDto,
+  SendVerificationEmailDto,
+  VerifyEmailDto,
+} from './dto';
 import { LinkedInAuthGuard } from './guards';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SkipAuth } from './decorators/skip-auth.decorator';
 
 @ApiTags('auth')
+@SkipAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -42,6 +51,27 @@ export class AuthController {
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<MessageResponse> {
     return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @Post('send-verification-email')
+  @ApiOperation({
+    summary: 'Send (or resend) an email verification OTP to the user',
+  })
+  @ApiResponse({ status: 200, description: 'OTP sent successfully' })
+  sendVerificationEmail(
+    @Body() sendVerificationEmailDto: SendVerificationEmailDto,
+  ): Promise<SendVerificationEmailResponse> {
+    return this.authService.sendVerificationEmail(sendVerificationEmailDto);
+  }
+
+  @Post('verify-email')
+  @ApiOperation({ summary: 'Verify the user email address with an OTP' })
+  @ApiResponse({ status: 200, description: 'Email verified successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  verifyEmail(
+    @Body() verifyEmailDto: VerifyEmailDto,
+  ): Promise<MessageResponse> {
+    return this.authService.verifyEmail(verifyEmailDto);
   }
 
   @Get('linkedin')

@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -40,31 +39,36 @@ export class CompaniesService {
   async create(
     user: AuthenticatedRequest['user'],
     createCompanyDto: CreateCompanyDto,
+    file?: Express.Multer.File,
   ): Promise<CompanyResponse> {
-    if (createCompanyDto.domain) {
-      const existing = await this.prismaService.company.findUnique({
-        where: { domain: createCompanyDto.domain },
-        select: { id: true },
-      });
+    let logo_url: string | null = null;
 
-      if (existing) {
-        throw new ConflictException(
-          COMPANIES_RESPONSE_MESSAGES.domainAlreadyInUse,
-        );
-      }
+    if (file) {
+      const publicId = `emplorer/companies/${user.sub}/logo`;
+      const result = await this.cloudinaryService.uploadImage(file, publicId);
+      logo_url = result.secure_url;
     }
 
-    const created = await this.prismaService.company.create({
+    const company = await this.prismaService.company.create({
       data: {
         creator_id: user.sub,
         name: createCompanyDto.name,
         description: createCompanyDto.description ?? null,
         website_url: createCompanyDto.website_url ?? null,
-        domain: createCompanyDto.domain ?? null,
         linkedin_url: createCompanyDto.linkedin_url ?? null,
-        logo_url: createCompanyDto.logo_url ?? null,
-        headquarters: createCompanyDto.headquarters ?? null,
+        logo_url,
         industry: createCompanyDto.industry ?? null,
+        status: CompanyStatus.APPROVED,
+        locations: {
+          create: {
+            address: createCompanyDto.address,
+            country: createCompanyDto.country ?? null,
+            is_headquarters: true,
+          },
+        },
+      },
+      include: {
+        locations: true,
       },
     });
 
@@ -79,14 +83,14 @@ export class CompaniesService {
             .sendCompanySubmittedEmail(
               creator.email,
               creator.first_name,
-              created.name,
+              company.name,
             )
             .catch(() => {});
         }
       })
       .catch(() => {});
 
-    return CrudResponse(DbModels.COMPANY, CrudEnums.CREATE, created);
+    return CrudResponse(DbModels.COMPANY, CrudEnums.CREATE, company);
   }
 
   async typeahead(q: string): Promise<CompanyTypeaheadResponse> {
@@ -101,8 +105,7 @@ export class CompaniesService {
         logo_url: true,
         locations: {
           select: {
-            city: true,
-            state: true,
+            address: true,
             country: true,
             is_headquarters: true,
           },
@@ -139,6 +142,9 @@ export class CompaniesService {
         ...GetPageOptions(Number(page), Number(limit)),
         where,
         orderBy: { created_at: sort || 'desc' },
+        include: {
+          locations: true,
+        },
       }),
     ]);
 
@@ -152,16 +158,13 @@ export class CompaniesService {
   }
 
   async findOne(id: string): Promise<CompanyResponse> {
-    const company = await this.findApprovedCompanyOrThrow(id);
-
-    return CrudResponse(DbModels.COMPANY, CrudEnums.READ, company);
-  }
-
-  async findByDomain(domain: string): Promise<CompanyResponse> {
     const company = await this.prismaService.company.findFirst({
       where: {
-        domain,
+        id,
         status: CompanyStatus.APPROVED,
+      },
+      include: {
+        locations: true,
       },
     });
 
@@ -191,12 +194,7 @@ export class CompaniesService {
       await this.cloudinaryService.deleteImage(publicId).catch(() => {});
     }
 
-    const result = await this.cloudinaryService.uploadImage(file, publicId);
-
-    const updated = await this.prismaService.company.update({
-      where: { id },
-      data: { logo_url: result.secure_url },
-    });
+    const updated = await this.saveLogoForCompany(id, file);
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.UPDATE, updated);
   }
@@ -220,20 +218,21 @@ export class CompaniesService {
         description: updateCompanyDto.description ?? existing.description,
         website_url: updateCompanyDto.website_url ?? existing.website_url,
         linkedin_url: updateCompanyDto.linkedin_url ?? existing.linkedin_url,
-        logo_url: updateCompanyDto.logo_url ?? existing.logo_url,
-        headquarters: updateCompanyDto.headquarters ?? existing.headquarters,
         industry: updateCompanyDto.industry ?? existing.industry,
+      },
+      include: {
+        locations: true,
       },
     });
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.UPDATE, updated);
   }
 
-  private async findApprovedCompanyOrThrow(id: string): Promise<Company> {
-    const company = await this.prismaService.company.findFirst({
-      where: {
-        id,
-        status: CompanyStatus.APPROVED,
+  private async findCompanyOrThrow(id: string): Promise<Company> {
+    const company = await this.prismaService.company.findUnique({
+      where: { id },
+      include: {
+        locations: true,
       },
     });
 
@@ -244,15 +243,19 @@ export class CompaniesService {
     return company;
   }
 
-  private async findCompanyOrThrow(id: string): Promise<Company> {
-    const company = await this.prismaService.company.findUnique({
+  private async saveLogoForCompany(
+    id: string,
+    file: Express.Multer.File,
+  ): Promise<Company> {
+    const publicId = `emplorer/companies/${id}/logo`;
+    const result = await this.cloudinaryService.uploadImage(file, publicId);
+
+    return this.prismaService.company.update({
       where: { id },
+      data: { logo_url: result.secure_url },
+      include: {
+        locations: true,
+      },
     });
-
-    if (!company) {
-      throw new NotFoundException(COMPANIES_RESPONSE_MESSAGES.companyNotFound);
-    }
-
-    return company;
   }
 }

@@ -27,8 +27,6 @@ export type AggregateCompany_location = {
 export type Company_locationMinAggregateOutputType = {
   id: string | null;
   company_id: string | null;
-  city: string | null;
-  state: string | null;
   country: string | null;
   address: string | null;
   is_headquarters: boolean | null;
@@ -39,8 +37,6 @@ export type Company_locationMinAggregateOutputType = {
 export type Company_locationMaxAggregateOutputType = {
   id: string | null;
   company_id: string | null;
-  city: string | null;
-  state: string | null;
   country: string | null;
   address: string | null;
   is_headquarters: boolean | null;
@@ -51,8 +47,6 @@ export type Company_locationMaxAggregateOutputType = {
 export type Company_locationCountAggregateOutputType = {
   id: number;
   company_id: number;
-  city: number;
-  state: number;
   country: number;
   address: number;
   is_headquarters: number;
@@ -64,8 +58,6 @@ export type Company_locationCountAggregateOutputType = {
 export type Company_locationMinAggregateInputType = {
   id?: true;
   company_id?: true;
-  city?: true;
-  state?: true;
   country?: true;
   address?: true;
   is_headquarters?: true;
@@ -76,8 +68,6 @@ export type Company_locationMinAggregateInputType = {
 export type Company_locationMaxAggregateInputType = {
   id?: true;
   company_id?: true;
-  city?: true;
-  state?: true;
   country?: true;
   address?: true;
   is_headquarters?: true;
@@ -88,8 +78,6 @@ export type Company_locationMaxAggregateInputType = {
 export type Company_locationCountAggregateInputType = {
   id?: true;
   company_id?: true;
-  city?: true;
-  state?: true;
   country?: true;
   address?: true;
   is_headquarters?: true;
@@ -184,9 +172,7 @@ export type company_locationGroupByArgs<
 export type Company_locationGroupByOutputType = {
   id: string;
   company_id: string;
-  city: string;
-  state: string | null;
-  country: string;
+  country: string | null;
   address: string | null;
   is_headquarters: boolean;
   created_at: Date;
@@ -217,9 +203,7 @@ export type company_locationWhereInput = {
   NOT?: Prisma.company_locationWhereInput | Prisma.company_locationWhereInput[];
   id?: Prisma.StringFilter<'company_location'> | string;
   company_id?: Prisma.StringFilter<'company_location'> | string;
-  city?: Prisma.StringFilter<'company_location'> | string;
-  state?: Prisma.StringNullableFilter<'company_location'> | string | null;
-  country?: Prisma.StringFilter<'company_location'> | string;
+  country?: Prisma.StringNullableFilter<'company_location'> | string | null;
   address?: Prisma.StringNullableFilter<'company_location'> | string | null;
   is_headquarters?: Prisma.BoolFilter<'company_location'> | boolean;
   created_at?: Prisma.DateTimeFilter<'company_location'> | Date | string;
@@ -234,9 +218,7 @@ export type company_locationWhereInput = {
 export type company_locationOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrderInput | Prisma.SortOrder;
-  country?: Prisma.SortOrder;
+  country?: Prisma.SortOrderInput | Prisma.SortOrder;
   address?: Prisma.SortOrderInput | Prisma.SortOrder;
   is_headquarters?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -256,9 +238,7 @@ export type company_locationWhereUniqueInput = Prisma.AtLeast<
       | Prisma.company_locationWhereInput
       | Prisma.company_locationWhereInput[];
     company_id?: Prisma.StringFilter<'company_location'> | string;
-    city?: Prisma.StringFilter<'company_location'> | string;
-    state?: Prisma.StringNullableFilter<'company_location'> | string | null;
-    country?: Prisma.StringFilter<'company_location'> | string;
+    country?: Prisma.StringNullableFilter<'company_location'> | string | null;
     address?: Prisma.StringNullableFilter<'company_location'> | string | null;
     is_headquarters?: Prisma.BoolFilter<'company_location'> | boolean;
     created_at?: Prisma.DateTimeFilter<'company_location'> | Date | string;
@@ -275,9 +255,7 @@ export type company_locationWhereUniqueInput = Prisma.AtLeast<
 export type company_locationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrderInput | Prisma.SortOrder;
-  country?: Prisma.SortOrder;
+  country?: Prisma.SortOrderInput | Prisma.SortOrder;
   address?: Prisma.SortOrderInput | Prisma.SortOrder;
   is_headquarters?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -297,12 +275,10 @@ export type company_locationScalarWhereWithAggregatesInput = {
     | Prisma.company_locationScalarWhereWithAggregatesInput[];
   id?: Prisma.StringWithAggregatesFilter<'company_location'> | string;
   company_id?: Prisma.StringWithAggregatesFilter<'company_location'> | string;
-  city?: Prisma.StringWithAggregatesFilter<'company_location'> | string;
-  state?:
+  country?:
     | Prisma.StringNullableWithAggregatesFilter<'company_location'>
     | string
     | null;
-  country?: Prisma.StringWithAggregatesFilter<'company_location'> | string;
   address?:
     | Prisma.StringNullableWithAggregatesFilter<'company_location'>
     | string
@@ -322,9 +298,7 @@ export type company_locationScalarWhereWithAggregatesInput = {
 
 export type company_locationCreateInput = {
   id?: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -336,9 +310,7 @@ export type company_locationCreateInput = {
 export type company_locationUncheckedCreateInput = {
   id?: string;
   company_id: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -348,9 +320,7 @@ export type company_locationUncheckedCreateInput = {
 
 export type company_locationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -362,9 +332,7 @@ export type company_locationUpdateInput = {
 export type company_locationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -375,9 +343,7 @@ export type company_locationUncheckedUpdateInput = {
 export type company_locationCreateManyInput = {
   id?: string;
   company_id: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -386,9 +352,7 @@ export type company_locationCreateManyInput = {
 
 export type company_locationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -398,9 +362,7 @@ export type company_locationUpdateManyMutationInput = {
 export type company_locationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -420,8 +382,6 @@ export type company_locationOrderByRelationAggregateInput = {
 export type company_locationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
   country?: Prisma.SortOrder;
   address?: Prisma.SortOrder;
   is_headquarters?: Prisma.SortOrder;
@@ -432,8 +392,6 @@ export type company_locationCountOrderByAggregateInput = {
 export type company_locationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
   country?: Prisma.SortOrder;
   address?: Prisma.SortOrder;
   is_headquarters?: Prisma.SortOrder;
@@ -444,8 +402,6 @@ export type company_locationMaxOrderByAggregateInput = {
 export type company_locationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   company_id?: Prisma.SortOrder;
-  city?: Prisma.SortOrder;
-  state?: Prisma.SortOrder;
   country?: Prisma.SortOrder;
   address?: Prisma.SortOrder;
   is_headquarters?: Prisma.SortOrder;
@@ -602,9 +558,7 @@ export type company_locationUpdateOneWithoutReviewsNestedInput = {
 
 export type company_locationCreateWithoutCompanyInput = {
   id?: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -614,9 +568,7 @@ export type company_locationCreateWithoutCompanyInput = {
 
 export type company_locationUncheckedCreateWithoutCompanyInput = {
   id?: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -677,9 +629,7 @@ export type company_locationScalarWhereInput = {
     | Prisma.company_locationScalarWhereInput[];
   id?: Prisma.StringFilter<'company_location'> | string;
   company_id?: Prisma.StringFilter<'company_location'> | string;
-  city?: Prisma.StringFilter<'company_location'> | string;
-  state?: Prisma.StringNullableFilter<'company_location'> | string | null;
-  country?: Prisma.StringFilter<'company_location'> | string;
+  country?: Prisma.StringNullableFilter<'company_location'> | string | null;
   address?: Prisma.StringNullableFilter<'company_location'> | string | null;
   is_headquarters?: Prisma.BoolFilter<'company_location'> | boolean;
   created_at?: Prisma.DateTimeFilter<'company_location'> | Date | string;
@@ -688,9 +638,7 @@ export type company_locationScalarWhereInput = {
 
 export type company_locationCreateWithoutReviewsInput = {
   id?: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -701,9 +649,7 @@ export type company_locationCreateWithoutReviewsInput = {
 export type company_locationUncheckedCreateWithoutReviewsInput = {
   id?: string;
   company_id: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -740,9 +686,7 @@ export type company_locationUpdateToOneWithWhereWithoutReviewsInput = {
 
 export type company_locationUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -753,9 +697,7 @@ export type company_locationUpdateWithoutReviewsInput = {
 export type company_locationUncheckedUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   company_id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -764,9 +706,7 @@ export type company_locationUncheckedUpdateWithoutReviewsInput = {
 
 export type company_locationCreateManyCompanyInput = {
   id?: string;
-  city: string;
-  state?: string | null;
-  country: string;
+  country?: string | null;
   address?: string | null;
   is_headquarters?: boolean;
   created_at?: Date | string;
@@ -775,9 +715,7 @@ export type company_locationCreateManyCompanyInput = {
 
 export type company_locationUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -787,9 +725,7 @@ export type company_locationUpdateWithoutCompanyInput = {
 
 export type company_locationUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -799,9 +735,7 @@ export type company_locationUncheckedUpdateWithoutCompanyInput = {
 
 export type company_locationUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
-  city?: Prisma.StringFieldUpdateOperationsInput | string;
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  country?: Prisma.StringFieldUpdateOperationsInput | string;
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   is_headquarters?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -853,8 +787,6 @@ export type company_locationSelect<
   {
     id?: boolean;
     company_id?: boolean;
-    city?: boolean;
-    state?: boolean;
     country?: boolean;
     address?: boolean;
     is_headquarters?: boolean;
@@ -876,8 +808,6 @@ export type company_locationSelectCreateManyAndReturn<
   {
     id?: boolean;
     company_id?: boolean;
-    city?: boolean;
-    state?: boolean;
     country?: boolean;
     address?: boolean;
     is_headquarters?: boolean;
@@ -895,8 +825,6 @@ export type company_locationSelectUpdateManyAndReturn<
   {
     id?: boolean;
     company_id?: boolean;
-    city?: boolean;
-    state?: boolean;
     country?: boolean;
     address?: boolean;
     is_headquarters?: boolean;
@@ -910,8 +838,6 @@ export type company_locationSelectUpdateManyAndReturn<
 export type company_locationSelectScalar = {
   id?: boolean;
   company_id?: boolean;
-  city?: boolean;
-  state?: boolean;
   country?: boolean;
   address?: boolean;
   is_headquarters?: boolean;
@@ -925,8 +851,6 @@ export type company_locationOmit<
 > = runtime.Types.Extensions.GetOmit<
   | 'id'
   | 'company_id'
-  | 'city'
-  | 'state'
   | 'country'
   | 'address'
   | 'is_headquarters'
@@ -968,9 +892,7 @@ export type $company_locationPayload<
     {
       id: string;
       company_id: string;
-      city: string;
-      state: string | null;
-      country: string;
+      country: string | null;
       address: string | null;
       is_headquarters: boolean;
       created_at: Date;
@@ -1616,8 +1538,6 @@ export interface Prisma__company_locationClient<
 export interface company_locationFieldRefs {
   readonly id: Prisma.FieldRef<'company_location', 'String'>;
   readonly company_id: Prisma.FieldRef<'company_location', 'String'>;
-  readonly city: Prisma.FieldRef<'company_location', 'String'>;
-  readonly state: Prisma.FieldRef<'company_location', 'String'>;
   readonly country: Prisma.FieldRef<'company_location', 'String'>;
   readonly address: Prisma.FieldRef<'company_location', 'String'>;
   readonly is_headquarters: Prisma.FieldRef<'company_location', 'Boolean'>;

@@ -1,0 +1,107 @@
+info:
+  name: Create Location
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: '{{local}}/companies/:companyId/locations'
+  params:
+    - name: companyId
+      value: '{{companyId}}'
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "country": "Nigeria",
+        "address": "Awka, Anambra"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: ok
+    request:
+      url: '{{local}}/companies/:companyId/locations'
+      method: POST
+      params:
+        - name: companyId
+          value: '{{companyId}}'
+          type: path
+      body:
+        type: json
+        data: |-
+          {
+            "country": "Nigeria",
+            "address": "Awka, Anambra"
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: content-security-policy
+          value: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+        - name: cross-origin-opener-policy
+          value: same-origin
+        - name: cross-origin-resource-policy
+          value: same-origin
+        - name: origin-agent-cluster
+          value: ?1
+        - name: referrer-policy
+          value: no-referrer
+        - name: strict-transport-security
+          value: max-age=31536000; includeSubDomains
+        - name: x-content-type-options
+          value: nosniff
+        - name: x-dns-prefetch-control
+          value: off
+        - name: x-download-options
+          value: noopen
+        - name: x-frame-options
+          value: SAMEORIGIN
+        - name: x-permitted-cross-domain-policies
+          value: none
+        - name: x-xss-protection
+          value: '0'
+        - name: access-control-allow-origin
+          value: '*'
+        - name: x-ratelimit-limit
+          value: '10'
+        - name: x-ratelimit-remaining
+          value: '8'
+        - name: x-ratelimit-reset
+          value: '45'
+        - name: content-type
+          value: application/json; charset=utf-8
+        - name: content-length
+          value: '296'
+        - name: etag
+          value: W/"128-YtLQzDhpoplreFy4mXp4PlpOCO8"
+        - name: date
+          value: Tue, 21 Jul 2026 20:27:18 GMT
+        - name: connection
+          value: keep-alive
+        - name: keep-alive
+          value: timeout=5
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Company Location created successfully.",
+            "code": 201,
+            "data": {
+              "id": "cmrv3ubqh0000j89kf3sx2e90",
+              "company_id": "cmrv051bb0000zp9kpjmwtjun",
+              "country": "Nigeria",
+              "address": "Awka, Anambra",
+              "is_headquarters": false,
+              "created_at": "2026-07-21T20:27:18.377Z",
+              "updated_at": "2026-07-21T20:27:18.377Z"
+            }
+          }

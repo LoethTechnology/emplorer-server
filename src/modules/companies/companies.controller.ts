@@ -23,7 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from '../auth/guards';
+import { EmailVerifiedGuard, JwtAuthGuard } from '../auth/guards';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { User } from '../auth/decorators/user.decorator';
 import { CompaniesService } from './companies.service';
@@ -43,20 +43,48 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  @UseGuards(EmailVerifiedGuard)
   @ApiBearerAuth()
+  @UseInterceptors(FileInterceptor('logo'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['name', 'address'],
+      properties: {
+        name: { type: 'string', example: 'Acme Inc.' },
+        description: { type: 'string' },
+        website_url: { type: 'string', example: 'https://acme.com' },
+        linkedin_url: {
+          type: 'string',
+          example: 'https://linkedin.com/company/acme',
+        },
+        address: { type: 'string', example: '14 Admiralty Way, Lekki' },
+        country: { type: 'string', example: 'Nigeria' },
+        industry: { type: 'string', example: 'Technology' },
+        logo: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   @ApiOperation({ summary: 'Create a new company' })
   @ApiResponse({ status: 201, description: 'Company created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({
-    status: 409,
-    description: 'A company with this domain already exists',
-  })
   create(
     @User() user: AuthenticatedRequest['user'],
     @Body() createCompanyDto: CreateCompanyDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /^image\/(jpeg|png|webp)$/ }),
+        ],
+      }),
+    )
+    file?: Express.Multer.File,
   ): Promise<CompanyResponse> {
-    return this.companiesService.create(user, createCompanyDto);
+    return this.companiesService.create(user, createCompanyDto, file);
   }
 
   @Get()
@@ -85,15 +113,6 @@ export class CompaniesController {
       throw new BadRequestException('Query parameter "q" is required.');
     }
     return this.companiesService.typeahead(q);
-  }
-
-  @Get('domain/:domain')
-  @SkipAuth()
-  @ApiOperation({ summary: 'Find an approved company by domain' })
-  @ApiResponse({ status: 200, description: 'Return the matching company' })
-  @ApiResponse({ status: 404, description: 'Company not found' })
-  findByDomain(@Param('domain') domain: string): Promise<CompanyResponse> {
-    return this.companiesService.findByDomain(domain);
   }
 
   @Get(':id')

@@ -1,0 +1,18 @@
+info:
+  name: Remove Vote
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: '{{local}}/reviews/{{reviewId}}/comments/{{commentId}}/votes'
+  body:
+    type: json
+    data: ''
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

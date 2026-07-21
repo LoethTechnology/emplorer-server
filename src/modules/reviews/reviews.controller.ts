@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,15 +19,18 @@ import { ReviewsService } from './reviews.service';
 import { CreateReviewDto, UpdateReviewDto } from './dto';
 import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { User } from '../auth/decorators/user.decorator';
+import { EmailVerifiedGuard, JwtAuthGuard } from '../auth/guards';
 import type { AuthenticatedRequest } from '@modules/user/user.types';
 import { BaseQueryDto } from '@shared/dtos';
 
 @ApiTags('reviews')
-@Controller('reviews')
+@Controller('companies/:companyId/reviews')
+@UseGuards(JwtAuthGuard)
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
+  @UseGuards(EmailVerifiedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a review for a company' })
   @ApiResponse({ status: 201, description: 'Review created successfully' })

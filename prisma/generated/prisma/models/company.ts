@@ -30,10 +30,8 @@ export type CompanyMinAggregateOutputType = {
   name: string | null;
   description: string | null;
   website_url: string | null;
-  domain: string | null;
   linkedin_url: string | null;
   logo_url: string | null;
-  headquarters: string | null;
   industry: string | null;
   status: $Enums.CompanyStatus | null;
   created_at: Date | null;
@@ -46,10 +44,8 @@ export type CompanyMaxAggregateOutputType = {
   name: string | null;
   description: string | null;
   website_url: string | null;
-  domain: string | null;
   linkedin_url: string | null;
   logo_url: string | null;
-  headquarters: string | null;
   industry: string | null;
   status: $Enums.CompanyStatus | null;
   created_at: Date | null;
@@ -62,10 +58,8 @@ export type CompanyCountAggregateOutputType = {
   name: number;
   description: number;
   website_url: number;
-  domain: number;
   linkedin_url: number;
   logo_url: number;
-  headquarters: number;
   industry: number;
   status: number;
   created_at: number;
@@ -79,10 +73,8 @@ export type CompanyMinAggregateInputType = {
   name?: true;
   description?: true;
   website_url?: true;
-  domain?: true;
   linkedin_url?: true;
   logo_url?: true;
-  headquarters?: true;
   industry?: true;
   status?: true;
   created_at?: true;
@@ -95,10 +87,8 @@ export type CompanyMaxAggregateInputType = {
   name?: true;
   description?: true;
   website_url?: true;
-  domain?: true;
   linkedin_url?: true;
   logo_url?: true;
-  headquarters?: true;
   industry?: true;
   status?: true;
   created_at?: true;
@@ -111,10 +101,8 @@ export type CompanyCountAggregateInputType = {
   name?: true;
   description?: true;
   website_url?: true;
-  domain?: true;
   linkedin_url?: true;
   logo_url?: true;
-  headquarters?: true;
   industry?: true;
   status?: true;
   created_at?: true;
@@ -207,10 +195,8 @@ export type CompanyGroupByOutputType = {
   name: string;
   description: string | null;
   website_url: string | null;
-  domain: string | null;
   linkedin_url: string | null;
   logo_url: string | null;
-  headquarters: string | null;
   industry: string | null;
   status: $Enums.CompanyStatus;
   created_at: Date;
@@ -242,10 +228,8 @@ export type companyWhereInput = {
   name?: Prisma.StringFilter<'company'> | string;
   description?: Prisma.StringNullableFilter<'company'> | string | null;
   website_url?: Prisma.StringNullableFilter<'company'> | string | null;
-  domain?: Prisma.StringNullableFilter<'company'> | string | null;
   linkedin_url?: Prisma.StringNullableFilter<'company'> | string | null;
   logo_url?: Prisma.StringNullableFilter<'company'> | string | null;
-  headquarters?: Prisma.StringNullableFilter<'company'> | string | null;
   industry?: Prisma.StringNullableFilter<'company'> | string | null;
   status?: Prisma.EnumCompanyStatusFilter<'company'> | $Enums.CompanyStatus;
   created_at?: Prisma.DateTimeFilter<'company'> | Date | string;
@@ -261,10 +245,8 @@ export type companyOrderByWithRelationInput = {
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
   website_url?: Prisma.SortOrderInput | Prisma.SortOrder;
-  domain?: Prisma.SortOrderInput | Prisma.SortOrder;
   linkedin_url?: Prisma.SortOrderInput | Prisma.SortOrder;
   logo_url?: Prisma.SortOrderInput | Prisma.SortOrder;
-  headquarters?: Prisma.SortOrderInput | Prisma.SortOrder;
   industry?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -277,7 +259,6 @@ export type companyOrderByWithRelationInput = {
 export type companyWhereUniqueInput = Prisma.AtLeast<
   {
     id?: string;
-    domain?: string;
     AND?: Prisma.companyWhereInput | Prisma.companyWhereInput[];
     OR?: Prisma.companyWhereInput[];
     NOT?: Prisma.companyWhereInput | Prisma.companyWhereInput[];
@@ -287,7 +268,6 @@ export type companyWhereUniqueInput = Prisma.AtLeast<
     website_url?: Prisma.StringNullableFilter<'company'> | string | null;
     linkedin_url?: Prisma.StringNullableFilter<'company'> | string | null;
     logo_url?: Prisma.StringNullableFilter<'company'> | string | null;
-    headquarters?: Prisma.StringNullableFilter<'company'> | string | null;
     industry?: Prisma.StringNullableFilter<'company'> | string | null;
     status?: Prisma.EnumCompanyStatusFilter<'company'> | $Enums.CompanyStatus;
     created_at?: Prisma.DateTimeFilter<'company'> | Date | string;
@@ -299,7 +279,7 @@ export type companyWhereUniqueInput = Prisma.AtLeast<
     reviews?: Prisma.Company_reviewListRelationFilter;
     locations?: Prisma.Company_locationListRelationFilter;
   },
-  'id' | 'domain'
+  'id'
 >;
 
 export type companyOrderByWithAggregationInput = {
@@ -308,10 +288,8 @@ export type companyOrderByWithAggregationInput = {
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
   website_url?: Prisma.SortOrderInput | Prisma.SortOrder;
-  domain?: Prisma.SortOrderInput | Prisma.SortOrder;
   linkedin_url?: Prisma.SortOrderInput | Prisma.SortOrder;
   logo_url?: Prisma.SortOrderInput | Prisma.SortOrder;
-  headquarters?: Prisma.SortOrderInput | Prisma.SortOrder;
   industry?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -340,16 +318,11 @@ export type companyScalarWhereWithAggregatesInput = {
     | Prisma.StringNullableWithAggregatesFilter<'company'>
     | string
     | null;
-  domain?: Prisma.StringNullableWithAggregatesFilter<'company'> | string | null;
   linkedin_url?:
     | Prisma.StringNullableWithAggregatesFilter<'company'>
     | string
     | null;
   logo_url?:
-    | Prisma.StringNullableWithAggregatesFilter<'company'>
-    | string
-    | null;
-  headquarters?:
     | Prisma.StringNullableWithAggregatesFilter<'company'>
     | string
     | null;
@@ -369,10 +342,8 @@ export type companyCreateInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -388,10 +359,8 @@ export type companyUncheckedCreateInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -405,16 +374,11 @@ export type companyUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -432,16 +396,11 @@ export type companyUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -458,10 +417,8 @@ export type companyCreateManyInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -473,16 +430,11 @@ export type companyUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -497,16 +449,11 @@ export type companyUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -531,10 +478,8 @@ export type companyCountOrderByAggregateInput = {
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   website_url?: Prisma.SortOrder;
-  domain?: Prisma.SortOrder;
   linkedin_url?: Prisma.SortOrder;
   logo_url?: Prisma.SortOrder;
-  headquarters?: Prisma.SortOrder;
   industry?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -547,10 +492,8 @@ export type companyMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   website_url?: Prisma.SortOrder;
-  domain?: Prisma.SortOrder;
   linkedin_url?: Prisma.SortOrder;
   logo_url?: Prisma.SortOrder;
-  headquarters?: Prisma.SortOrder;
   industry?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -563,10 +506,8 @@ export type companyMinOrderByAggregateInput = {
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   website_url?: Prisma.SortOrder;
-  domain?: Prisma.SortOrder;
   linkedin_url?: Prisma.SortOrder;
   logo_url?: Prisma.SortOrder;
-  headquarters?: Prisma.SortOrder;
   industry?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
   created_at?: Prisma.SortOrder;
@@ -733,10 +674,8 @@ export type companyCreateWithoutCreatorInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -750,10 +689,8 @@ export type companyUncheckedCreateWithoutCreatorInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -814,10 +751,8 @@ export type companyScalarWhereInput = {
   name?: Prisma.StringFilter<'company'> | string;
   description?: Prisma.StringNullableFilter<'company'> | string | null;
   website_url?: Prisma.StringNullableFilter<'company'> | string | null;
-  domain?: Prisma.StringNullableFilter<'company'> | string | null;
   linkedin_url?: Prisma.StringNullableFilter<'company'> | string | null;
   logo_url?: Prisma.StringNullableFilter<'company'> | string | null;
-  headquarters?: Prisma.StringNullableFilter<'company'> | string | null;
   industry?: Prisma.StringNullableFilter<'company'> | string | null;
   status?: Prisma.EnumCompanyStatusFilter<'company'> | $Enums.CompanyStatus;
   created_at?: Prisma.DateTimeFilter<'company'> | Date | string;
@@ -829,10 +764,8 @@ export type companyCreateWithoutLocationsInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -847,10 +780,8 @@ export type companyUncheckedCreateWithoutLocationsInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -891,16 +822,11 @@ export type companyUpdateWithoutLocationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -917,16 +843,11 @@ export type companyUncheckedUpdateWithoutLocationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -941,10 +862,8 @@ export type companyCreateWithoutReviewsInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -959,10 +878,8 @@ export type companyUncheckedCreateWithoutReviewsInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -1003,16 +920,11 @@ export type companyUpdateWithoutReviewsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -1029,16 +941,11 @@ export type companyUncheckedUpdateWithoutReviewsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -1053,10 +960,8 @@ export type companyCreateManyCreatorInput = {
   name: string;
   description?: string | null;
   website_url?: string | null;
-  domain?: string | null;
   linkedin_url?: string | null;
   logo_url?: string | null;
-  headquarters?: string | null;
   industry?: string | null;
   status?: $Enums.CompanyStatus;
   created_at?: Date | string;
@@ -1068,16 +973,11 @@ export type companyUpdateWithoutCreatorInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -1093,16 +993,11 @@ export type companyUncheckedUpdateWithoutCreatorInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -1118,16 +1013,11 @@ export type companyUncheckedUpdateManyWithoutCreatorInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   website_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  domain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   linkedin_url?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
     | null;
   logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  headquarters?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?:
     | Prisma.EnumCompanyStatusFieldUpdateOperationsInput
@@ -1196,10 +1086,8 @@ export type companySelect<
     name?: boolean;
     description?: boolean;
     website_url?: boolean;
-    domain?: boolean;
     linkedin_url?: boolean;
     logo_url?: boolean;
-    headquarters?: boolean;
     industry?: boolean;
     status?: boolean;
     created_at?: boolean;
@@ -1222,10 +1110,8 @@ export type companySelectCreateManyAndReturn<
     name?: boolean;
     description?: boolean;
     website_url?: boolean;
-    domain?: boolean;
     linkedin_url?: boolean;
     logo_url?: boolean;
-    headquarters?: boolean;
     industry?: boolean;
     status?: boolean;
     created_at?: boolean;
@@ -1245,10 +1131,8 @@ export type companySelectUpdateManyAndReturn<
     name?: boolean;
     description?: boolean;
     website_url?: boolean;
-    domain?: boolean;
     linkedin_url?: boolean;
     logo_url?: boolean;
-    headquarters?: boolean;
     industry?: boolean;
     status?: boolean;
     created_at?: boolean;
@@ -1264,10 +1148,8 @@ export type companySelectScalar = {
   name?: boolean;
   description?: boolean;
   website_url?: boolean;
-  domain?: boolean;
   linkedin_url?: boolean;
   logo_url?: boolean;
-  headquarters?: boolean;
   industry?: boolean;
   status?: boolean;
   created_at?: boolean;
@@ -1283,10 +1165,8 @@ export type companyOmit<
   | 'name'
   | 'description'
   | 'website_url'
-  | 'domain'
   | 'linkedin_url'
   | 'logo_url'
-  | 'headquarters'
   | 'industry'
   | 'status'
   | 'created_at'
@@ -1332,10 +1212,8 @@ export type $companyPayload<
       name: string;
       description: string | null;
       website_url: string | null;
-      domain: string | null;
       linkedin_url: string | null;
       logo_url: string | null;
-      headquarters: string | null;
       industry: string | null;
       status: $Enums.CompanyStatus;
       created_at: Date;
@@ -1973,10 +1851,8 @@ export interface companyFieldRefs {
   readonly name: Prisma.FieldRef<'company', 'String'>;
   readonly description: Prisma.FieldRef<'company', 'String'>;
   readonly website_url: Prisma.FieldRef<'company', 'String'>;
-  readonly domain: Prisma.FieldRef<'company', 'String'>;
   readonly linkedin_url: Prisma.FieldRef<'company', 'String'>;
   readonly logo_url: Prisma.FieldRef<'company', 'String'>;
-  readonly headquarters: Prisma.FieldRef<'company', 'String'>;
   readonly industry: Prisma.FieldRef<'company', 'String'>;
   readonly status: Prisma.FieldRef<'company', 'CompanyStatus'>;
   readonly created_at: Prisma.FieldRef<'company', 'DateTime'>;
