@@ -19,7 +19,6 @@ const mockUserService = {
   findMe: jest.fn(),
   updateMe: jest.fn(),
   updatePassword: jest.fn(),
-  createMyReview: jest.fn(),
   findMyReviews: jest.fn(),
   findMyReview: jest.fn(),
   updateMyReview: jest.fn(),
@@ -96,23 +95,6 @@ describe('UserController', () => {
     expect(mockUserService.updatePassword).toHaveBeenCalledWith(
       user,
       updatePasswordDto,
-    );
-  });
-
-  it('should delegate createMyReview to UserService with the authenticated user', async () => {
-    const user = mockAuthenticatedUser('user-4');
-    const createReviewDto = {
-      company_id: 'company-1',
-      body: 'A strong team with clear expectations.',
-      overall_rating: 5,
-      status: ReviewStatus.DRAFT,
-    };
-
-    await controller.createMyReview(user, createReviewDto);
-
-    expect(mockUserService.createMyReview).toHaveBeenCalledWith(
-      user,
-      createReviewDto,
     );
   });
 

@@ -16,3 +16,116 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+examples:
+  - name: ok
+    request:
+      url: '{{local}}/public/companies/{{companyId}}/reviews?page=1&limit=10&sort=desc'
+      method: GET
+      body:
+        type: json
+        data: ''
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: content-security-policy
+          value: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+        - name: cross-origin-opener-policy
+          value: same-origin
+        - name: cross-origin-resource-policy
+          value: same-origin
+        - name: origin-agent-cluster
+          value: ?1
+        - name: referrer-policy
+          value: no-referrer
+        - name: strict-transport-security
+          value: max-age=31536000; includeSubDomains
+        - name: x-content-type-options
+          value: nosniff
+        - name: x-dns-prefetch-control
+          value: off
+        - name: x-download-options
+          value: noopen
+        - name: x-frame-options
+          value: SAMEORIGIN
+        - name: x-permitted-cross-domain-policies
+          value: none
+        - name: x-xss-protection
+          value: '0'
+        - name: access-control-allow-origin
+          value: '*'
+        - name: x-ratelimit-limit
+          value: '10'
+        - name: x-ratelimit-remaining
+          value: '9'
+        - name: x-ratelimit-reset
+          value: '60'
+        - name: content-type
+          value: application/json; charset=utf-8
+        - name: content-length
+          value: '1424'
+        - name: etag
+          value: W/"590-XjWInJK0tU338oAXnkpqK6H8x4U"
+        - name: date
+          value: Tue, 21 Jul 2026 21:01:54 GMT
+        - name: connection
+          value: keep-alive
+        - name: keep-alive
+          value: timeout=5
+      body:
+        type: json
+        data: |-
+          {
+            "data": [
+              {
+                "id": "cmrv4s9hk0003h09kfbtko3og",
+                "company_id": "cmrv051bb0000zp9kpjmwtjun",
+                "author_id": "cmrtq98mk00001k9kjmuc1a3i",
+                "location_id": null,
+                "body": "Strong engineering culture with supportive mentorship.",
+                "overall_rating": 4,
+                "employment_context": "Former full-time backend engineer",
+                "would_recommend": true,
+                "status": "PUBLISHED",
+                "published_at": "2026-07-21T20:53:41.767Z",
+                "created_at": "2026-07-21T20:53:41.768Z",
+                "updated_at": "2026-07-21T20:53:41.768Z"
+              },
+              {
+                "id": "cmrv4fqls0002h09k816969uh",
+                "company_id": "cmrv051bb0000zp9kpjmwtjun",
+                "author_id": "cmrtq98mk00001k9kjmuc1a3i",
+                "location_id": "cmrv051cz0001zp9kn30xbjwx",
+                "body": "Awesome company with a great team culture",
+                "overall_rating": 5,
+                "employment_context": "Contractor",
+                "would_recommend": true,
+                "status": "PUBLISHED",
+                "published_at": "2026-07-21T20:43:57.423Z",
+                "created_at": "2026-07-21T20:43:57.424Z",
+                "updated_at": "2026-07-21T20:53:13.600Z"
+              },
+              {
+                "id": "cmrv4er6v0001h09kax8b8b75",
+                "company_id": "cmrv051bb0000zp9kpjmwtjun",
+                "author_id": "cmrtq98mk00001k9kjmuc1a3i",
+                "location_id": "cmrv051cz0001zp9kn30xbjwx",
+                "body": "Strong engineering culture with supportive managers.",
+                "overall_rating": 4,
+                "employment_context": "Full-time",
+                "would_recommend": true,
+                "status": "PUBLISHED",
+                "published_at": "2026-07-21T20:43:11.524Z",
+                "created_at": "2026-07-21T20:43:11.527Z",
+                "updated_at": "2026-07-21T20:43:11.527Z"
+              }
+            ],
+            "totalCount": 3,
+            "limit": 10,
+            "currentCount": 3,
+            "page": 1,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPrevPage": false
+          }

@@ -1,7 +1,7 @@
 info:
   name: Delete My Review
   type: http
-  seq: 10
+  seq: 9
 
 http:
   method: DELETE

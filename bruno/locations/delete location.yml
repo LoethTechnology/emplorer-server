@@ -1,11 +1,18 @@
 info:
   name: Delete Location
   type: http
-  seq: 5
+  seq: 4
 
 http:
   method: DELETE
-  url: '{{local}}/companies/{{companyId}}/locations/{{locationId}}'
+  url: '{{local}}/companies/:companyId/locations/:locationId'
+  params:
+    - name: locationId
+      value: '{{locationId}}'
+      type: path
+    - name: companyId
+      value: '{{companyId}}'
+      type: path
   body:
     type: json
     data: ''

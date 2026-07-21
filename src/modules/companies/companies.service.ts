@@ -41,14 +41,22 @@ export class CompaniesService {
     createCompanyDto: CreateCompanyDto,
     file?: Express.Multer.File,
   ): Promise<CompanyResponse> {
-    const created = await this.prismaService.company.create({
+    let logo_url: string | null = null;
+
+    if (file) {
+      const publicId = `emplorer/companies/${user.sub}/logo`;
+      const result = await this.cloudinaryService.uploadImage(file, publicId);
+      logo_url = result.secure_url;
+    }
+
+    const company = await this.prismaService.company.create({
       data: {
         creator_id: user.sub,
         name: createCompanyDto.name,
         description: createCompanyDto.description ?? null,
         website_url: createCompanyDto.website_url ?? null,
         linkedin_url: createCompanyDto.linkedin_url ?? null,
-        logo_url: null,
+        logo_url,
         industry: createCompanyDto.industry ?? null,
         status: CompanyStatus.APPROVED,
         locations: {
@@ -59,11 +67,10 @@ export class CompaniesService {
           },
         },
       },
+      include: {
+        locations: true,
+      },
     });
-
-    const company = file
-      ? await this.saveLogoForCompany(created.id, file)
-      : created;
 
     this.prismaService.user
       .findUnique({
@@ -135,6 +142,9 @@ export class CompaniesService {
         ...GetPageOptions(Number(page), Number(limit)),
         where,
         orderBy: { created_at: sort || 'desc' },
+        include: {
+          locations: true,
+        },
       }),
     ]);
 
@@ -148,7 +158,19 @@ export class CompaniesService {
   }
 
   async findOne(id: string): Promise<CompanyResponse> {
-    const company = await this.findApprovedCompanyOrThrow(id);
+    const company = await this.prismaService.company.findFirst({
+      where: {
+        id,
+        status: CompanyStatus.APPROVED,
+      },
+      include: {
+        locations: true,
+      },
+    });
+
+    if (!company) {
+      throw new NotFoundException(COMPANIES_RESPONSE_MESSAGES.companyNotFound);
+    }
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.READ, company);
   }
@@ -198,29 +220,20 @@ export class CompaniesService {
         linkedin_url: updateCompanyDto.linkedin_url ?? existing.linkedin_url,
         industry: updateCompanyDto.industry ?? existing.industry,
       },
+      include: {
+        locations: true,
+      },
     });
 
     return CrudResponse(DbModels.COMPANY, CrudEnums.UPDATE, updated);
   }
 
-  private async findApprovedCompanyOrThrow(id: string): Promise<Company> {
-    const company = await this.prismaService.company.findFirst({
-      where: {
-        id,
-        status: CompanyStatus.APPROVED,
-      },
-    });
-
-    if (!company) {
-      throw new NotFoundException(COMPANIES_RESPONSE_MESSAGES.companyNotFound);
-    }
-
-    return company;
-  }
-
   private async findCompanyOrThrow(id: string): Promise<Company> {
     const company = await this.prismaService.company.findUnique({
       where: { id },
+      include: {
+        locations: true,
+      },
     });
 
     if (!company) {
@@ -240,6 +253,9 @@ export class CompaniesService {
     return this.prismaService.company.update({
       where: { id },
       data: { logo_url: result.secure_url },
+      include: {
+        locations: true,
+      },
     });
   }
 }

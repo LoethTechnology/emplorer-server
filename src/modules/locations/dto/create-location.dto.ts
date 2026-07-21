@@ -1,12 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 const trim = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() : value;
@@ -31,11 +25,4 @@ export class CreateLocationDto {
   @MaxLength(100)
   @Transform(trim)
   country?: string;
-
-  @ApiPropertyOptional({
-    description: 'Whether this is the company headquarters',
-  })
-  @IsOptional()
-  @IsBoolean()
-  is_headquarters?: boolean;
 }

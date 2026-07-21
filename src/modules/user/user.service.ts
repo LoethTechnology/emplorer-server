@@ -17,7 +17,6 @@ import {
 import { CrudResponse } from '../../shared/utils/response';
 import type {
   CreateUserDto,
-  CreateUserReviewDto,
   UpdateUserDto,
   UpdateUserPasswordDto,
   UpdateUserReviewDto,
@@ -168,34 +167,6 @@ export class UserService {
       DbModels.USER,
       CrudEnums.UPDATE,
       USER_RESPONSE_MESSAGES.passwordUpdated,
-    );
-  }
-
-  async createMyReview(
-    user: AuthenticatedRequest['user'],
-    createUserReviewDto: CreateUserReviewDto,
-  ): Promise<UserReviewResponse> {
-    const userId = user.sub;
-    await this.findActiveUserById(userId);
-    await this.findCompanyOrThrow(createUserReviewDto.company_id);
-
-    const createdReview = await this.prismaService.company_review.create({
-      data: {
-        company_id: createUserReviewDto.company_id,
-        author_id: userId,
-        body: createUserReviewDto.body,
-        overall_rating: createUserReviewDto.overall_rating,
-        employment_context: createUserReviewDto.employment_context ?? null,
-        would_recommend: createUserReviewDto.would_recommend ?? null,
-        status: ReviewStatus.PUBLISHED,
-        published_at: new Date(),
-      },
-    });
-
-    return CrudResponse(
-      DbModels.COMPANY_REVIEW,
-      CrudEnums.CREATE,
-      createdReview,
     );
   }
 

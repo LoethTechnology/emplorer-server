@@ -68,6 +68,13 @@ const approvedCompany = (overrides: Partial<Record<string, unknown>> = {}) => ({
   status: CompanyStatus.APPROVED,
   created_at: new Date(),
   updated_at: new Date(),
+  locations: [
+    {
+      address: '14 Admiralty Way, Lekki',
+      country: 'Nigeria',
+      is_headquarters: true,
+    },
+  ],
   ...overrides,
 });
 
@@ -127,10 +134,8 @@ describe('CompaniesService', () => {
   });
 
   describe('create', () => {
-    it('should create a company with PENDING status, creator, and headquarters location', async () => {
-      mockPrismaService.company.create.mockResolvedValue(
-        approvedCompany({ status: CompanyStatus.PENDING }),
-      );
+    it('should create an approved company with creator and headquarters location', async () => {
+      mockPrismaService.company.create.mockResolvedValue(approvedCompany());
 
       const result = await service.create(mockAuthenticatedUser('user-1'), {
         name: 'Acme Inc.',
@@ -142,7 +147,12 @@ describe('CompaniesService', () => {
         data: expect.objectContaining({
           creator_id: 'user-1',
           name: 'Acme Inc.',
+          description: null,
+          website_url: null,
+          linkedin_url: null,
           logo_url: null,
+          industry: null,
+          status: CompanyStatus.APPROVED,
           locations: {
             create: {
               address: '14 Admiralty Way, Lekki',
@@ -151,6 +161,9 @@ describe('CompaniesService', () => {
             },
           },
         }),
+        include: {
+          locations: true,
+        },
       });
       expect(result).toEqual({
         message: 'Company created successfully.',
@@ -160,10 +173,8 @@ describe('CompaniesService', () => {
     });
 
     it('should upload a logo to Cloudinary and store the secure URL when a logo file is provided', async () => {
-      const createdCompany = approvedCompany({ logo_url: null });
-      const updatedCompany = approvedCompany({ logo_url: 'https://logo.test' });
+      const createdCompany = approvedCompany({ logo_url: 'https://logo.test' });
       mockPrismaService.company.create.mockResolvedValue(createdCompany);
-      mockPrismaService.company.update.mockResolvedValue(updatedCompany);
 
       const result = await service.create(
         mockAuthenticatedUser('user-1'),
@@ -176,12 +187,14 @@ describe('CompaniesService', () => {
 
       expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
         mockLogoFile,
-        'emplorer/companies/company-1/logo',
+        'emplorer/companies/user-1/logo',
       );
-      expect(mockPrismaService.company.update).toHaveBeenCalledWith({
-        where: { id: 'company-1' },
-        data: { logo_url: 'https://logo.test' },
-      });
+      expect(mockPrismaService.company.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ logo_url: 'https://logo.test' }),
+        }),
+      );
+      expect(mockPrismaService.company.update).not.toHaveBeenCalled();
       expect(result).toEqual({
         message: 'Company created successfully.',
         code: HttpStatus.CREATED,
@@ -240,6 +253,9 @@ describe('CompaniesService', () => {
 
       expect(mockPrismaService.company.findFirst).toHaveBeenCalledWith({
         where: { id: 'company-1', status: CompanyStatus.APPROVED },
+        include: {
+          locations: true,
+        },
       });
       expect(result).toEqual({
         message: 'Company fetched successfully.',
@@ -345,6 +361,9 @@ describe('CompaniesService', () => {
       expect(mockPrismaService.company.update).toHaveBeenCalledWith({
         where: { id: 'company-1' },
         data: expect.objectContaining({ description: 'Updated description' }),
+        include: {
+          locations: true,
+        },
       });
       expect(result.data).toEqual(
         expect.objectContaining({ description: 'Updated description' }),

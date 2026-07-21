@@ -1,0 +1,27 @@
+info:
+  name: Update Company Location
+  type: http
+  seq: 7
+
+http:
+  method: PATCH
+  url: '{{local}}/companies/:companyId'
+  params:
+    - name: companyId
+      value: '{{companyId}}'
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "locationId": "https://acme.com",
+        "address": "Updated company description.",
+        "country": "https://acme.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

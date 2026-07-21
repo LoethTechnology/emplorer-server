@@ -11,10 +11,10 @@ http:
     data:
       - name: name
         type: text
-        value: Acme Inc
+        value: Loeth Inc
       - name: description
         type: text
-        value: Company description
+        value: Tech Community
       - name: website_url
         type: text
         value: https://acme.com
@@ -53,10 +53,10 @@ examples:
         data:
           - name: name
             type: text
-            value: Acme Inc
+            value: Loeth Inc
           - name: description
             type: text
-            value: Company description
+            value: Tech Community
           - name: website_url
             type: text
             value: https://acme.com
@@ -116,11 +116,11 @@ examples:
         - name: content-type
           value: application/json; charset=utf-8
         - name: content-length
-          value: '528'
+          value: '773'
         - name: etag
-          value: W/"210-1rIkEwtWO9G/eBHWlus+3xdvzro"
+          value: W/"305-ssZyLuDBwvEwjy0HZs5I2FDxxfo"
         - name: date
-          value: Tue, 21 Jul 2026 18:43:42 GMT
+          value: Tue, 21 Jul 2026 18:50:30 GMT
         - name: connection
           value: keep-alive
         - name: keep-alive
@@ -132,16 +132,27 @@ examples:
             "message": "Company created successfully.",
             "code": 201,
             "data": {
-              "id": "cmrv051bb0000zp9kpjmwtjun",
+              "id": "cmrv0dss80000ip9kfaw1g5np",
               "creator_id": "cmrtq98mk00001k9kjmuc1a3i",
-              "name": "Acme Inc",
-              "description": "Company description",
+              "name": "Loeth Inc",
+              "description": "Tech Community",
               "website_url": "https://acme.com",
               "linkedin_url": "https://linkedin.com/company/acme",
-              "logo_url": "https://res.cloudinary.com/fardelins/image/upload/v1784659422/emplorer/companies/cmrv051bb0000zp9kpjmwtjun/logo.jpg",
+              "logo_url": "https://res.cloudinary.com/fardelins/image/upload/v1784659831/emplorer/companies/cmrv0dss80000ip9kfaw1g5np/logo.jpg",
               "industry": "Technology",
               "status": "APPROVED",
-              "created_at": "2026-07-21T18:43:39.623Z",
-              "updated_at": "2026-07-21T18:43:41.486Z"
+              "created_at": "2026-07-21T18:50:28.472Z",
+              "updated_at": "2026-07-21T18:50:30.697Z",
+              "locations": [
+                {
+                  "id": "cmrv0dstx0001ip9k1dq3jn5i",
+                  "company_id": "cmrv0dss80000ip9kfaw1g5np",
+                  "country": "Nigeria",
+                  "address": "14 Admiralty Way, Lekki",
+                  "is_headquarters": true,
+                  "created_at": "2026-07-21T18:50:28.472Z",
+                  "updated_at": "2026-07-21T18:50:28.472Z"
+                }
+              ]
             }
           }

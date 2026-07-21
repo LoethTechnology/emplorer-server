@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -37,7 +38,6 @@ export class LocationsService {
         company_id: companyId,
         address: dto.address,
         country: dto.country ?? null,
-        is_headquarters: dto.is_headquarters ?? false,
       },
     });
 
@@ -86,6 +86,20 @@ export class LocationsService {
   ): Promise<CompanyLocationResponse> {
     await this.findOwnedCompanyOrThrow(user.sub, companyId);
     const existing = await this.findLocationOrThrow(companyId, locationId);
+
+    // check to have only one headquarters
+    if (dto.is_headquarters) {
+      const headquarters = await this.prismaService.company_location.findFirst({
+        where: { company_id: companyId, is_headquarters: true },
+        select: { id: true },
+      });
+
+      if (headquarters) {
+        throw new BadRequestException(
+          LOCATIONS_RESPONSE_MESSAGES.headquartersAlreadyExists,
+        );
+      }
+    }
 
     const updated = await this.prismaService.company_location.update({
       where: { id: existing.id },

@@ -397,132 +397,6 @@ describe('UserService', () => {
     });
   });
 
-  describe('createMyReview', () => {
-    it('should create a published review for the current user', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue({
-        id: 'user-review-1',
-        email: 'user@example.com',
-        first_name: 'Review',
-        last_name: 'Author',
-        linkedin_profile_url: null,
-        created_at: new Date(),
-        updated_at: new Date(),
-      });
-      mockPrismaService.company.findUnique.mockResolvedValue({
-        id: 'company-1',
-      });
-      mockPrismaService.company_review.create.mockResolvedValue({
-        id: 'review-1',
-        company_id: 'company-1',
-        author_id: 'user-review-1',
-        body: 'Helpful details',
-        overall_rating: 4,
-        employment_context: null,
-        would_recommend: true,
-        status: ReviewStatus.PUBLISHED,
-        published_at: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
-      });
-
-      const result = await service.createMyReview(
-        mockAuthenticatedUser('user-review-1'),
-        {
-          company_id: 'company-1',
-          body: 'Helpful details',
-          overall_rating: 4,
-          would_recommend: true,
-        },
-      );
-
-      expect(mockPrismaService.company_review.create).toHaveBeenCalledWith({
-        data: {
-          company_id: 'company-1',
-          author_id: 'user-review-1',
-          body: 'Helpful details',
-          overall_rating: 4,
-          employment_context: null,
-          would_recommend: true,
-          status: ReviewStatus.PUBLISHED,
-          published_at: expect.any(Date),
-        },
-      });
-      expect(result).toEqual({
-        message: 'Company Review created successfully.',
-        code: HttpStatus.CREATED,
-        data: expect.objectContaining({
-          id: 'review-1',
-          author_id: 'user-review-1',
-        }),
-      });
-    });
-
-    it('should set published_at when creating a published review', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue({
-        id: 'user-review-2',
-        email: 'user@example.com',
-        first_name: 'Review',
-        last_name: 'Author',
-        linkedin_profile_url: null,
-        created_at: new Date(),
-        updated_at: new Date(),
-      });
-      mockPrismaService.company.findUnique.mockResolvedValue({
-        id: 'company-2',
-      });
-      mockPrismaService.company_review.create.mockResolvedValue({
-        id: 'review-2',
-        company_id: 'company-2',
-        author_id: 'user-review-2',
-        body: 'Published review',
-        overall_rating: 5,
-        employment_context: 'Current employee',
-        would_recommend: true,
-        status: ReviewStatus.PUBLISHED,
-        published_at: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
-      });
-
-      await service.createMyReview(mockAuthenticatedUser('user-review-2'), {
-        company_id: 'company-2',
-        body: 'Published review',
-        overall_rating: 5,
-        employment_context: 'Current employee',
-        would_recommend: true,
-        status: ReviewStatus.PUBLISHED,
-      });
-
-      expect(mockPrismaService.company_review.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
-          status: ReviewStatus.PUBLISHED,
-          published_at: expect.any(Date),
-        }),
-      });
-    });
-
-    it('should throw when the target company does not exist', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue({
-        id: 'user-review-3',
-        email: 'user@example.com',
-        first_name: 'Review',
-        last_name: 'Author',
-        linkedin_profile_url: null,
-        created_at: new Date(),
-        updated_at: new Date(),
-      });
-      mockPrismaService.company.findUnique.mockResolvedValue(null);
-
-      await expect(
-        service.createMyReview(mockAuthenticatedUser('user-review-3'), {
-          company_id: 'missing-company',
-          body: 'Missing company review',
-          overall_rating: 3,
-        }),
-      ).rejects.toBeInstanceOf(NotFoundException);
-    });
-  });
-
   describe('findMyReviews', () => {
     it('should return only the current user reviews', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue({
@@ -672,6 +546,9 @@ describe('UserService', () => {
         body: 'Published review',
         status: ReviewStatus.PUBLISHED,
         published_at: new Date(),
+      });
+      mockPrismaService.company.findUnique.mockResolvedValue({
+        name: 'Acme Inc',
       });
 
       await service.updateMyReview(
