@@ -7,40 +7,34 @@ http:
   method: POST
   url: '{{local}}/companies'
   body:
-    type: multipartForm
+    type: multipart-form
     data:
       - name: name
-        value: Acme Inc.
         type: text
-        enabled: true
+        value: Acme Inc
       - name: description
-        value: A technology company.
         type: text
-        enabled: true
+        value: Company description
       - name: website_url
+        type: text
         value: https://acme.com
-        type: text
-        enabled: true
-      - name: domain
-        value: acme.com
-        type: text
-        enabled: true
       - name: linkedin_url
+        type: text
         value: https://linkedin.com/company/acme
+      - name: address
         type: text
-        enabled: true
-      - name: headquarters
-        value: Lagos, Nigeria
+        value: 14 Admiralty Way, Lekki
+      - name: country
         type: text
-        enabled: true
+        value: Nigeria
       - name: industry
-        value: Technology
         type: text
-        enabled: true
+        value: Technology
       - name: logo
-        value: ''
         type: file
-        enabled: true
+        value:
+          - /Users/macbookpro15/Downloads/WhatsApp Image 2026-07-07 at 19.40.43.jpeg
+        contentType: image/jpeg
   auth: inherit
 
 settings:

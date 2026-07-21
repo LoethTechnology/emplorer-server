@@ -25,8 +25,7 @@ export class PublicService {
         locations: {
           some: {
             OR: [
-              { city: { contains: location, mode: 'insensitive' } },
-              { state: { contains: location, mode: 'insensitive' } },
+              { address: { contains: location, mode: 'insensitive' } },
               { country: { contains: location, mode: 'insensitive' } },
             ],
           },
@@ -56,8 +55,7 @@ export class PublicService {
           locations: {
             select: {
               id: true,
-              city: true,
-              state: true,
+              address: true,
               country: true,
               is_headquarters: true,
             },

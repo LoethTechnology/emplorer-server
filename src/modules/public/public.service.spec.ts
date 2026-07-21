@@ -26,8 +26,7 @@ const mockCompany = (overrides: Partial<Record<string, unknown>> = {}) => ({
   locations: [
     {
       id: 'loc-1',
-      city: 'Lagos',
-      state: null,
+      address: '14 Admiralty Way, Lekki',
       country: 'Nigeria',
       is_headquarters: true,
     },
@@ -90,7 +89,10 @@ describe('PublicService', () => {
           total_reviews: 5,
           mean_rating: 4.2,
           locations: expect.arrayContaining([
-            expect.objectContaining({ city: 'Lagos', is_headquarters: true }),
+            expect.objectContaining({
+              address: '14 Admiralty Way, Lekki',
+              is_headquarters: true,
+            }),
           ]),
         }),
       ]);
@@ -126,12 +128,12 @@ describe('PublicService', () => {
       );
     });
 
-    it('should apply a location filter across city, state, and country', async () => {
+    it('should apply a location filter across address and country', async () => {
       mockPrismaService.company.count.mockResolvedValue(0);
       mockPrismaService.company.findMany.mockResolvedValue([]);
       mockPrismaService.company_review.groupBy.mockResolvedValue([]);
 
-      await service.findCompanies({ location: 'Lagos' });
+      await service.findCompanies({ location: 'Lekki' });
 
       expect(mockPrismaService.company.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -139,9 +141,8 @@ describe('PublicService', () => {
             locations: {
               some: {
                 OR: [
-                  { city: { contains: 'Lagos', mode: 'insensitive' } },
-                  { state: { contains: 'Lagos', mode: 'insensitive' } },
-                  { country: { contains: 'Lagos', mode: 'insensitive' } },
+                  { address: { contains: 'Lekki', mode: 'insensitive' } },
+                  { country: { contains: 'Lekki', mode: 'insensitive' } },
                 ],
               },
             },
@@ -208,15 +209,13 @@ describe('PublicService', () => {
         locations: [
           {
             id: 'loc-2',
-            city: 'Abuja',
-            state: null,
+            address: 'Central Business District',
             country: 'Nigeria',
             is_headquarters: false,
           },
           {
             id: 'loc-1',
-            city: 'Lagos',
-            state: null,
+            address: '14 Admiralty Way, Lekki',
             country: 'Nigeria',
             is_headquarters: true,
           },

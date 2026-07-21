@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -42,31 +41,23 @@ export class CompaniesService {
     createCompanyDto: CreateCompanyDto,
     file?: Express.Multer.File,
   ): Promise<CompanyResponse> {
-    if (createCompanyDto.domain) {
-      const existing = await this.prismaService.company.findUnique({
-        where: { domain: createCompanyDto.domain },
-        select: { id: true },
-      });
-
-      if (existing) {
-        throw new ConflictException(
-          COMPANIES_RESPONSE_MESSAGES.domainAlreadyInUse,
-        );
-      }
-    }
-
     const created = await this.prismaService.company.create({
       data: {
         creator_id: user.sub,
         name: createCompanyDto.name,
         description: createCompanyDto.description ?? null,
         website_url: createCompanyDto.website_url ?? null,
-        domain: createCompanyDto.domain ?? null,
         linkedin_url: createCompanyDto.linkedin_url ?? null,
         logo_url: null,
-        headquarters: createCompanyDto.headquarters ?? null,
         industry: createCompanyDto.industry ?? null,
         status: CompanyStatus.APPROVED,
+        locations: {
+          create: {
+            address: createCompanyDto.address,
+            country: createCompanyDto.country ?? null,
+            is_headquarters: true,
+          },
+        },
       },
     });
 
@@ -107,8 +98,7 @@ export class CompaniesService {
         logo_url: true,
         locations: {
           select: {
-            city: true,
-            state: true,
+            address: true,
             country: true,
             is_headquarters: true,
           },
@@ -163,21 +153,6 @@ export class CompaniesService {
     return CrudResponse(DbModels.COMPANY, CrudEnums.READ, company);
   }
 
-  async findByDomain(domain: string): Promise<CompanyResponse> {
-    const company = await this.prismaService.company.findFirst({
-      where: {
-        domain,
-        status: CompanyStatus.APPROVED,
-      },
-    });
-
-    if (!company) {
-      throw new NotFoundException(COMPANIES_RESPONSE_MESSAGES.companyNotFound);
-    }
-
-    return CrudResponse(DbModels.COMPANY, CrudEnums.READ, company);
-  }
-
   async uploadLogo(
     user: AuthenticatedRequest['user'],
     id: string,
@@ -221,7 +196,6 @@ export class CompaniesService {
         description: updateCompanyDto.description ?? existing.description,
         website_url: updateCompanyDto.website_url ?? existing.website_url,
         linkedin_url: updateCompanyDto.linkedin_url ?? existing.linkedin_url,
-        headquarters: updateCompanyDto.headquarters ?? existing.headquarters,
         industry: updateCompanyDto.industry ?? existing.industry,
       },
     });

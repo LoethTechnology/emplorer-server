@@ -21,12 +21,12 @@ export class PublicCompanyQueryDto extends BaseQueryDto {
   name?: string;
 
   @ApiPropertyOptional({
-    example: 'Lagos',
-    description: 'Filter by city, state, or country',
+    example: 'Lekki',
+    description: 'Filter by address or country',
   })
   @IsOptional()
   @IsString()
-  @MaxLength(100)
+  @MaxLength(300)
   location?: string;
 
   @ApiPropertyOptional({ example: 4, description: 'Minimum mean rating (1–5)' })

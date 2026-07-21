@@ -50,17 +50,17 @@ export class CompaniesController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['name'],
+      required: ['name', 'address'],
       properties: {
         name: { type: 'string', example: 'Acme Inc.' },
         description: { type: 'string' },
         website_url: { type: 'string', example: 'https://acme.com' },
-        domain: { type: 'string', example: 'acme.com' },
         linkedin_url: {
           type: 'string',
           example: 'https://linkedin.com/company/acme',
         },
-        headquarters: { type: 'string', example: 'Lagos, Nigeria' },
+        address: { type: 'string', example: '14 Admiralty Way, Lekki' },
+        country: { type: 'string', example: 'Nigeria' },
         industry: { type: 'string', example: 'Technology' },
         logo: { type: 'string', format: 'binary' },
       },
@@ -70,10 +70,6 @@ export class CompaniesController {
   @ApiResponse({ status: 201, description: 'Company created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({
-    status: 409,
-    description: 'A company with this domain already exists',
-  })
   create(
     @User() user: AuthenticatedRequest['user'],
     @Body() createCompanyDto: CreateCompanyDto,
@@ -117,15 +113,6 @@ export class CompaniesController {
       throw new BadRequestException('Query parameter "q" is required.');
     }
     return this.companiesService.typeahead(q);
-  }
-
-  @Get('domain/:domain')
-  @SkipAuth()
-  @ApiOperation({ summary: 'Find an approved company by domain' })
-  @ApiResponse({ status: 200, description: 'Return the matching company' })
-  @ApiResponse({ status: 404, description: 'Company not found' })
-  findByDomain(@Param('domain') domain: string): Promise<CompanyResponse> {
-    return this.companiesService.findByDomain(domain);
   }
 
   @Get(':id')
