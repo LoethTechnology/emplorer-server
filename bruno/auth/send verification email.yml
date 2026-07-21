@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "email": "test@test.com"
+        "email": "joecdev+tests@gmail.com"
       }
   auth: inherit
 
@@ -19,3 +19,71 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+examples:
+  - name: ok
+    request:
+      url: '{{local}}/auth/send-verification-email'
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "joecdev+tests@gmail.com"
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: content-security-policy
+          value: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+        - name: cross-origin-opener-policy
+          value: same-origin
+        - name: cross-origin-resource-policy
+          value: same-origin
+        - name: origin-agent-cluster
+          value: ?1
+        - name: referrer-policy
+          value: no-referrer
+        - name: strict-transport-security
+          value: max-age=31536000; includeSubDomains
+        - name: x-content-type-options
+          value: nosniff
+        - name: x-dns-prefetch-control
+          value: off
+        - name: x-download-options
+          value: noopen
+        - name: x-frame-options
+          value: SAMEORIGIN
+        - name: x-permitted-cross-domain-policies
+          value: none
+        - name: x-xss-protection
+          value: '0'
+        - name: access-control-allow-origin
+          value: '*'
+        - name: x-ratelimit-limit
+          value: '10'
+        - name: x-ratelimit-remaining
+          value: '9'
+        - name: x-ratelimit-reset
+          value: '60'
+        - name: content-type
+          value: application/json; charset=utf-8
+        - name: content-length
+          value: '67'
+        - name: etag
+          value: W/"43-CU/+w7y+7/0POjwrGz6n46YOApc"
+        - name: date
+          value: Tue, 21 Jul 2026 18:18:14 GMT
+        - name: connection
+          value: keep-alive
+        - name: keep-alive
+          value: timeout=5
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Auth OTP created successfully.",
+            "code": 201,
+            "data": null
+          }

@@ -22,7 +22,7 @@ request:
     - name: local
       value: http://localhost:3000
     - name: token
-      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbXJ0cTk4bWswMDAwMWs5a2ptdWMxYTNpIiwiaWF0IjoxNzg0NTgzNTgxLCJleHAiOjE3ODQ4NDI3ODF9.klRWjTPiYboJgcUHIKeRzTnPoPZTx7Jy2Ef6y6WIWng
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbXJ0cTk4bWswMDAwMWs5a2ptdWMxYTNpIiwiaWF0IjoxNzg0NjU3NTg3LCJleHAiOjE3ODQ5MTY3ODd9.zqZRv99JeOt50P_G-JariaM7Qjbn5-uBEHC0W_YIAmo
     - name: companyId
       value: company_id_here
     - name: locationId

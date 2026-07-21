@@ -127,7 +127,7 @@ export class AuthService {
     });
 
     if (!dbUser) {
-      return CrudResponse(DbModels.AUTH_OTP, CrudEnums.CREATE, null);
+      throw new BadRequestException(AUTH_RESPONSE_MESSAGES.userNotFound);
     }
 
     const otp = this.authHandlerService.generateOtp();

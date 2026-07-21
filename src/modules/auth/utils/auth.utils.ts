@@ -6,6 +6,7 @@ export const AUTH_RESPONSE_MESSAGES = {
   invalidResetOtp: 'Invalid or expired OTP.',
   emailVerified: 'Email verified successfully.',
   invalidVerificationOtp: 'Invalid or expired OTP.',
+  userNotFound: 'User not found.',
 } as const;
 
 export type RequestWithJwtUser = Request & { user?: JwtPayload };
