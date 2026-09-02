@@ -164,6 +164,30 @@ export class ReviewsService {
     return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.DELETE, deleted);
   }
 
+  async findRecent(limit = 6) {
+    return this.prismaService.company_review.findMany({
+    where: {
+      status: ReviewStatus.PUBLISHED,
+    },
+    orderBy: {
+      published_at: 'desc',
+    },
+    take: limit,
+    select: {
+      id: true,
+      body: true,
+      overall_rating: true,
+      published_at: true,
+      company: {
+        select: {
+          id: true,
+          name: true,
+          logo_url: true,
+        },
+      },
+    },
+  });
+}
   private async findApprovedCompanyOrThrow(companyId: string) {
     const company = await this.prismaService.company.findFirst({
       where: { id: companyId, status: CompanyStatus.APPROVED },
