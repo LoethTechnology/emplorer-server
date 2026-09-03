@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SkipAuth } from '../../common/decorators/skip-auth.decorator';
+import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 import { ReviewsService } from './reviews.service';
 
 @ApiTags('reviews')
