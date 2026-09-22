@@ -62,34 +62,47 @@ export class ReviewsService {
     return CrudResponse(DbModels.COMPANY_REVIEW, CrudEnums.CREATE, review);
   }
 
-  async findAll(
-    companyId: string,
-    query: BaseQueryDto,
-  ): Promise<PaginationResponseInterface<Review>> {
-    const { page, limit, sort } = query;
+async findAll(
+  companyId: string,
+  query: BaseQueryDto,
+): Promise<PaginationResponseInterface<Review> & { averageRating: number }> {
+  const { page, limit, sort } = query;
 
-    const where = {
-      company_id: companyId,
-      status: ReviewStatus.PUBLISHED,
-    };
+  const where = {
+    company_id: companyId,
+    status: ReviewStatus.PUBLISHED,
+  };
 
-    const [count, records] = await Promise.all([
-      this.prismaService.company_review.count({ where }),
-      this.prismaService.company_review.findMany({
-        ...GetPageOptions(Number(page), Number(limit)),
-        where,
-        orderBy: { published_at: sort || 'desc' },
-      }),
-    ]);
+  const [count, records, ratingAggregate] = await Promise.all([
+    this.prismaService.company_review.count({ where }),
+    this.prismaService.company_review.findMany({
+      ...GetPageOptions(Number(page), Number(limit)),
+      where,
+      orderBy: { published_at: sort || 'desc' },
+    }),
+    this.prismaService.company_review.aggregate({
+      where,
+      _avg: {
+        overall_rating: true,
+      },
+    }),
+  ]);
 
-    return PaginateRes(
+  const averageRating = ratingAggregate._avg.overall_rating
+    ? Math.round(ratingAggregate._avg.overall_rating * 10) / 10
+    : 0;
+
+  return {
+    ...PaginateRes(
       records,
       count,
       records.length,
       Number(page),
       Number(limit),
-    );
-  }
+    ),
+    averageRating,
+  };
+}
 
   async findOne(companyId: string, reviewId: string): Promise<ReviewResponse> {
     const review = await this.prismaService.company_review.findFirst({
